@@ -1,0 +1,36 @@
+{
+  "name": "thesis-management-system",
+  "version": "0.1.0",
+  "description": "Group Project",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:groupc-2dv603-lnu/thesis-management-system.git"
+  },
+  "keywords": [
+    "rest",
+    "hateoas",
+    "spring",
+    "data",
+    "react"
+  ],
+  "bugs": {
+    "url": "https://github.com/groupc-2dv603-lnu/thesis-management-system/issues"
+  },
+  "homepage": "https://github.com/groupc-2dv603-lnu/thesis-management-system",
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "rest": "^2.0.0"
+  },
+  "scripts": {
+    "watch": "webpack --watch -d"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.2"
+  }
+}
