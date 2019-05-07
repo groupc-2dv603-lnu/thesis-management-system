@@ -1,0 +1,58 @@
+body {
+    /* width: 1000px; */
+    width: 100%;
+    /* margin: 50px 0 0 100px; */
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.topbar {
+    width: 100%;
+    display: flex;
+    background-color: #ffe000;
+    border: 1px solid black;
+    border-left: 0;
+    border-right: 0;
+    /* background-color: #5A7;  */
+}
+
+
+.menu {
+    margin-left: 15%;
+    display: flex;
+}
+
+.menu .logo {
+    display: inline-block;
+    padding: 30px;
+    font: 28px bold;
+    font-family: 'Century Gothic';
+    padding: 20px;
+    white-space: nowrap;
+}
+
+.menu .logo i {
+    margin: 0 10px;
+    font-size: 30px;
+}
+
+.menu a {
+    display: inline-block;
+    padding: 30px;
+    white-space: nowrap;
+}
+
+.menu a:hover {
+    background-color: #ffef15;
+    cursor: pointer;
+}
+
+.menu .role {
+    margin: auto 30px;
+    height: 30px;
+}
+
+.content {
+    padding: 20px 80px;
+    margin-left: 15%;
+}
