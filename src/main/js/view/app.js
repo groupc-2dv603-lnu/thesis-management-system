@@ -33,11 +33,11 @@ class App extends React.Component {
                             <a>menu item #2</a>
                             <a>menu item #3</a>
 
-                            <select class="role">
-                                <option>Role: Student</option>
-                                <option>Role: Opponent</option>
-                            </select>
                         </div>
+                        <select class="role">
+                            <option>Role: Student</option>
+                            <option>Role: Opponent</option>
+                        </select>
                     </div>
                 </div>
                 {/*  Content */}

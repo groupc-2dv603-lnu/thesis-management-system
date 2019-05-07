@@ -36,7 +36,7 @@ body, .dropdown-menu > a {
     white-space: nowrap;
 }
 
-.logo, .menu > .role {
+.logo, .role {
     margin: auto 20px;
 }
 
@@ -55,7 +55,7 @@ body, .dropdown-menu > a {
     white-space: nowrap;
 }
 
-.menu > .role {
+.role {
     height: 30px;
 }
 
