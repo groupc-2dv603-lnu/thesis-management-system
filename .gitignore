@@ -72,3 +72,5 @@ buildNumber.properties
 
 package-lock.json
 src/main/resources/static/
+
+node_modules/
