@@ -22,7 +22,8 @@ body, .dropdown-menu > a {
 .fluid-container {
     display: flex;
     margin: 0 auto;
-    max-width: 1000px;
+    max-width: 1500px;
+    /* border: 1px dotted red; */
 }
 
 .content {
@@ -57,6 +58,7 @@ body, .dropdown-menu > a {
 
 .role {
     height: 30px;
+    margin-right: 20px;
 }
 
 a:hover, .dropdown-button:hover {

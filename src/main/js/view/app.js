@@ -19,38 +19,36 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <div class="topbar">
+                <div className="topbar">
                     {/* dropdown menu (normally hidden) */}
-                    <div class="dropdown-button">
-                        <i class="fa fa-bars"></i>
-                        <div class="dropdown-menu">
+                    <div className="dropdown-button">
+                        <i className="fa fa-bars"></i>
+                        <div className="dropdown-menu">
                             <a>menu item #1</a>
                             <a>menu item #2</a>
                             <a>menu item #3</a>
                         </div>
                     </div>
-
-                    <div class="fluid-container">
-                        <div class="logo">
-                            <i class="fas fa-feather"></i>
+                    <div className="fluid-container">
+                        <div className="logo">
+                            <i className="fas fa-feather"></i>
                             thesis mgmt
                         </div>
                         {/* default menu */}
-                        <div class="menu">
+                        <div className="menu">
                             <a>menu item #1</a>
                             <a>menu item #2</a>
                             <a>menu item #3</a>
 
                         </div>
-                        <select class="role">
-                            <option>Role: Student</option>
-                            <option>Role: Opponent</option>
-                        </select>
                     </div>
+                    <select className="role">
+                        <option>Role: Student</option>
+                        <option>Role: Opponent</option>
+                    </select>
                 </div>
                 {/*  Content */}
                 <div class="fluid-container content">
-                    {/* Thesis status: N/A */}
                     <UserList users={this.state.users}/>
                 </div>
             </div>
