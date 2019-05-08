@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react'
-const client = require('../../client');
+const client = require('../../../client');
 
 class Student extends Component {
     constructor(props) {

@@ -3,6 +3,11 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+a {
+    color: black;
+    text-decoration: none;
+}
+
 body, .dropdown-menu > a {
     font-size: 16px;
 }
@@ -22,13 +27,13 @@ body, .dropdown-menu > a {
 .fluid-container {
     display: flex;
     margin: 0 auto;
-    max-width: 1500px;
+    max-width: 1000px;
     /* border: 1px dotted red; */
 }
 
 .content {
     padding: 20px 30px;
-    max-width: 750px;
+    max-width: 600px;
 }
 
 .logo {
@@ -48,6 +53,7 @@ body, .dropdown-menu > a {
 
 .menu {
     display: flex;
+    min-width: 600px; /* should be the same as content max-width */
 }
 
 /* padding effectively decides the height of the menu */
@@ -57,6 +63,9 @@ body, .dropdown-menu > a {
 }
 
 .role {
+    position: absolute;
+    right: 10px;
+    top: 25px;
     height: 30px;
     margin-right: 20px;
 }
@@ -100,6 +109,12 @@ a:hover, .dropdown-button:hover {
 
     .dropdown-button {
         display: block;
+    }
+
+    .role {
+        position: relative;
+        top: 0;
+        margin: auto 10px;
     }
 }
 
