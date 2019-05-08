@@ -18,11 +18,11 @@ import project.model.entities.User;
 import project.model.repositories.UserRepository;
 
 @RestController
-class UsersController {
+class UserController {
 	
 	private final UserRepository repository;
 	
-	UsersController(UserRepository repository) {
+	UserController(UserRepository repository) {
 		this.repository = repository;
 	}
 	
@@ -31,8 +31,8 @@ class UsersController {
 		User user = repository.findFirstById(id);
 		
 		return new Resource<>(user,
-			    linkTo(methodOn(UsersController.class).one(id)).withSelfRel(),
-			    linkTo(methodOn(UsersController.class).all()).withRel("employees"));
+			    linkTo(methodOn(UserController.class).one(id)).withSelfRel(),
+			    linkTo(methodOn(UserController.class).all()).withRel("employees"));
 		
 	}
 	
@@ -40,12 +40,12 @@ class UsersController {
 	Resources<Resource<User>> all() {
 		List<Resource<User>> users = repository.findAll().stream()
 			    .map(employee -> new Resource<>(employee,
-			    		linkTo(methodOn(UsersController.class).one(employee.getId())).withSelfRel(),
-			    		linkTo(methodOn(UsersController.class).all()).withRel("users")))
+			    		linkTo(methodOn(UserController.class).one(employee.getId())).withSelfRel(),
+			    		linkTo(methodOn(UserController.class).all()).withRel("users")))
 			    	    .collect(Collectors.toList());
 
 		return new Resources<>(users,
-				linkTo(methodOn(UsersController.class).all()).withSelfRel());
+				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
 	@PostMapping("/users")
 	void newUser() {
