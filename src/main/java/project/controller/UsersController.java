@@ -11,6 +11,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.model.entities.Users;
@@ -47,7 +48,7 @@ class UsersController {
 				linkTo(methodOn(UsersController.class).all()).withSelfRel());
 	}
 	@PostMapping("/users")
-	public void postUsers() {
-		repository.save(new Users("Calle Johansson", "hejsan123"));
+	void newUser() {
+		repository.save(new Users("Sven", "edsd"));
 	}
 }
