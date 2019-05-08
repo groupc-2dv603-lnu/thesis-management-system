@@ -48,7 +48,7 @@ class App extends React.Component {
                     </select>
                 </div>
                 {/*  Content */}
-                <div class="fluid-container content">
+                <div className="fluid-container content">
                     <UserList users={this.state.users}/>
                 </div>
             </div>
