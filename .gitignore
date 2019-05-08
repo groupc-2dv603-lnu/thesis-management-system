@@ -71,4 +71,6 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 package-lock.json
-src/main/resources/static/
+src/main/resources/static/built
+
+node_modules/

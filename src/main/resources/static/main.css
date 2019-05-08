@@ -1,0 +1,103 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body, .dropdown-menu > a {
+    font-size: 16px;
+}
+
+.topbar {
+    display: flex;
+    border: 1px solid black;
+    border-left: 0;
+    border-right: 0;
+}
+
+.topbar, .dropdown-menu {
+    background-color: #ffe000;
+    /* background-color: #8B7; */
+}
+
+.fluid-container {
+    display: flex;
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+.content {
+    padding: 20px 30px;
+    max-width: 750px;
+}
+
+.logo {
+    font-size: 28px;
+    font-family: 'Century Gothic';
+    white-space: nowrap;
+}
+
+.logo, .role {
+    margin: auto 20px;
+}
+
+.logo > i {
+    margin: auto 10px;
+    font-size: 25px;
+}
+
+.menu {
+    display: flex;
+}
+
+/* padding effectively decides the height of the menu */
+.menu > a {
+    padding: 30px;
+    white-space: nowrap;
+}
+
+.role {
+    height: 30px;
+}
+
+a:hover, .dropdown-button:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+/* Dropdown menu */ 
+.dropdown-button {
+    display: none;
+    font-size: 30px;
+}
+
+.dropdown-button:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    border: 1px solid black;
+}
+
+.dropdown-menu > a {
+    display: block;
+    padding: 10px 15px;
+}
+
+/* changes layout if screen is resized to below specified size */
+/* hides default menu and enables dropdown menu */
+@media screen and (max-width: 900px) { /* 768 ? */
+    .logo, .dropdown-button {
+        padding: 5px 15px;
+    }
+
+    .menu {
+        display: none;
+    }
+
+    .dropdown-button {
+        display: block;
+    }
+}
+
