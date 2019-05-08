@@ -2,11 +2,19 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
+const client = require('./client');
 
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {users: []};
     }
+
+    componentDidMount() {
+		client({method: 'GET', path: '/users'}).then(response => {
+			this.setState({users: response.entity._embedded.users});
+		});
+	}
 
     render() {
         return (
@@ -40,16 +48,40 @@ class App extends React.Component {
                     </select>
                 </div>
                 {/*  Content */}
-                <div className="fluid-container content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tincidunt augue ut nibh facilisis, in lobortis neque iaculis. Donec at mauris euismod, placerat mi et, consequat quam. Nullam eu metus ut leo consequat sollicitudin porttitor eget sapien. Suspendisse potenti. Vestibulum in velit quis augue congue fringilla id ut dolor. Curabitur lobortis scelerisque dui at tempus. In euismod purus ut finibus semper.
-                    <br /><br />
-                    Etiam suscipit quam justo, et viverra arcu maximus a. Vestibulum tristique diam ante, eget pellentesque augue ultricies id. Donec at tincidunt leo, sit amet gravida mauris. Cras laoreet purus vel vestibulum pretium. Aliquam placerat diam ac turpis scelerisque, a sagittis nisi eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam lobortis elementum aliquam. Integer scelerisque vestibulum velit, nec fringilla tortor posuere nec. Proin vitae urna sodales, egestas est ac, hendrerit mi. Aenean quis magna sit amet ipsum imperdiet efficitur id eu tellus. Mauris lacinia ex id congue tempor. Quisque varius massa vel urna facilisis, quis posuere diam volutpat.
-                    <br /><br />
-                    In aliquam enim et dolor eleifend, sed interdum mi tempus. Sed maximus justo et semper lacinia. Maecenas eget vulputate libero, sit amet egestas nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent tincidunt egestas iaculis. Nam risus eros, consequat sed nunc sed, eleifend placerat massa. Proin consectetur interdum sollicitudin. Phasellus sit amet nulla eu dolor accumsan malesuada non quis orci. Praesent eu sapien metus.
-                    <br /><br />
-                    Mauris eget sapien sapien. Nam pretium quam ut magna ullamcorper scelerisque. Donec pharetra congue sem at finibus. Suspendisse nec purus id metus mollis luctus non vel ante. Donec nec sem eget enim dictum euismod at vitae ex. Etiam lectus nunc, bibendum ac convallis venenatis, imperdiet id libero. Fusce sodales, erat at sodales sodales, lacus tortor consequat turpis, dignissim porta nibh velit at orci.
+                <div class="fluid-container content">
+                    <UserList users={this.state.users}/>
                 </div>
             </div>
+        )
+    }
+}
+
+class UserList extends React.Component{
+	render() {
+		const users = this.props.users.map(user =>
+			<User key={user._links.self.href} user={user}/>
+		);
+		return (
+            <table>
+				<tbody>
+					<tr>
+						<td><strong>Name</strong></td>
+						<td><strong>Password</strong></td>
+					</tr>
+					{users}
+				</tbody>
+			</table>
+		)
+	}
+}
+
+class User extends React.Component {
+    render() {
+        return (
+            <tr>
+                <td>{this.props.user.name}</td>
+                <td>{this.props.user.password}</td>
+            </tr>
         )
     }
 }
