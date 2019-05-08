@@ -1,6 +1,11 @@
 package project.controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,10 +21,14 @@ class UsersController {
 		this.repository = repository;
 	}
 	
-	@GetMapping("/users")
-	public void getUsers() {
-		Users u = repository.findFirstByName("Calle Johansson");
-		System.out.println(u);
+	@GetMapping("/users/{id}")
+	Resource<Users> one(@PathVariable String id) {
+		Users user = repository.findFirstById(id);
+		
+		return new Resource<>(user,
+			    linkTo(methodOn(UsersController.class).one(id)).withSelfRel());//,
+			    //linkTo(methodOn(UsersController.class).all()).withRel("employees"));
+		
 	}
 	
 	@PostMapping("/users")

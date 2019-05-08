@@ -7,4 +7,5 @@ import project.model.entities.Users;
 public interface UserRepository extends MongoRepository<Users, String> {
 	
 	Users findFirstByName(String name);
+	Users findFirstById(String id);
 }
