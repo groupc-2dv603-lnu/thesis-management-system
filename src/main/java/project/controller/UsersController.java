@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import project.model.entities.Users;
+import project.model.entities.User;
 import project.model.repositories.UserRepository;
 
 @RestController
@@ -27,8 +27,8 @@ class UsersController {
 	}
 	
 	@GetMapping("/users/{id}")
-	Resource<Users> one(@PathVariable String id) {
-		Users user = repository.findFirstById(id);
+	Resource<User> one(@PathVariable String id) {
+		User user = repository.findFirstById(id);
 		
 		return new Resource<>(user,
 			    linkTo(methodOn(UsersController.class).one(id)).withSelfRel(),
@@ -37,8 +37,8 @@ class UsersController {
 	}
 	
 	@GetMapping("/users")
-	Resources<Resource<Users>> all() {
-		List<Resource<Users>> users = repository.findAll().stream()
+	Resources<Resource<User>> all() {
+		List<Resource<User>> users = repository.findAll().stream()
 			    .map(employee -> new Resource<>(employee,
 			    		linkTo(methodOn(UsersController.class).one(employee.getId())).withSelfRel(),
 			    		linkTo(methodOn(UsersController.class).all()).withRel("users")))
@@ -49,6 +49,6 @@ class UsersController {
 	}
 	@PostMapping("/users")
 	void newUser() {
-		repository.save(new Users("Sven", "edsd"));
+		repository.save(new User("Sven", "edsd"));
 	}
 }

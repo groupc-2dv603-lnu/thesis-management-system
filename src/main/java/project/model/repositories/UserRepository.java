@@ -2,10 +2,10 @@ package project.model.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import project.model.entities.Users;
+import project.model.entities.User;
 
-public interface UserRepository extends MongoRepository<Users, String> {
+public interface UserRepository extends MongoRepository<User, String> {
 	
-	Users findFirstByName(String name);
-	Users findFirstById(String id);
+	User findFirstByName(String name);
+	User findFirstById(String id);
 }
