@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 const ReactDOM = require('react-dom');
 const client = require('../client');
 import { Route, Switch, HashRouter } from 'react-router-dom'
-import Header from './component/header'
+import Header from './components/header'
 import FrontPage from './Pages/FrontPage'
 import Student from './Pages/Student'
 import Coordinator from './Pages/Coordinator'
@@ -25,17 +25,17 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Header />
-                <div className="fluid-container content">
-                    {/* <UserList users={this.state.users}/>  test list */}
-                    <HashRouter>
-                        <Switch>
+                {/* <UserList users={this.state.users}/>  test list */}
+                <HashRouter>
+                    <Switch>
+                        <Header />
+                        <div className="fluid-container content">
                             <Route exact path='/' component={FrontPage} />
                             <Route path='/student' component={Student} />
                             <Route path='/coordinator' component={Coordinator} />
-                        </Switch>
-                    </HashRouter>
-                </div>
+                            </div>
+                    </Switch>
+                </HashRouter>
             </div>
         )
     }
