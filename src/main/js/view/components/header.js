@@ -1,13 +1,10 @@
 'use strict';
 
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
-class Header extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { users: [] };
-    }
-
+class Header extends Component {
+    
     render() {
         return(
             <div className="topbar">
@@ -15,21 +12,23 @@ class Header extends React.Component {
                 <div className="dropdown-button">
                     <i className="fa fa-bars"></i>
                     <div className="dropdown-menu">
-                        <a href="/#">front page</a>
-                        <a href="/#/student">student</a>
-                        <a href="/#/coordinator">coordinator</a>
+                        menu item #1
+                        <Link to="/student" replace>student</Link>
+                        <Link to="/coordinator" replace>coordinator</Link>
                     </div>
                 </div>
                 <div className="fluid-container">
                     <div className="logo">
-                        <i className="fas fa-feather"></i>
-                        thesis mgmt
+                        <Link to="/#" replace>
+                            <i className="fas fa-feather"></i>
+                            thesis mgmt
+                        </Link>
                     </div>
-                    {/* default menu */}
+                {/* default menu */}
                     <div className="menu">
-                        <a href="/#">front page</a>
-                        <a href="/#/student">student</a>
-                        <a href="/#/coordinator">coordinator</a>
+                        <Link to="" replace>menu item #1</Link>
+                        <Link to="/student" replace>student</Link>
+                        <Link to="/coordinator" replace>coordinator</Link>
                     </div>
                 </div>
                 <select className="role">
