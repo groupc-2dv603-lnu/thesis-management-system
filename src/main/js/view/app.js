@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 const ReactDOM = require('react-dom');
 const client = require('../client');
 import { Route, Switch, HashRouter } from 'react-router-dom'
-import Header from './navigation/header'
+import Header from './component/header'
 import FrontPage from './Pages/FrontPage'
 import Student from './Pages/Student'
 import Coordinator from './Pages/Coordinator'
@@ -46,9 +46,9 @@ class UserList extends React.Component{
     render() {
         const users = this.props.users.map(user =>
             <User key={user._links.self.href} user={user}/>
-            );
-            return (
-                <table>
+        );
+        return (
+            <table>
                 <tbody>
                     <tr>
                         <td><strong>Name</strong></td>

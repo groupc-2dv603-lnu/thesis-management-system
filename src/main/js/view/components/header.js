@@ -3,11 +3,7 @@
 import React, { Component } from 'react'
 
 class Header extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { users: [] };
-    }
-
+    
     render() {
         return(
             <div className="topbar">
@@ -22,12 +18,14 @@ class Header extends React.Component {
                 </div>
                 <div className="fluid-container">
                     <div className="logo">
-                        <i className="fas fa-feather"></i>
-                        thesis mgmt
+                        <a href="/#">
+                            <i className="fas fa-feather"></i>
+                            thesis mgmt
+                        </a>
                     </div>
-                    {/* default menu */}
+                {/* default menu */}
                     <div className="menu">
-                        <a href="/#">front page</a>
+                        <a href="/#">menu item #1</a>
                         <a href="/#/student">student</a>
                         <a href="/#/coordinator">coordinator</a>
                     </div>
