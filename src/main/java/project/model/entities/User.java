@@ -18,6 +18,7 @@ public class User {
 	private String EmailAdress;
 	private ArrayList<String> roles;
 	
+	
 	public User(String name, String password, String EmailAdress, ArrayList<String> roles) {
 		this.name = name;
 		this.password = password;

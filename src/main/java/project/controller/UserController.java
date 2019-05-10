@@ -14,7 +14,10 @@ import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import project.model.entities.User;
 import project.model.repositories.UserRepository;
@@ -42,23 +45,36 @@ class UserController {
 	@GetMapping("/users")
 	Resources<Resource<User>> all() {
 		List<Resource<User>> users = repository.findAll().stream()
-			    .map(employee -> new Resource<>(employee,
-			    		linkTo(methodOn(UserController.class).one(employee.getId())).withSelfRel(),
+			    .map(user -> new Resource<>(user,
+			    		linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel(),
 			    		linkTo(methodOn(UserController.class).all()).withRel("users")))
 			    	    .collect(Collectors.toList());
 
 		return new Resources<>(users,
 				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
+	@PutMapping("/users/{id}")
+	User updateUser(@RequestBody User newUser, @PathVariable String id) {
+		
+		return repository.findById(id)
+			.map(user -> {
+				user.setName(newUser.getName());
+				return repository.save(user);
+			})
+			.orElseGet(() -> {
+				newUser.setId(id);
+				return repository.save(newUser());
+			});
+	}
 	@PostMapping("/users")
-	void newUser() {
+	User newUser() {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
 		String result = encoder.encode("myPassword");
 
 		ArrayList<String> roles = new ArrayList<String>();
 		roles.add("Student");
 		roles.add("Reader");
-		repository.save(new User("Karl", result, "Karl@hotmail.com", roles));
+		return repository.save(new User("Karl", result, "Karl@hotmail.com", roles));
 	}
 	
 }
