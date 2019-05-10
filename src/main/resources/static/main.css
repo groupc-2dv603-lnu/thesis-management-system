@@ -118,3 +118,71 @@ body, .dropdown-menu > a {
     }
 }
 
+
+
+/* Student */
+
+.content {
+    display: block;
+}
+
+.supervision-box {
+    /* border: 1px solid black; */
+    background-color: #eaeaea;
+    padding: 10px 25px
+}
+
+.hidden {
+    display: none;
+}
+
+.submission {
+    margin: 9px auto;
+    width: 94%;
+    border: 1px solid black;
+}
+
+.finished {
+    opacity: .5;
+}
+
+.disabled {
+    opacity: .2;
+}
+
+.activeSubmission {
+    width: 100%;
+}
+
+.submission > .header {
+    padding: 5px 10px;
+    background-color: #ddd;
+    border-bottom: 1px;
+    font-size: 105%;
+}
+
+.submission > .content {
+    padding: 15px 25px
+}
+
+.submission > .active {
+    padding: 10px 15px;
+}
+
+.popup {
+    z-index: 1;
+    position: absolute;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.popup td:first-child {
+    width: 200px;
+}
+
+.popup button, .popup th, .popup td {
+    padding: 5px;
+}
