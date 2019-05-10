@@ -150,7 +150,7 @@ body, .dropdown-menu > a {
     opacity: .2;
 }
 
-.activeSubmission {
+.active {
     width: 100%;
 }
 
@@ -163,10 +163,6 @@ body, .dropdown-menu > a {
 
 .submission > .content {
     padding: 15px 25px
-}
-
-.submission > .active {
-    padding: 10px 15px;
 }
 
 .popup {

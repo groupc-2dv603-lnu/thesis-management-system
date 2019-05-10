@@ -6,7 +6,7 @@ const client = require('../../../client');
 class Student extends Component {
     constructor(props) {
         super(props);
-        this.state = { users: [], supervisorPopup: false };
+        this.state = { supervisorPopup: false };
         this.openSupervisorPopup = this.openSupervisorPopup.bind(this);
         this.closeSupervisorPopup = this.closeSupervisorPopup.bind(this);
       
@@ -14,10 +14,41 @@ class Student extends Component {
         this.supervisor = "Diego Perez";
         this.awaitingSupervisorResponse = true;
 
-        this.projectDescription = { type: "project description", status: "evaluated", grade: "pass" },
-        this.projectPlan = { type: "project plan", status: "active", file: null, deadline: "Sun 26th of May 23:55" }
-        this.initialReport = { type: "initial report", status: "disabled" }
-        this.finalReport = { type: "final report", status: "disabled" }
+        this.projectDescription = { 
+            type: "project description", 
+            // status: "finished", 
+            grade: "pass",
+            fileURL: "a_url", 
+            deadline: "2019-05-14 23:55",
+            // deadline: "Sun 14th of May 23:55", 
+            submissionDate: "2019-05-03 23:55",
+            // submissionDate: "Fri 3rd of May 16:35",
+        };
+        this.projectPlan = { 
+            type: "project plan", 
+            // status: "active", 
+            grade: "Pass", 
+            fileURL: "a_url", 
+            deadline: "2019-05-09 23:55",
+            // deadline: "Sun 26th of May 23:55",
+            submissionDate: null,
+        };
+        this.initialReport = { 
+            type: "initial report", 
+            // status: "disabled", 
+            grade: null,
+            fileURL: null,
+            deadline: "2019-05-20 10:00",
+            submissionDate: null,
+        };
+        this.finalReport = { 
+            type: "final report", 
+            // status: "disabled",
+            grade: null, 
+            fileURL: null, 
+            deadline: null,
+            submissionDate: null,
+        };
     }
    
     openSupervisorPopup() {
@@ -124,35 +155,54 @@ class Student extends Component {
 
 class Submission extends Component {
     render() {
-        let styleClass = "submission ";
-        let printedStatus;
+        let line1, line2, line3, fileUpload, styleClass;
+        let currentDate = "2019-05-10 12:44"
 
-        switch(this.props.status) {
-            case "active": 
-                styleClass += "activeSubmission";
-                this.props.file ? printedStatus = "Submitted" : printedStatus = "Not submitted";
-                break;
-            case "evaluated": 
-                styleClass += "finished";
-                printedStatus = "Evaluated";
-                break;
-            case "disabled": 
-                styleClass += "disabled";
-                break;
+        // submission graded
+        if(this.props.grade != null) {
+            line1 = "Status: Graded";
+            line2 = "Grade: " + capitalizeFirstLetter(this.props.grade);
+            styleClass = "finished";
+        }
+        // deadline is set (submission counted as active)
+        else if(this.props.deadline) {
+            line1 = "Status: " + (this.props.fileURL ? "Submitted" : "Not submitted");
+            line2 = "Deadline: " + this.props.deadline; //new Date().format('dd-mm-yy'); //this.props.deadline;
+            styleClass = "active";
+            // submission delayed
+            if(currentDate >= this.props.deadline && this.props.fileURL == null)
+                line3 = " Submission delayed";
+        }
+        else {
+            line1 = "N/A"
+            styleClass = "disabled";
         }
 
         return (
-            <div className={styleClass}>
+            <div className={"submission " + styleClass}>
                 <div className="header">{capitalizeFirstLetter(this.props.type)}</div>
                 <div className="content">
-                    {this.props.status == "disabled" ? (
-                        "N/A"
+                    {this.props.status != "disabled" ? (
+                        <div>
+                            {line1}
+                            <br />
+                            {line2}
+                            <div style={{"color": "red"}}>
+                                {line3}
+                            </div>
+                            {/* show file upload for active submission */}
+                            {this.props.deadline && !this.props.grade ? (
+                                <div>
+                                    <br />
+                                    <input type="file" />
+                                </div>
+                            ) : ''}
+                        </div>
                     ) : (
-                        "Status: " + capitalizeFirstLetter(this.props.status)
+                        <div>
+                            {line1}
+                        </div>
                     )}
-                    <br />
-                    {this.props.deadline}
-                    Deadline: Sun 26th of May 23:55
                 </div>
             </div>
         )
@@ -160,7 +210,15 @@ class Submission extends Component {
 }
 
 function capitalizeFirstLetter(string) {
+    if(string == null)
+        return "N/A";
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function formatDate(date) {
+    return "Fri 3rd of May 16:35";
+    // const moment = require('moment')
+    // moment().format('DD [of] MMM hh:mm');
 }
 
 class SupervisorPopup extends Component {
