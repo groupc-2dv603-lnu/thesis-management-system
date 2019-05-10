@@ -47,6 +47,7 @@ class UserController {
 		return new Resources<>(users,
 				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
+
 	@PostMapping("/users")
 	void newUser() {
 		repository.save(new User("Sven", "edsd"));
