@@ -13,9 +13,11 @@ public class User {
 	private String id;
 	private String name;
 	private String password;
+	private Role[] roles;
 	
-	public User(String name, String password) {
+	public User(String name, String password, Role[] roles) {
 		this.name = name;
 		this.password = password;
+		this.roles = roles;
 	}
 }

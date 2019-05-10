@@ -8,9 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import project.model.entities.Role;
 import project.model.repositories.UserRepository;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 // UserDetailsService denotes that this is a class for finding and authenticating users
@@ -23,12 +24,19 @@ public class MongoUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         project.model.entities.User user = repository.findByName(name);
+
         if(user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("user"));
+
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Role r : user.getRoles())
+            authorities.add(new SimpleGrantedAuthority(r.toString()));
 
         // Returns a spring user object with name, password and the role of the user
-        return new User(user.getName(), user.getPassword(), authorities);
+        User userDetails = new User(user.getName(), user.getPassword(), authorities);
+
+        System.out.println("Spring User Object: " + userDetails);
+        return userDetails;
     }
 }
