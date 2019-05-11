@@ -1,68 +1,33 @@
 // TODO
-// ev dela upp filen. den börjar bli ganska stor
+// view feedback
 
 'use strict';
 
-import React, { Component } from 'react'
-const client = require('../../../client');
+import React, { Component } from 'react';
+import { capitalizeFirstLetter, uploadFile } from './functions';
+import SupervisorPopup from './supervisorList';
+import StudentMocks from './mocks';
+
+// const f = require('./functions.js');
 
 class Student extends Component {
     constructor(props) {
         super(props);
-        this.state = { supervisorPopup: false, };
+
+        this.state = { supervisorPopup: false}
         this.openSupervisorPopup = this.openSupervisorPopup.bind(this);
         this.closeSupervisorPopup = this.closeSupervisorPopup.bind(this);
-      
-        //mocks
-        this.supervisor = "Diego Perez";
-        this.awaitingSupervisorResponse = true;
 
-        this.projectDescription = { 
-            type: "project description", 
-            // status: "finished", 
-            grade: "pass",
-            fileURL: "a_url", 
-            deadline: "2019-05-14T23:55",
-            submissionDate: "2019-05-03T23:55",
-        };
-        this.projectPlan = { 
-            type: "project plan", 
-            // status: "active", 
-            grade: "Pass", 
-            fileURL: "a_url", 
-            deadline: "2019-05-09T23:55",
-            submissionDate: null,
-        };
-        this.initialReport = { 
-            type: "initial report", 
-            // status: "disabled", 
-            grade: null,
-            fileURL: null,
-            deadline: "2019-05-20T10:00",
-            submissionDate: null,
-        };
-        this.finalReport = { 
-            type: "final report", 
-            // status: "disabled",
-            grade: null, 
-            fileURL: null, 
-            deadline: null,
-            submissionDate: null,
-        };
-
-        this.supervisors = [
-            { id: "1", name: "Diego Perez" },
-            { id: "2", name: "Mauro Caporuscio" },
-            { id: "3", name: "Some Guy" },
-        ];
+        this.studentData = new StudentMocks();
+        this.supervisorPopup = false;
     }
-   
+
     openSupervisorPopup() {
-        this.setState({supervisorPopup: true});
-    };
+        this.setState({ supervisorPopup: true });
+    }
     
     closeSupervisorPopup() {
-        this.setState({supervisorPopup: false});
+        this.setState({ supervisorPopup: false });
     }
 
     // componentDidMount() {
@@ -74,57 +39,54 @@ class Student extends Component {
     render() {
         return (
             <div>
-                {/* Supervisor box */}
-               <div className="supervision-box">
+                {/* Supervision box */}
+                <div className="supervision-box">
 
-                    <p className={this.supervisor ? "hidden" : null}>
+                    <p className={this.studentData.currentSupervisor ? "hidden" : null}>
                         You have not yet requested a supervisor. You need to be assigned to a supervisor before your plan can be evaluated
                         <br />
                         <br />
-                        <button onClick={this.openSupervisorPopup}>Request supervisor</button>
+                        <button onClick={() => this.openSupervisorPopup()}>Request supervisor</button>
                     </p>
 
-                    <p className={this.supervisor && this.awaitingSupervisorResponse ? null : "hidden"}>
-                        Request for supervisor sent. Awaiting response from {this.supervisor}.
+                    <p className={this.studentData.currentSupervisor && this.studentData.awaitingSupervisorResponse ? null : "hidden"}>
+                        Request for supervisor sent. Awaiting response from {this.studentData.currentSupervisor.name}.
                         <br />
                         <br />
-                        <button onClick={this.openSupervisorPopup}>Request new supervisor</button>
+                        <button onClick={() => this.openSupervisorPopup()}>Request new supervisor</button>
                     </p>
 
-                    <p className={this.supervisor && !this.awaitingSupervisorResponse ? null : "hidden"}>
-                        Supervisor: {this.supervisor}
+                    <p className={this.studentData.currentSupervisor && !this.studentData.awaitingSupervisorResponse ? null : "hidden"}>
+                        Supervisor: {this.studentData.currentSupervisor.name}
                     </p>
+
                 </div>
 
-                {/* Choose supervisor popup */}
+                {/* SupervisorPopup */}
                 <div className={"popup " + (this.state.supervisorPopup ? null : "hidden")}>
-                    <SupervisorPopup supervisors={this.supervisors}/>
-                    <button onClick={this.closeSupervisorPopup}>Close</button>
+                    <SupervisorPopup supervisors={this.studentData.supervisors}/>
+                    <button onClick={() => this.closeSupervisorPopup()}>Close</button>
                 </div>
-                
+
                 {/* Submissions */}
                 <h2>Thesis Submissions</h2>
-                <Submission {...this.projectDescription} />
-                <Submission {...this.projectPlan} />
-                <Submission {...this.initialReport} />
-                <Submission {...this.finalReport} />
+                <Submission {...this.studentData.projectDescription} />
+                <Submission {...this.studentData.projectPlan} />
+                <Submission {...this.studentData.initialReport} />
+                <Submission {...this.studentData.finalReport} />
             </div>
         )
     }
 
 }
 
+
 class Submission extends Component {
 
-    uploadFile(file) {
-        //TODO unfinished
-        console.log("uploading file", file);
-    }
-
     render() {
-        let line1, line2, line3, styleClass;
+        let line1, line2, styleClass;
         
-        let currentDate = new Date().toISOString();
+        let currentDate = new Date().toISOString(); // TODO get date from server
 
         // submission graded
         if(this.props.grade != null) {
@@ -132,14 +94,11 @@ class Submission extends Component {
             line2 = "Grade: " + capitalizeFirstLetter(this.props.grade);
             styleClass = "finished";
         }
-        // deadline is set (submission counted as active)
+        // deadline is set (but not graded) == submission counted as active
         else if(this.props.deadline) {
             line1 = "Status: " + (this.props.fileURL ? "Submitted" : "Not submitted");
             line2 = "Deadline: " + new Date(this.props.deadline).toUTCString();
             styleClass = "active";
-            // submission delayed
-            // if(currentDate >= this.props.deadline && this.props.fileURL == null)
-            //     line3 = " Submission delayed";
         }
         else {
             line1 = "N/A"
@@ -155,17 +114,15 @@ class Submission extends Component {
                             {line1}
                             <br />
                             {line2}
-                            {/* <div style={{"color": "red"}}>
-                                {line3}
-                            </div> */}
                             {/* show file upload for active submission */}
                             {currentDate < this.props.deadline && !this.props.grade ? (
                                 <div>
                                     <br />
                                     <input type="file" id="file"/>
                                     <br/>
-                                    <button onClick={() => this.uploadFile(document.getElementById("file").files[0])}>Upload</button>
+                                    <button onClick={() => uploadFile(document.getElementById("file").files[0])}>Upload</button>
                                 </div>
+                            // deadline passed
                             ) : (this.props.deadline && !this.props.grade) ? (
                                     <div style={{"color":"red"}}>
                                         <br/>
@@ -180,54 +137,6 @@ class Submission extends Component {
                     )}
                 </div>
             </div>
-        )
-    }
-}
-
-function capitalizeFirstLetter(string) {
-    if(string == null)
-        return "N/A";
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-class SupervisorPopup extends Component {
-     render() {
-         const supervisors = this.props.supervisors.map(sv =>
-            <Supervisor key={sv.id} supervisor={sv} />
-        );
-
-        return (
-            <table>
-                <tbody>
-                    <tr>
-                        <th colSpan="2">
-                            Available supervisors
-                        </th>
-                    </tr>
-                    {supervisors}
-                </tbody>
-            </table>
-       );
-    }
-}
-
-class Supervisor extends Component {
-
-    requestSupervisor(supervisor) {
-        //TODO unfinished
-        console.log("Requesting " + supervisor.name + "(" + supervisor.id + ") as supervisor");
-    }
-
-    render() {
-        return (
-            <tr>
-                <td>
-                    {this.props.supervisor.name}
-                </td>
-                <td>
-                    <button onClick={() => this.requestSupervisor(this.props.supervisor)}>Request supervisor</button>
-                </td>
-            </tr>
         )
     }
 }
