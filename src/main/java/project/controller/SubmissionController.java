@@ -48,11 +48,19 @@ public class SubmissionController {
                 linkTo(methodOn(SubmissionController.class).all()).withSelfRel());
     }
 
-    @PostMapping("/submissions")
-    Submission newSubmission(@RequestBody Submission newSubmission) {
-        Submission sub = new Submission("Project plan", "C:\\Users\\Timme\\Desktop\\512byte.txt");
 
-        return subRepository.save(sub);
+    /* Example POST through curl:
+        $curl -X POST localhost:8080/submissions -H "Content-type:application/json" -d "{\"title\": \"FILENAME\", \"filePath\": \"C:\\Users\\USERNAME\\Desktop\\FILE.PDF\"}"
+     */
+    @PostMapping("/submissions")        //TODO: should check if file exist
+    Submission newSubmission(@RequestBody Submission newSubmission) {
+//        System.out.println("FILEPATH: " + newSubmission.getFilePath());         //TODO:remove
+//        newSubmission.setFile(newSubmission.getFilePath());
+        newSubmission.setFile("C:\\Users\\Timme\\Downloads\\03.1 Sonargraph-User-Manual.pdf");  //TODO: hardcoded to test larger files. remove
+        System.out.println("YEEEHAAAA: " + newSubmission.getFile().length());
+        newSubmission.setFilePath(null);
+
+        return subRepository.save(newSubmission);
     }
 
 

@@ -19,9 +19,9 @@ public class Submission {
 
     @Id
     private String id;
-    private String title;
-    public File filetest /*= new File("C:\\Users\\Timme\\Desktop\\512byte.txt")*/;
+    private String title;           //TODO: changeTo -> fileName
     public Binary file;
+    private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
 
 
 
@@ -29,7 +29,10 @@ public class Submission {
 
     public Submission(String title, String filePath) {
         this.title = title;
+        this.filePath = filePath;
 
+
+        //TODO: might be redundant. Remove?
         try {
             byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
             this.file = new Binary(bytes);
@@ -37,6 +40,7 @@ public class Submission {
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        this.filePath = null;       //TODO:uncomment
     }
 
     public void setFile(String filePath) {
@@ -44,7 +48,6 @@ public class Submission {
         try {
             byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
             this.file = new Binary(bytes);
-            System.out.println(this.file.length());
 
         } catch (IOException e) {
             System.out.println("FUCK");
