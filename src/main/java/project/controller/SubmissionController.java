@@ -48,26 +48,32 @@ public class SubmissionController {
                 linkTo(methodOn(SubmissionController.class).all()).withSelfRel());
     }
 
-//    @PostMapping("/submissions")
-//    Submission newSubmission(@RequestBody Submission newSubmission) {
-//        return subRepository.save(newSubmission);
-//    }
+    @PostMapping("/submissions")
+    Submission newSubmission(@RequestBody Submission newSubmission) {
+        Submission sub = new Submission("Project plan", "C:\\Users\\Timme\\Desktop\\512byte.txt");
+
+        return subRepository.save(sub);
+    }
 
 
     //Test
-    @PostMapping("/submissions")
-    public String singleFileUpload(@RequestParam("file") MultipartFile multipart, @RequestParam("email") String email) {
-        try {
-            DemoDocument demoDocument = new DemoDocument();
-            demoDocument.setEmailId(email);
-            demoDocument.setDocType("pictures");
-            demoDocument.setFile(new Binary(BsonBinarySubType.BINARY, multipart.getBytes()));
-            mongoTemplate.insert(demoDocument);
-            System.out.println(demoDocument);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "failure";
-        }
-        return "success";
-    }
+//    @PostMapping("/submissions")
+//    public String singleFileUpload(@RequestParam MultipartFile multipart) {
+//        try {
+//            Submission sub = new Submission();
+//            sub.setFile(new Binary(BsonBinarySubType.BINARY, multipart.getBytes()));
+//            subRepository.save(sub);
+//
+////            DemoDocument demoDocument = new DemoDocument();
+////            demoDocument.setEmailId(email);
+////            demoDocument.setDocType("pictures");
+////            demoDocument.setFile(new Binary(BsonBinarySubType.BINARY, multipart.getBytes()));
+////            mongoTemplate.insert(demoDocument);
+////            System.out.println(demoDocument);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "failure";
+//        }
+//        return "success";
+//    }
 }
