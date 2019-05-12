@@ -48,7 +48,15 @@ public class SubmissionController {
                 linkTo(methodOn(SubmissionController.class).all()).withSelfRel());
     }
 
+    @PostMapping("/submissions/{id}")
+    Resource<Submission> one(@PathVariable String id, @RequestBody String date) {
+        Submission submission = subRepository.findFirstById(id);
+        submission.setDeadline(date);
+        return new Resource<>(submission,
+                linkTo(methodOn(SubmissionController.class).one(id)).withSelfRel(),
+                linkTo(methodOn(SubmissionController.class).all()).withRel("submissions"));
 
+    }
     /* Example POST through curl:
         $curl -X POST localhost:8080/submissions -H "Content-type:application/json" -d "{\"title\": \"FILENAME\", \"filePath\": \"C:\\Users\\USERNAME\\Desktop\\FILE.PDF\"}"
      */
@@ -62,6 +70,8 @@ public class SubmissionController {
 
         return subRepository.save(newSubmission);
     }
+
+
 
 
     //Test

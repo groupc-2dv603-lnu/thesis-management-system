@@ -12,9 +12,13 @@ import java.nio.file.Files;
 
 import org.bson.types.Binary;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Data
-@Document(collection = "submissions")
+@Document(collection = "submissionsTest")
+//Changed to submissionsTest to not affect timothies work.
 public class Submission {
 
     @Id
@@ -22,6 +26,7 @@ public class Submission {
     private String title;           //TODO: changeTo -> fileName
     public Binary file;
     private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
+    private Date date;
 
 
 
@@ -53,5 +58,20 @@ public class Submission {
             System.out.println("FUCK");
             e.printStackTrace();
         }
+    }
+
+    public void setDeadline(String newDate)
+    {
+        String pattern  = "dd-M-yyyy hh:mm:ss";
+
+        SimpleDateFormat t = new SimpleDateFormat(pattern);
+        try {
+            this.date = t.parse(newDate);
+        }
+        catch(ParseException e)
+        {
+            System.out.println("Unable to parse properly.");
+        }
+        System.out.println("Seeting date to " + date);
     }
 }
