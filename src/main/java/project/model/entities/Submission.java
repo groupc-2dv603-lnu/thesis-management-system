@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Data
-@Document(collection = "submissionsTest")
+@Document(collection = "submissions")
 //Changed to submissionsTest to not affect timothies work.
 public class Submission {
 
@@ -26,7 +26,7 @@ public class Submission {
     private String title;           //TODO: changeTo -> fileName
     public Binary file;
     private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
-    private Date date;
+    private Date deadline;
 
 
 
@@ -62,16 +62,19 @@ public class Submission {
 
     public void setDeadline(String newDate)
     {
-        String pattern  = "dd-M-yyyy hh:mm:ss";
-
+        String pattern  = "dd-M-yyyy-hh:mm:ss";
         SimpleDateFormat t = new SimpleDateFormat(pattern);
         try {
-            this.date = t.parse(newDate);
+            this.deadline = t.parse(newDate);
         }
         catch(ParseException e)
         {
-            System.out.println("Unable to parse properly.");
+            System.out.println("Bad Date");
         }
-        System.out.println("Seeting date to " + date);
+    }
+
+    public Date getDeadLine()
+    {
+        return this.deadline;
     }
 }

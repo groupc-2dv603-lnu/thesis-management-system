@@ -28,13 +28,14 @@ public class SubmissionController {
 
     @GetMapping("/submissions/{id}")
     Resource<Submission> one(@PathVariable String id) {
-        Submission submission = subRepository.findFirstById(id);
+        Submission submission = subRepository.findFirstByTitle(id);
 
         return new Resource<>(submission,
                 linkTo(methodOn(SubmissionController.class).one(id)).withSelfRel(),
                 linkTo(methodOn(SubmissionController.class).all()).withRel("submissions"));
 
     }
+
 
     @GetMapping("/submissions")
     Resources<Resource<Submission>> all() {
@@ -47,14 +48,19 @@ public class SubmissionController {
         return new Resources<>(submissions,
                 linkTo(methodOn(SubmissionController.class).all()).withSelfRel());
     }
+    /*
+        How to update with curl
+        curl -X POST localhost:8080/submissions/2 -H "text/plain" -d "2012/12/12 55:20:1"
+     */
+    @PutMapping("/submissions/{title}")
+    Submission setDate(@PathVariable String title, @RequestParam("date") String newDate) {
+        Submission submission = subRepository.findFirstByTitle(title);
+        System.out.println(submission.getDeadLine().toString());
 
-    @PostMapping("/submissions/{id}")
-    Resource<Submission> one(@PathVariable String id, @RequestBody String date) {
-        Submission submission = subRepository.findFirstById(id);
-        submission.setDeadline(date);
-        return new Resource<>(submission,
-                linkTo(methodOn(SubmissionController.class).one(id)).withSelfRel(),
-                linkTo(methodOn(SubmissionController.class).all()).withRel("submissions"));
+        System.out.println(newDate);
+        submission.setDeadline(newDate);
+        System.out.println("Something actually happened.");
+        return subRepository.save(submission);
 
     }
     /* Example POST through curl:
@@ -64,8 +70,8 @@ public class SubmissionController {
     Submission newSubmission(@RequestBody Submission newSubmission) {
 //        System.out.println("FILEPATH: " + newSubmission.getFilePath());         //TODO:remove
 //        newSubmission.setFile(newSubmission.getFilePath());
-        newSubmission.setFile("C:\\Users\\Timme\\Downloads\\03.1 Sonargraph-User-Manual.pdf");  //TODO: hardcoded to test larger files. remove
-        System.out.println("YEEEHAAAA: " + newSubmission.getFile().length());
+        //newSubmission.setFile("C:\\Users\\Timme\\Downloads\\03.1 Sonargraph-User-Manual.pdf");  //TODO: hardcoded to test larger files. remove
+//        System.out.println("YEEEHAAAA: " + newSubmission.getFile().length());
         newSubmission.setFilePath(null);
 
         return subRepository.save(newSubmission);
