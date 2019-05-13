@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +19,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import project.model.entities.Student;
+
+//import project.model.entities.Student;
+
+import project.model.entities.Role;
+
 import project.model.entities.User;
 import project.model.repositories.StudentRepository;
 import project.model.repositories.UserRepository;
+import project.model.services.EncryptionService;
 
 @RestController
 class UserController {
 	
+	@Autowired
+	private EncryptionService enrypt;
+
 	private final UserRepository repository;
 	private final StudentRepository studentRepository;
 	
@@ -56,6 +65,7 @@ class UserController {
 		return new Resources<>(users,
 				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
+
 	@PutMapping("/users/{id}")
 	User updateUser(@RequestBody User newUser, @PathVariable String id) {
 		return repository.findById(id)
@@ -65,26 +75,28 @@ class UserController {
 			})
 			.orElseGet(() -> {
 				newUser.setId(id);
-				return repository.save(newUser());
+				return repository.save(newUser2());
 			});
 	}
-	@PostMapping("/createUser")
-	User newUser() {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-		String result = encoder.encode("myPassword");
+//	@PostMapping("/createUser")
+//	User newUser2() {
+//		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+//		String result = encoder.encode("myPassword");
+//		
+//		User newUser = new User("Jens", result, "Jens@hotmail.com", new Role[] { Role.STUDENT });
+//		repository.save(newUser);
+//		for(int i=0; i < newUser.getRoles().length; i++){
+////			if(newUser.getRoles() == "Student") {
+////				System.out.print(newUser.getId());
+////				studentRepository.save(new Student(newUser.getId(), "None"));
+////			}
+//		}
+//		return newUser;
+//	}
 
-		ArrayList<String> roles = new ArrayList<String>();
-		roles.add("Student");
-		
-		User newUser = new User("Jens", result, "Jens@hotmail.com", roles);
-		repository.save(newUser);
-		for(int i=0; i < roles.size(); i++){
-			if(roles.get(i) == "Student") {
-				System.out.print(newUser.getId());
-				studentRepository.save(new Student(newUser.getId(), "None"));
-			}
-		}
-		return newUser;
+	@PostMapping("/users")
+	User newUser2() {
+		return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
 	}
 	
 }

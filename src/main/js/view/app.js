@@ -16,7 +16,6 @@ class App extends Component {
     }
 
     componentDidMount() {
-
         client({ method: 'GET', path: '/users' }).then(response => {
             this.setState({ users: response.entity._embedded.users });
         });
