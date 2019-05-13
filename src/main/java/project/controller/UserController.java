@@ -1,7 +1,6 @@
 package project.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -43,8 +42,8 @@ class UserController {
 		this.repository = repository;
 		this.studentRepository = studentRepository;
 	}
-	
-	@GetMapping("/users/{id}")
+
+	@GetMapping("/users/{id} ")
 	Resource<User> one(@PathVariable String id) {
 		User user = repository.findFirstById(id);
 		System.out.print(user.getId());
@@ -54,7 +53,7 @@ class UserController {
 		
 	}
 	
-	@GetMapping("/users")
+	@GetMapping(value = "/users", produces = "application/json; charset=UTF-8")
 	Resources<Resource<User>> all() {
 		List<Resource<User>> users = repository.findAll().stream()
 			    .map(user -> new Resource<>(user,
