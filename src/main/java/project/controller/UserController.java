@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +17,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.model.entities.Role;
 import project.model.entities.User;
 import project.model.repositories.UserRepository;
+import project.model.services.EncryptionService;
 
 @RestController
 class UserController {
 	
+	@Autowired
+	private EncryptionService enrypt;
+
 	private final UserRepository repository;
 	
 	
@@ -50,15 +56,10 @@ class UserController {
 		return new Resources<>(users,
 				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
+
 	@PostMapping("/users")
 	void newUser() {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-		String result = encoder.encode("myPassword");
-
-		ArrayList<String> roles = new ArrayList<String>();
-		roles.add("Student");
-		roles.add("Reader");
-		repository.save(new User("Karl", result, "Karl@hotmail.com", roles));
+		repository.save(new User("Test_Auth", enrypt.hash("password"), new Role[] { Role.STUDENT } ));
 	}
 	
 }

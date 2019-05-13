@@ -15,14 +15,11 @@ public class User {
 	private String id;
 	private String name;
 	private String password;
-	private String EmailAdress;
-	private ArrayList<String> roles;
+	private Role[] roles;
 	
-	public User(String name, String password, String EmailAdress, ArrayList<String> roles) {
+	public User(String name, String password, Role[] roles) {
 		this.name = name;
 		this.password = password;
-		this.EmailAdress = EmailAdress;
 		this.roles = roles;
-		
 	}
 }
