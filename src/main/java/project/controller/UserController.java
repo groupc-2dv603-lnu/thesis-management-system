@@ -43,10 +43,9 @@ class UserController {
 		this.studentRepository = studentRepository;
 	}
 
-	@GetMapping("/users/{id} ")
+	@GetMapping(value = "/users/{id}", produces = "application/json; charset=UTF-8")
 	Resource<User> one(@PathVariable String id) {
 		User user = repository.findFirstById(id);
-		System.out.print(user.getId());
 		return new Resource<>(user,
 			    linkTo(methodOn(UserController.class).one(id)).withSelfRel(),
 			    linkTo(methodOn(UserController.class).all()).withRel("employees"));
