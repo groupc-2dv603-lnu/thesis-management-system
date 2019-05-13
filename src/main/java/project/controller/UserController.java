@@ -3,6 +3,9 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,7 @@ class UserController {
 	private EncryptionService enrypt;
 
 	private final UserRepository repository;
+	
 	
 	UserController(UserRepository repository) {
 		this.repository = repository;
@@ -57,4 +61,5 @@ class UserController {
 	void newUser() {
 		repository.save(new User("Test_Auth", enrypt.hash("password"), new Role[] { Role.STUDENT } ));
 	}
+	
 }
