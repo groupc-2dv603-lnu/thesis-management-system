@@ -15,11 +15,15 @@ public class User {
 	private String id;
 	private String name;
 	private String password;
+	private String emailAdress;
 	private Role[] roles;
 	
-	public User(String name, String password, Role[] roles) {
+	
+	public User(String name, String password, String emailAdress, Role[] roles) {
+
 		this.name = name;
 		this.password = password;
+		this.emailAdress = emailAdress;
 		this.roles = roles;
 	}
 }
