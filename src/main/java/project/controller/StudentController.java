@@ -9,22 +9,59 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.StudentRepository;
+import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 
 @RestController
 public class StudentController {
 	private final UserRepository repository;
-	private final StudentRepository studentRepository;
+	private final SupervisorRepository supervisorRepository;
 	
 	
-	StudentController(UserRepository repository,StudentRepository studentRepository) {
+	StudentController(UserRepository repository,SupervisorRepository supervisorRepository) {
 		this.repository = repository;
-		this.studentRepository = studentRepository;
+		this.supervisorRepository = supervisorRepository;
 	}
 	
+	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
+	Resource<Supervisor> one(@PathVariable String id) {
+		Supervisor supervisor = supervisorRepository.findFirstById(id);
+		return new Resource<>(supervisor,
+				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
+				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
+	}
+	
+	@GetMapping(value = "/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
+	Resources<Resource<Supervisor>> all() {
+		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailable("yes").stream()
+			    .map(supervisor -> new Resource<>(supervisor,
+			    		
+			    		linkTo(methodOn(StudentController.class).one(supervisor.getId())).withSelfRel(),
+			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
+			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
+			    	    .collect(Collectors.toList());
+						
 
+		return new Resources<>(supervisors,
+				linkTo(methodOn(StudentController.class).all()).withSelfRel());
+	}
+	
+//	@GetMapping(value = "/GetAvailableSupervisors", produces = "application/json; charset=UTF-8")
+//	Resources<Resource<User>> all() {
+//		List<Supervisor> supervisors = supervisorRepository.findByAvailable("yes");
+//		List<Resource<User>> users = repository.findAll().stream()
+//			    .map(user -> new Resource<>(user,
+//			    		linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel(),
+//			    		linkTo(methodOn(UserController.class).all()).withRel("users")))
+//			    	    .collect(Collectors.toList());
+//
+//		return new Resources<>(users,
+//				linkTo(methodOn(UserController.class).all()).withSelfRel());
+//	}
 }
