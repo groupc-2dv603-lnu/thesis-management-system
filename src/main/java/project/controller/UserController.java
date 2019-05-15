@@ -8,10 +8,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import project.model.entities.User;
@@ -35,8 +38,9 @@ class UserController {
 			    linkTo(methodOn(UserController.class).all()).withRel("employees"));
 		
 	}
-	
-	@GetMapping("/users")
+
+//	@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 	Resources<Resource<User>> all() {
 		List<Resource<User>> users = repository.findAll().stream()
 			    .map(employee -> new Resource<>(employee,

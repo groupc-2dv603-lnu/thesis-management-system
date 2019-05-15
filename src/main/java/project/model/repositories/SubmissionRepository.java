@@ -5,6 +5,6 @@ import project.model.entities.Submission;
 
 public interface SubmissionRepository extends MongoRepository<Submission, String> {
     Submission findFirstById(String id);
-    Submission findFirstByTitle(String title);
+    Submission findFirstByFileName(String title);
 }
 

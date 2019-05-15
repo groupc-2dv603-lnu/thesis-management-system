@@ -19,7 +19,9 @@ public class Submission {
 
     @Id
     private String id;
-    private String title;           //TODO: changeTo -> fileName
+    private String studentId;
+    private SubmissionStatus submissionStatus;
+    private String fileName;
     public Binary file;
     private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
 
@@ -28,7 +30,7 @@ public class Submission {
     public Submission() {}
 
     public Submission(String title, String filePath) {
-        this.title = title;
+        this.fileName = title;
         this.filePath = filePath;
 
 
@@ -40,7 +42,7 @@ public class Submission {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        this.filePath = null;       //TODO:uncomment
+        this.filePath = null;
     }
 
     public void setFile(String filePath) {
@@ -50,7 +52,6 @@ public class Submission {
             this.file = new Binary(bytes);
 
         } catch (IOException e) {
-            System.out.println("FUCK");
             e.printStackTrace();
         }
     }

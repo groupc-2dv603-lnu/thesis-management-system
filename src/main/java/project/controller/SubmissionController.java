@@ -6,14 +6,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.multipart.MultipartFile;
-import project.model.DemoDocument;
 import project.model.entities.Submission;
 import project.model.repositories.SubmissionRepository;
 
@@ -26,6 +23,8 @@ public class SubmissionController {
         this.subRepository = subRepository;
     }
 
+
+
     @GetMapping("/submissions/{id}")
     Resource<Submission> one(@PathVariable String id) {
         Submission submission = subRepository.findFirstById(id);
@@ -36,11 +35,11 @@ public class SubmissionController {
 
     }
 
-    @GetMapping("/submissions")
+    @GetMapping(value = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
     Resources<Resource<Submission>> all() {
         List<Resource<Submission>> submissions = subRepository.findAll().stream()
-                .map(employee -> new Resource<>(employee,
-                        linkTo(methodOn(SubmissionController.class).one(employee.getId())).withSelfRel(),
+                .map(submission -> new Resource<>(submission,
+                        linkTo(methodOn(SubmissionController.class).one(submission.getId())).withSelfRel(),
                         linkTo(methodOn(SubmissionController.class).all()).withRel("submissions")))
                 .collect(Collectors.toList());
 
@@ -52,36 +51,22 @@ public class SubmissionController {
     /* Example POST through curl:
         $curl -X POST localhost:8080/submissions -H "Content-type:application/json" -d "{\"title\": \"FILENAME\", \"filePath\": \"C:\\Users\\USERNAME\\Desktop\\FILE.PDF\"}"
      */
-    @PostMapping("/submissions")        //TODO: should check if file exist
-    Submission newSubmission(@RequestBody Submission newSubmission) {
+    @PostMapping(value = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)        //TODO: should check if file exist
+    String newSubmission(@RequestBody Submission newSubmission) {
 //        System.out.println("FILEPATH: " + newSubmission.getFilePath());         //TODO:remove
-//        newSubmission.setFile(newSubmission.getFilePath());
-        newSubmission.setFile("C:\\Users\\Timme\\Downloads\\03.1 Sonargraph-User-Manual.pdf");  //TODO: hardcoded to test larger files. remove
-        System.out.println("YEEEHAAAA: " + newSubmission.getFile().length());
+//        newSubmission.setFile(newSubmission.getFilePath());       //TODO: uncomment and remove line below
+        newSubmission.setFile("C:\\Users\\Timme\\Downloads\\02 Architecting and Designing Software - Handouts (1).pdf");  //TODO: hardcoded to test larger files. remove
         newSubmission.setFilePath(null);
 
-        return subRepository.save(newSubmission);
+        subRepository.save(newSubmission);
+        return "Successfully uploaded file: " + newSubmission.getFileName();
     }
 
+    @DeleteMapping("/submissions/{id}")
+    String deleteSubmission(@PathVariable String id) {
+        subRepository.deleteById(id);
 
-    //Test
-//    @PostMapping("/submissions")
-//    public String singleFileUpload(@RequestParam MultipartFile multipart) {
-//        try {
-//            Submission sub = new Submission();
-//            sub.setFile(new Binary(BsonBinarySubType.BINARY, multipart.getBytes()));
-//            subRepository.save(sub);
-//
-////            DemoDocument demoDocument = new DemoDocument();
-////            demoDocument.setEmailId(email);
-////            demoDocument.setDocType("pictures");
-////            demoDocument.setFile(new Binary(BsonBinarySubType.BINARY, multipart.getBytes()));
-////            mongoTemplate.insert(demoDocument);
-////            System.out.println(demoDocument);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "failure";
-//        }
-//        return "success";
-//    }
+        return "File deleted";
+    }
+
 }
