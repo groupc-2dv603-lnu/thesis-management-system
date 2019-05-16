@@ -10,6 +10,9 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.model.entities.Supervisor;
@@ -39,7 +42,7 @@ public class StudentController {
 	
 	@GetMapping(value = "/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Supervisor>> all() {
-		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailable("yes").stream()
+		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
 			    .map(supervisor -> new Resource<>(supervisor,
 			    		
 			    		linkTo(methodOn(StudentController.class).one(supervisor.getId())).withSelfRel(),
@@ -47,9 +50,19 @@ public class StudentController {
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
 						
-
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
+	}
+	
+	@PutMapping("/requestSupervisor")
+	void updateSupervisor(@RequestParam String studentId, @RequestParam String id) {
+		
+		supervisorRepository.findById(id)
+			.map(supervisor -> {
+				supervisor.getAwaitingResponse().add(studentId);
+				return supervisorRepository.save(supervisor);
+			});
+			
 	}
 	
 //	@GetMapping(value = "/GetAvailableSupervisors", produces = "application/json; charset=UTF-8")

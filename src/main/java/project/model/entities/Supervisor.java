@@ -13,14 +13,16 @@ public class Supervisor {
 	@Id
 	private String id;
 	private String userId;
-	private String availableForSupervisor;
-	private ArrayList<String> studentsId;
+	private Boolean availableForSupervisor;
+	private ArrayList<String> assignedStudents;
+	private ArrayList<String> awaitingResponse;
 	
 	
-	public Supervisor(String userId, String availableForSupervisor, ArrayList<String> studentsId) {
+	public Supervisor(String userId, Boolean availableForSupervisor, ArrayList<String> assignedStudents,ArrayList<String> awaitingResponse) {
 		this.userId = userId;
 		this.availableForSupervisor = availableForSupervisor;
-		this.studentsId = studentsId;
+		this.assignedStudents = assignedStudents;
+		this.awaitingResponse = awaitingResponse;
 		
 	}
 }
