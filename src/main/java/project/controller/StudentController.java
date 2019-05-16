@@ -76,7 +76,7 @@ public class StudentController {
 	}
 //	@GetMapping(value = "/GetAvailableSupervisors", produces = "application/json; charset=UTF-8")
 //	Resources<Resource<User>> all() {
-//		List<Supervisor> supervisors = supervisorRepository.findByAvailable("yes");
+//		List<Supervisor> supervisors = supervisorRepository.findByAvailable("yess");
 //		List<Resource<User>> users = repository.findAll().stream()
 //			    .map(user -> new Resource<>(user,
 //			    		linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel(),
