@@ -72,8 +72,7 @@ public class StudentController {
 	Resource<ProjectPlan> one1(@PathVariable String id) {
 		ProjectPlan projectplan = projectPlanRepository.findFirstBystudentId(id);
 		return new Resource<>(projectplan,
-				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
-				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
+				linkTo(methodOn(StudentController.class).one(id)).withSelfRel());
 	}
 //	@GetMapping(value = "/GetAvailableSupervisors", produces = "application/json; charset=UTF-8")
 //	Resources<Resource<User>> all() {
