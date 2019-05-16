@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.model.entities.ProjectPlan;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
+import project.model.repositories.ProjectPlanRepository;
 import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
@@ -25,11 +27,13 @@ import project.model.repositories.UserRepository;
 public class StudentController {
 	private final UserRepository repository;
 	private final SupervisorRepository supervisorRepository;
+	private final ProjectPlanRepository projectPlanRepository;
 	
 	
-	StudentController(UserRepository repository,SupervisorRepository supervisorRepository) {
+	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
+		this.projectPlanRepository = projectPlanRepository;
 	}
 	
 	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
@@ -64,7 +68,13 @@ public class StudentController {
 			});
 			
 	}
-	
+	@GetMapping(value = "/projectPlan/{id}", produces = "application/json; charset=UTF-8")
+	Resource<ProjectPlan> one1(@PathVariable String id) {
+		ProjectPlan projectplan = projectPlanRepository.findFirstBystudentId(id);
+		return new Resource<>(projectplan,
+				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
+				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
+	}
 //	@GetMapping(value = "/GetAvailableSupervisors", produces = "application/json; charset=UTF-8")
 //	Resources<Resource<User>> all() {
 //		List<Supervisor> supervisors = supervisorRepository.findByAvailable("yes");
