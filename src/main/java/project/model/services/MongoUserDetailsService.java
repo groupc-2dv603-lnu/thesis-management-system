@@ -23,7 +23,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        project.model.entities.User user = repository.findByName(name);
+        project.model.entities.User user = repository.findFirstByEmailAdress(name);
 
         if(user == null) {
             throw new UsernameNotFoundException("User not found");
