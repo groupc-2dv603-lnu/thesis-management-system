@@ -12,6 +12,11 @@ body, .dropdown-menu > a {
     font-size: 16px;
 }
 
+button {
+    padding: 5px;
+    margin: 5px 5px 0 0;
+}
+
 .topbar {
     display: flex;
     border: 1px solid black;
@@ -181,4 +186,18 @@ body, .dropdown-menu > a {
 
 .popup button, .popup th, .popup td {
     padding: 5px;
+}
+
+.feedback {
+    margin: 0;
+    border: 1px solid black;
+}
+
+.feedback > .header {
+    padding: 5px 10px;
+    background-color: #ddd;
+}
+
+.feedback > .content {
+    padding: 10px;
 }
