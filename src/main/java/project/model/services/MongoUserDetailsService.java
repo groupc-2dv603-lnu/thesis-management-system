@@ -34,7 +34,7 @@ public class MongoUserDetailsService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(r.toString()));
 
         // Returns a spring user object with name, password and the role of the user
-        User userDetails = new User(user.getName(), user.getPassword(), authorities);
+        User userDetails = new User(user.getEmailAdress(), user.getPassword(), authorities);
 
         System.out.println("Spring User Object: " + userDetails);
         return userDetails;
