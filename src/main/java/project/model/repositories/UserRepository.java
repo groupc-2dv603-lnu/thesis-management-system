@@ -10,6 +10,7 @@ import project.model.entities.User;
 public interface UserRepository extends MongoRepository<User, String> {
 	
 	User findFirstByName(String name);
+	User findFirstByEmailAdress(String email);
 	User findFirstById(String id);
 	
     @Query("{address:'?0'}")
