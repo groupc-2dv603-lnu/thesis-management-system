@@ -9,16 +9,7 @@ import Student from './Pages/Student'
 import Coordinator from './Pages/Coordinator'
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { users: [] };
-    }
-
-    componentDidMount() {
-        client({ method: 'GET', path: '/users' }).then(response => {
-            this.setState({ users: response.entity._embedded.users });
-        });
-    }
+	
     render() {
         return (
             <div>
