@@ -13,22 +13,22 @@ class Header extends Component {
                     <i className="fa fa-bars"></i>
                     <div className="dropdown-menu">
                         menu item #1
-                        <Link to="/student" replace>student</Link>
-                        <Link to="/coordinator" replace>coordinator</Link>
+                        <Link to="/student">student</Link>
+                        <Link to="/coordinator">coordinator</Link>
                     </div>
                 </div>
                 <div className="fluid-container">
                     <div className="logo">
-                        <Link to="/#" replace>
+                        <Link to="/#">
                             <i className="fas fa-feather"></i>
                             thesis mgmt
                         </Link>
                     </div>
                 {/* default menu */}
                     <div className="menu">
-                        <Link to="" replace>menu item #1</Link>
-                        <Link to="/student" replace>student</Link>
-                        <Link to="/coordinator" replace>coordinator</Link>
+                        <Link to="">menu item #1</Link>
+                        <Link to="/student">student</Link>
+                        <Link to="/coordinator">coordinator</Link>
                     </div>
                 </div>
                 <select className="role">
