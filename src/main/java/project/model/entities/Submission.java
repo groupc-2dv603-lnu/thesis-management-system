@@ -22,7 +22,8 @@ public class Submission {
     private String studentId;
     private SubmissionStatus submissionStatus;
     private String fileName;
-    public Binary file;
+    private Binary file;
+    private String fileUrl;         //TODO: do something with this
     private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
 
 
