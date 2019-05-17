@@ -182,3 +182,19 @@ body, .dropdown-menu > a {
 .popup button, .popup th, .popup td {
     padding: 5px;
 }
+
+
+/* Used by Login component in ./Frontpage/ */
+.loginButton {
+    color: white;
+    background-color: #ffe000;
+    border: 1px solid #ffe000;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.loginButton:hover {
+    cursor: pointer;
+    background-color: white;
+    color: #ffe000;
+}
