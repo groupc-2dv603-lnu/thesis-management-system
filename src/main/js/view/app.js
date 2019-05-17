@@ -7,7 +7,12 @@ import { Route, Switch, HashRouter } from 'react-router-dom'
 import Header from './components/header'
 import FrontPage from './Pages/FrontPage'
 import Student from './Pages/Student'
+
+/* Coordinator */ 
 import Coordinator from './Pages/Coordinator'
+import CorSubmissions from './Pages/Coordinator/Submissions/CorSubmissions'
+import CorStudents from './Pages/Coordinator/Students/CorStudents'
+import CorReports from './Pages/Coordinator/Reports/CorReports'
 
 class App extends Component {
     constructor(props) {
@@ -27,14 +32,20 @@ class App extends Component {
             <div>
                 {/* <UserList users={this.state.users}/>  test list */}
                 <HashRouter>
-                    <Switch>
+                    {/*<Switch>*/}
                         <Header />
                         <div className="fluid-container content">
                             <Route exact path='/' component={FrontPage} />
-                            <Route path='/student' component={Student} />
-                            <Route path='/coordinator' component={Coordinator} />
+                            <Route exact path='/student' component={Student} />
+                           
+                            {/* Coordinator */}
+                            <Route exact path='/coordinator' component={Coordinator} />
+                            <Route exact path='/coordinator/corSubmissions' component={CorSubmissions} />
+                            <Route exact path='/coordinator/corStudents' component={CorStudents} />
+                            <Route exact path='/coordinator/corReports' component={CorReports} />
+
                             </div>
-                    </Switch>
+                    {/*</Switch>*/}
                 </HashRouter>
             </div>
         )
