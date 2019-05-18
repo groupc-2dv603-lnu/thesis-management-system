@@ -32,11 +32,11 @@ class Login extends Component {
         const {email, password} = this.state;
         return (
             <div style={styles.container}>
-                <h1>Welcome to thesis mgmt!</h1>
+                <h1 style={{margin: 0, marginBottom: 20}}>Welcome to thesis mgmt!</h1>
                 <form style={styles.form}>
-                    <h3>Login to enter website</h3>
+                    <h3 style={{margin: 0, marginBottom: 20}}>Login to enter website</h3>
 
-                    <label htmlFor="email" style={styles.label}>Email:</label>
+                    <label htmlFor="email" style={styles.label}>Email</label>
                     <input
                         type="email"
                         style={styles.input}
@@ -69,10 +69,11 @@ class Login extends Component {
 const styles = {
     container: {
         backgroundColor: "#ffe000",
-        margin: "9px auto",
+        margin: "50px auto",
         width: "94%",
         border: "1px solid black",
-        padding: 20
+        padding: 20,
+        borderRadius: 6
     },
     label: {
         display: "block",

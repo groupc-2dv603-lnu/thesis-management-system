@@ -186,7 +186,7 @@ body, .dropdown-menu > a {
 
 /* Used by Login component in ./Frontpage/ */
 .loginButton {
-    color: white;
+    color: black;
     background-color: #ffe000;
     border: 1px solid #ffe000;
     padding: 10px 15px;

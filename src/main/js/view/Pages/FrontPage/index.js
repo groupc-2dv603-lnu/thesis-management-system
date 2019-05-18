@@ -19,7 +19,6 @@ class FrontPage extends Component {
     render() {
         return (
             <div>
-                <p>FrontPage is here lol</p>
                 <Login></Login>
 
             </div>
