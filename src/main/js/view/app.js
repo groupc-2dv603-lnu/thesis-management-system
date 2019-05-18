@@ -27,14 +27,16 @@ class App extends Component {
             <div>
                 {/* <UserList users={this.state.users}/>  test list */}
                 <HashRouter>
-                    <Switch>
-                        <Header />
+                    {/* <div> */}
+                    <Header />
+                    {/* <Switch> */}
                         <div className="fluid-container content">
                             <Route exact path='/' component={FrontPage} />
                             <Route path='/student' component={Student} />
                             <Route path='/coordinator' component={Coordinator} />
-                            </div>
-                    </Switch>
+                        </div>
+                    {/* </Switch> */}
+                    {/* </div> */}
                 </HashRouter>
             </div>
         )
