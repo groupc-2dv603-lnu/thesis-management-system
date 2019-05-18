@@ -201,3 +201,18 @@ button {
 .feedback > .content {
     padding: 10px;
 }
+
+/* Used by Login component in ./Frontpage/ */
+.loginButton {
+    color: black;
+    background-color: #ffe000;
+    border: 1px solid #ffe000;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.loginButton:hover {
+    cursor: pointer;
+    background-color: white;
+    color: #ffe000;
+}
