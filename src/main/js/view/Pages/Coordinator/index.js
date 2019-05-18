@@ -1,18 +1,16 @@
-'use strict';
+"use strict";
 
-import React, { Component } from 'react'
-import CorNav from './Components/CorNav'
-
+import React, { Component } from "react";
+import CorNav from "./Components/CorNav";
 
 class Coordinator extends Component {
-    render() {
-        return (
-            <div>
-            <CorNav></CorNav>
-            <h1>Coordinator</h1>
-            </div>
-            )
-    }
+  render() {
+    return (
+      <div>
+        <CorNav />
+      </div>
+    );
+  }
 }
 
-export default Coordinator
+export default Coordinator;

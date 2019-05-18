@@ -1,7 +1,7 @@
 /**
  * TODO
- *  - 
- *  - 
+ *  - Add links to studentpage and submissions
+ *  -
  */
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
@@ -13,13 +13,23 @@ const client = require ('../../../../client');
 class StudentsTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { users: [] };
+    this.state = { 
+      students: [] 
+    };
 }
 
-componentDidMount() {
+ componentDidMount() {
   client({ method: 'GET', path: '/users' }).then(response => {
-      this.setState({ users: response.entity._embedded.users });
-  });
+      // removes users with roles: null. Dev purpose
+      const students = response.entity._embedded.users.filter(student => student.roles !== null) 
+      const stu = []
+      students.forEach(student => {
+        student.roles.forEach(role => {
+          role === 'STUDENT' ? stu.push(student) : null
+        })
+      })
+      this.setState({ students: stu });
+  })
 }
 
 render() {
@@ -31,7 +41,7 @@ render() {
     style: nameColumnStyle,
     accessor: 'name',
     resizable: true,
-    filterable: false, // ugly but good. ???
+    filterable: false, // ugly but good, case sensitive...
     Cell: props => <Link to={`#`}><span style={nameColumnStyle}>{props.value}</span></Link>
   }, {
     Header: 'Description',
@@ -59,9 +69,9 @@ render() {
     Cell: props => <Link to="#"><span>x</span></Link>
   }
 ]
- 
+
   return <ReactTable
-      data={this.state.users}
+      data={this.state.students}
       columns={columns}
       />
   }
@@ -77,8 +87,8 @@ Object.assign(ReactTableDefaults, {
 })
 
   /* ---- TABLE STYLING ---- */
-  const headerBackgroundColor = 'grey'
-  const headerFontColor = 'white'
+  const headerBackgroundColor = '#ffe000'
+  const headerFontColor = 'black'
   const headerFontWeight = 'bold'
   const nameColumnMinWidth = '33%'
   const submissionColumnMaxWidth = '15%'
@@ -93,6 +103,7 @@ Object.assign(ReactTableDefaults, {
     fontWeight: headerFontWeight,
     height: headerRowHeight,
     lineHeight: lineHeight,
+    border: '1px solid black'
   }
 
   const headerSubmissionStyle = {
@@ -102,6 +113,7 @@ Object.assign(ReactTableDefaults, {
     height: headerRowHeight,
     maxWidth: submissionColumnMaxWidth,
     lineHeight: lineHeight,
+    border: '1px solid black'
   }
 
   const nameColumnStyle = {
