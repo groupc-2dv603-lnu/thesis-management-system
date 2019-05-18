@@ -22,6 +22,7 @@
     "react-dom": "^16.8.6",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
+    "react-table": "^6.10.0",
     "rest": "^2.0.0"
   },
   "scripts": {
