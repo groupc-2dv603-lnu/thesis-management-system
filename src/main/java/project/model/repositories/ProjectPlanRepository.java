@@ -7,4 +7,5 @@ import project.model.entities.ProjectPlan;
 
 public interface ProjectPlanRepository extends MongoRepository<ProjectPlan, String>  {
 	ProjectPlan findFirstBystudentId(String id);
+	ProjectPlan findFirstById(String id);
 }
