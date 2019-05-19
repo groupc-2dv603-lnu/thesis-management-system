@@ -1,13 +1,14 @@
 package project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.*;
 import project.model.entities.ProjectPlan;
-import project.model.entities.Student;
+import project.model.DTOs.SubmissionsDTO;
 import project.model.repositories.ProjectPlanRepository;
 import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
+
+import java.util.List;
 
 @RestController
 public class CoordinatorController {
@@ -21,10 +22,10 @@ public class CoordinatorController {
     private StudentRepository studentRepository;
 
     @PutMapping("/coordinator/updateProjectPlan")
-    void updateProjectPlan(@RequestParam String projectPlanID,
+    void updateProjectPlan(@RequestParam String projectPlanId,
                            @RequestParam String grade,
                            @RequestParam String deadLine) {
-        ProjectPlan plan = projectPlanRepository.findFirstById(projectPlanID);
+        ProjectPlan plan = projectPlanRepository.findFirstById(projectPlanId);
 
         if (deadLine != null) {
             plan.setDeadLine(deadLine);
@@ -37,4 +38,10 @@ public class CoordinatorController {
         projectPlanRepository.save(plan);
     }
 
+    @GetMapping("/coordinator/getAllSubmissionsByUserID")
+    SubmissionsDTO getAllSubmisssionsByUserID(@RequestParam String userId) {
+        List<ProjectPlan> planList = projectPlanRepository.findAllByStudentId(userId);
+
+        return new SubmissionsDTO(planList);
+    }
 }

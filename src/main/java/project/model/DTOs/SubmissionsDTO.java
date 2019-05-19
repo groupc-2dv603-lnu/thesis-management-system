@@ -1,7 +1,11 @@
-package project.model.entities;
+package project.model.DTOs;
+
+import lombok.Data;
+import project.model.entities.ProjectPlan;
 
 import java.util.List;
 
+@Data
 public class SubmissionsDTO {
     List<ProjectPlan> projectPlans;
 

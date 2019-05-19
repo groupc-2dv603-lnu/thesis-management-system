@@ -9,12 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +20,6 @@ import project.model.entities.ProjectPlan;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.ProjectPlanRepository;
-import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 
@@ -75,7 +72,7 @@ public class StudentController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
-		ProjectPlan projectplan = projectPlanRepository.findFirstBystudentId(user.getId());
+		ProjectPlan projectplan = projectPlanRepository.findFirstByStudentId(user.getId());
 		return new Resource<>(projectplan,
 				linkTo(methodOn(StudentController.class).one(user.getId())).withSelfRel());
 	}
