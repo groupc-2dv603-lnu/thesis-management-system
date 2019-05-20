@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
+import * as Style from "../Styles"
 
 /* ---- mock imports ---- */
 import { getIRData, getName, getbidderNames } from '../functions'
@@ -25,19 +26,19 @@ class ReportsTable extends Component {
     const columns = [
       {
         Header: "Submitter",
-        headerStyle: headerNameCellStyle,
-        style: nameColumnStyle,
+        headerStyle: Style.headerNameCellStyle,
+        style: Style.nameColumnStyle,
         accessor: "submitter",
         resizable: true,
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
-            <span style={nameColumnStyle}>{getName(props.original.studentId)}</span>
+            <span>{getName(props.original.studentId)}</span>
         )
       },
       {
         Header: "Bidders",
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         accessor: "bidders",
         maxWidth: columnMaxWidth,
         Cell: props => (
@@ -49,8 +50,8 @@ class ReportsTable extends Component {
       {
         Header: "Readers",
         accessor: "readers",
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
@@ -61,8 +62,8 @@ class ReportsTable extends Component {
       {
         Header: "Opponents",
         accessor: "opponents",
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
@@ -84,41 +85,6 @@ Object.assign(ReactTableDefaults, {
   showPageSizeOptions: false
 });
 
-/* ---- TABLE STYLING ---- */
-const headerBackgroundColor = "#ffe000";
-const headerFontColor = "black";
-const headerFontWeight = "bold";
-const nameColumnMinWidth = "40%";
-const headerRowHeight = 40;
-const lineHeight = 2;
 
-const headerNameCellStyle = {
-  minWidth: nameColumnMinWidth,
-  background: headerBackgroundColor,
-  color: headerFontColor,
-  fontWeight: headerFontWeight,
-  height: headerRowHeight,
-  lineHeight: lineHeight,
-  border: "1px solid black"
-};
-
-// width is set in renderMethod
-const headerSubmissionStyle = {
-  background: headerBackgroundColor,
-  color: headerFontColor,
-  fontWeight: headerFontWeight,
-  height: headerRowHeight,
-  lineHeight: lineHeight,
-  border: "1px solid black",
-};
-
-const nameColumnStyle = {
-  minWidth: nameColumnMinWidth,
-  width: nameColumnMinWidth
-};
-
-const submissionColumnStyle = {
-  textAlign: "center"
-};
  
 export default ReportsTable;

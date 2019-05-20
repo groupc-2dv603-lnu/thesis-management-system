@@ -10,6 +10,7 @@ import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
 import RCTooltip from "rc-tooltip";
+import * as Style from "../Styles"
 const client = require("../../../../client");
 
 
@@ -43,26 +44,20 @@ class StudentsTable extends Component {
     });
   }
 
-  toggleTooltip() {
-    this.setState({
-      showTooltip: !this.state.showTooltip
-    });
-  }
-
   render() {
     /* ---- Table ---- */
     const columnMaxWidth = 60;
     const columns = [
       {
         Header: "Name",
-        headerStyle: headerNameCellStyle,
-        style: nameColumnStyle,
+        headerStyle: Style.headerNameCellStyle,
+        style: Style.nameColumnStyle,
         accessor: "name",
         resizable: true,
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
           <Link to={`#`}>
-            <span style={nameColumnStyle}>{props.value}</span>
+            <span style={Style.nameColumnStyle}>{props.value}</span>
           </Link>
         )
       },
@@ -78,18 +73,18 @@ class StudentsTable extends Component {
             visible={!this.state.sTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={tooltip}>Assigned supervisor</span>}
+            overlay={<span style={Style.tooltip}>Assigned supervisor</span>}
           >
             <span>S</span>
           </RCTooltip>
         ),
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         accessor: "supervisor",
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to={`#`}>
-            <span style={nameColumnStyle}>y</span>
+            <span style={Style.nameColumnStyle}>y</span>
           </Link>
         )
       },
@@ -105,14 +100,14 @@ class StudentsTable extends Component {
             visible={!this.state.dTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={tooltip}>Submitted project description</span>}
+            overlay={<span style={Style.tooltip}>Submitted project description</span>}
           >
             <span>D</span>
           </RCTooltip>
         ),
         accessor: "description",
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
@@ -132,14 +127,14 @@ class StudentsTable extends Component {
             visible={!this.state.pTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={tooltip}>Submitted project plan</span>}
+            overlay={<span style={Style.tooltip}>Submitted project plan</span>}
           >
             <span>P</span>
           </RCTooltip>
         ),
         accessor: "plan",
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
@@ -159,14 +154,14 @@ class StudentsTable extends Component {
             visible={!this.state.iTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={tooltip}>Submitted initial report</span>}
+            overlay={<span style={Style.tooltip}>Submitted initial report</span>}
           >
             <span>I</span>
           </RCTooltip>
         ),
         accessor: "initial",
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
@@ -186,14 +181,14 @@ class StudentsTable extends Component {
             visible={!this.state.fTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={tooltip}>Submitted final report</span>}
+            overlay={<span style={Style.tooltip}>Submitted final report</span>}
           >
             <div>F</div>
           </RCTooltip>
         ),
         accessor: "final",
-        headerStyle: headerSubmissionStyle,
-        style: submissionColumnStyle,
+        headerStyle: Style.headerSubmissionStyle,
+        style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
@@ -215,51 +210,5 @@ Object.assign(ReactTableDefaults, {
   resizable: false,
   showPageSizeOptions: false
 });
-
-/* ---- TABLE STYLING ---- */
-const headerBackgroundColor = "#ffe000";
-const headerFontColor = "black";
-const headerFontWeight = "bold";
-const nameColumnMinWidth = "50%";
-const headerRowHeight = 40;
-const lineHeight = 2;
-
-const headerNameCellStyle = {
-  minWidth: nameColumnMinWidth,
-  background: headerBackgroundColor,
-  color: headerFontColor,
-  fontWeight: headerFontWeight,
-  height: headerRowHeight,
-  lineHeight: lineHeight,
-  border: "1px solid black"
-};
-
-// width is set in renderMethod
-const headerSubmissionStyle = {
-  background: headerBackgroundColor,
-  color: headerFontColor,
-  fontWeight: headerFontWeight,
-  height: headerRowHeight,
-  lineHeight: lineHeight,
-  border: "1px solid black",
-};
-
-const nameColumnStyle = {
-  minWidth: nameColumnMinWidth,
-  width: nameColumnMinWidth
-};
-
-const submissionColumnStyle = {
-  textAlign: "center"
-};
-
-const tooltip = {
-  position: 'relative',
-  display: 'inline-block',
-  width: '100%',
-  height: '20px',
-  textAlign: 'center',
-  marginBottom: '10px'
-}
 
 export default StudentsTable;
