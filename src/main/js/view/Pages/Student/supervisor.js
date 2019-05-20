@@ -96,6 +96,10 @@ class SupervisorPopup extends Component {
 }
 
 class Supervisor extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {supervisors: []};
+	}
     render() {
         return (
             <tr>
