@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.model.entities.Feedback;
+import project.model.entities.InitialReport;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.FeedbackRepository;
+import project.model.repositories.InitialReportRepository;
 import project.model.repositories.ProjectPlanRepository;
 import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
@@ -34,12 +36,15 @@ public class StudentController {
 	private final SupervisorRepository supervisorRepository;
 	private final ProjectPlanRepository projectPlanRepository;
 	private final FeedbackRepository feebackRepository;
+	private final InitialReportRepository initialReportRepository;
 	
-	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository) {
+	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
+			InitialReportRepository initialReportRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
 		this.feebackRepository = feebackRepository;
+		this.initialReportRepository = initialReportRepository;
 	}
 	
 	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
@@ -82,7 +87,15 @@ public class StudentController {
 		return new Resource<>(projectplan,
 				linkTo(methodOn(StudentController.class).one(user.getId())).withSelfRel());
 	}
-
+	@GetMapping(value = "/initialReport", produces = "application/json; charset=UTF-8")
+	Resource<InitialReport> one3() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		InitialReport initialReport = initialReportRepository.findFirstBystudentId(user.getId());
+		return new Resource<>(initialReport,
+				linkTo(methodOn(StudentController.class).one(user.getId())).withSelfRel());
+	}
 	
 	@GetMapping(value = "/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
