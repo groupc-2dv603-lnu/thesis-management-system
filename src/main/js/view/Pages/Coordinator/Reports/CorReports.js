@@ -5,6 +5,7 @@
  */
 import React, { Component } from 'react';
 import CorNav from '../Components/CorNav';
+import ReportsTable from './ReportsTable';
 
 
 class CorReports extends Component {
@@ -12,8 +13,8 @@ class CorReports extends Component {
 render() {
   return (
     <div>
-      <CorNav></CorNav> {/* disappears on doubleClick */}
-      <p>CorReports</p>
+      <CorNav></CorNav>
+      <ReportsTable></ReportsTable>
     </div>
     )
   }

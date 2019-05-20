@@ -8,13 +8,9 @@ import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
-// var Tooltip = require('rc-tooltip');
 import RCTooltip from "rc-tooltip";
 const client = require("../../../../client");
 
-function preventDefault(e) {
-  e.preventDefault();
-}
 
 class StudentsTable extends Component {
   constructor(props) {
@@ -70,7 +66,7 @@ class StudentsTable extends Component {
         )
       },
       {
-        Header: tableHeader => (
+        Header: () => (
           <RCTooltip
             onMouseEnter={() =>
               this.setState({ sTooltip: !this.state.sTooltip })
