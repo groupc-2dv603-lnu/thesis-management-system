@@ -1,6 +1,7 @@
 /**
  * TODO
  *  - Add links to studentpage and submissions
+ *  - Add supervisorName if assigned
  *  - Fix tooltipBug, doesnt disappear after mouseLeave
  *  - Fix tooltipstyling, width 100% expands over whole page
  */

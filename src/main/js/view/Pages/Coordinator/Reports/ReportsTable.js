@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
+
+/* ---- mock imports ---- */
+import { getIRData, getName, getbidderNames } from '../functions'
+
 const client = require("../../../../client");
 
 class ReportsTable extends Component {
@@ -10,26 +14,12 @@ class ReportsTable extends Component {
     this.state = {
       students: [],
     }
-  }
+    this.initialReports = getIRData()
 
-  componentDidMount() {
-    client({ method: "GET", path: "/users" }).then(response => {
-      // removes users with roles: null. Dev purpose
-      const students = response.entity._embedded.users.filter(
-        student => student.roles !== null
-      );
-      const stu = [];
-      students.forEach(student => {
-        student.roles.forEach(role => {
-          role === "STUDENT" ? stu.push(student) : null;
-        });
-      });
-      this.setState({ students: stu });
-    });
   }
-
 
   render() {
+ 
     /* ---- Table ---- */
     const columnMaxWidth = 120;
     const columns = [
@@ -41,7 +31,7 @@ class ReportsTable extends Component {
         resizable: true,
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
-            <span style={nameColumnStyle}>{props.original.name}</span>
+            <span style={nameColumnStyle}>{getName(props.original.studentId)}</span>
         )
       },
       {
@@ -51,11 +41,9 @@ class ReportsTable extends Component {
         accessor: "bidders",
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <Link to={`#`}>
-            <span style={nameColumnStyle}>
-              Bidder1...
-            </span>
-          </Link>
+          <span>
+          {props.original.bids.length === 0 ? 'No bids' : getbidderNames(props.original.bids)  }
+          </span>
         )
       },
       {
@@ -84,7 +72,7 @@ class ReportsTable extends Component {
       },
     ];
 
-    return <ReactTable data={this.state.students} columns={columns} />;
+    return <ReactTable data={this.initialReports.entity} columns={columns} />;
   }
 }
 /* ---- Table configs ---- */

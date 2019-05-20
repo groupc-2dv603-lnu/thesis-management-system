@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { capitalizeFirstLetter, checkDeadline } from "./functions";
+import { capitalizeFirstLetter, checkDeadline } from "../functions";
 import * as style from "./submissionStyles";
 /**
  *  Submission component
