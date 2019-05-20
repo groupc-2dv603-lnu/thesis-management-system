@@ -1,22 +1,21 @@
+import React, { Component } from "react";
+import CorNav from "../Components/CorNav";
+import CorSubNav from "./CorSubNav";
+import Submission from "./Submission";
 /**
+ * Indexpage for coordinator submissions
  * TODO
- *  - nav disappears on doubleClick
- *  - 
+ *  - Remove corSubNav ? 
  */
-import React, { Component } from 'react';
-import CorNav from '../Components/CorNav';
-
-
 class CorSubmissions extends Component {
-
-render() {
-  return (
-    <div>
-      <CorNav></CorNav> {/* disappears on doubleClick */}
-      <p>CorSubmissions</p>
-    </div>
-    )
+  render() {
+    return (
+      <div>
+        <CorNav />
+        <Submission />
+      </div>
+    );
   }
 }
- 
-export default CorSubmissions
+
+export default CorSubmissions;

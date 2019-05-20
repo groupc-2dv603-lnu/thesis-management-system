@@ -2,27 +2,38 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 /**
- * Navigation for Coordinator page
- * Todo:
- *  - styling
+ * Subnav for coordinator page
+ * TODO:
+ *  - 
  */
-class CorNav extends Component {
+
+class CorSubNav extends Component {
   render() {
     return (
       <div style={divStyle}>
         <button style={btnStyle}>
-          <Link style={linkStyle} to="/coordinator/corSubmissions" replace>
-            Submissions
+          <Link style={linkStyle} to="#" replace>
+            Create?
           </Link>
         </button>
         <button style={btnStyle}>
-          <Link style={linkStyle} to="/coordinator/corStudents" replace>
-            Students
+          <Link style={linkStyle} to="#" replace>
+            Description
           </Link>
         </button>
         <button style={btnStyle}>
-          <Link style={linkStyle} to="/coordinator/corReports" replace>
-            Reports
+          <Link style={linkStyle} to="#" replace>
+            Plan
+          </Link>
+        </button>
+        <button style={btnStyle}>
+          <Link style={linkStyle} to="#" replace>
+            Initial Report
+          </Link>
+        </button>
+        <button style={btnStyle}>
+          <Link style={linkStyle} to="#" replace>
+            Final Report
           </Link>
         </button>
       </div>
@@ -35,7 +46,6 @@ const backgroundColor = '#ffe000'
 const divStyle = {
   width: "600px",
   textAlign: 'center',
-  marginTop: '-20px',
   background: backgroundColor,
   border: '1px solid black',
   borderTop: 0
@@ -58,4 +68,4 @@ const btnStyle = {
   borderBottom: 0
 }
 
-export default CorNav;
+export default CorSubNav

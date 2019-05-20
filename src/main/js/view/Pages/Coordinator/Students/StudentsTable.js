@@ -1,7 +1,7 @@
 /**
  * TODO
  *  - Add links to studentpage and submissions
- *  -
+ *  - Show if assigned supervisor: bool
  */
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
