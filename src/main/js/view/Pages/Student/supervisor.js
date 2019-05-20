@@ -1,20 +1,19 @@
 'use strict'
 
 import React, { Component } from 'react';
-import { requestSupervisor } from './functions';
-import { getStudentData, getUser, getAvailableSupervisors } from './functions';
-
+import { requestSupervisor, getAvailableSupervisors } from './functions';
+import { getStudentData, getOwnUser, getUser } from './functions';
 
 class SupervisorBox extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { supervisorPopup: false, supervisorName: null };
+        this.state = { supervisorPopup: false };
         this.openSupervisorPopup = this.openSupervisorPopup.bind(this);
         this.closeSupervisorPopup = this.closeSupervisorPopup.bind(this);
 
         this.studentData = getStudentData();
-        this.assignedSupervisor = getUser(this.studentData.supervisorId);
+        this.assignedSupervisor = getOwnUser(this.studentData.supervisorId);
     }
 
     openSupervisorPopup() {
@@ -72,14 +71,20 @@ class SupervisorPopup extends Component {
     constructor(props) {
         super(props);
 
-        this.availableSupervisors = getAvailableSupervisors();
+        this.state = { availableSupervisors: [] };
     }
-    
+
+    componentDidMount() {
+        getAvailableSupervisors().then(response => {
+            this.setState({ availableSupervisors: response.entity._embedded.supervisors });
+        });
+    }
+
     render() {
-        const supervisors = this.availableSupervisors.map(sv =>
-            <Supervisor key={sv.id} supervisor={sv} />
+        const supervisors = this.state.availableSupervisors.map(sv =>
+            <Supervisor key={sv.userId} supervisor={sv} />
         );
-           
+        
         return (
             <table>
                 <tbody>
@@ -96,11 +101,24 @@ class SupervisorPopup extends Component {
 }
 
 class Supervisor extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = { user: {} }
+    }
+
+    componentDidMount() {
+        getUser(this.props.supervisor.userId).then(response => {
+            this.setState({ user: response.entity });
+        })
+    }
+
     render() {
         return (
             <tr>
                 <td>
-                    {getUser(this.props.supervisor.userId).name}
+                    { this.state.user.name }
                 </td>
                 <td>
                     <button onClick={() => requestSupervisor(this.props.supervisor)}>Request supervisor</button>

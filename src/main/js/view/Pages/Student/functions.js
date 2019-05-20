@@ -2,6 +2,8 @@
 
 import * as Mock from './mocks';
 
+const client = require('../../../client');
+
 export function capitalizeFirstLetter(string) {
     if(string == null)
         return "N/A";
@@ -16,42 +18,60 @@ export function uploadFile(file) {
 }
 
 export function requestSupervisor(supervisor) {
-    let user = getUser(supervisor.userId);
-    console.log("Requesting " + user.name + "(" + supervisor.id + ") as supervisor");
+    getUser(supervisor.userId).then((response) => {
+        console.log('Requesting supervisor: ', response)
+    });
+
+    // return client({ method: 'PUT', path: '/requestSupervisor' })
+    // .catch((error) => {
+    //     console.log(error)
+    // });
+}
+
+export function getOwnUser(userId) {
+    let mock = new Mock.UsersMock().entity._embedded.users.find(obj => obj.id == userId);
+    return new Promise(resolve => resolve(mock));
 }
 
 export function getUser(userId) {
-    return new Mock.UsersMock().users.find(obj => obj.id == userId);
+    return client({ method: 'GET', path: '/users/' + userId });
 }
 
  export function getStudentData() {
-    return new Mock.StudentMock();
+    let mock = new Mock.StudentMock();
+    return new Promise(resolve => resolve(mock));
 }
 
 export function getAvailableSupervisors() {
-    return new Mock.AvailableSupervisorsMock().supervisors;
+    return client({ method: 'GET', path: '/getAvailableSupervisors' });
 }
 
-export function getSubmission(submissionId) {
-    return new Mock.SubmissionsMock().submissions.find(obj => obj.id == submissionId);
+export function getSubmissionData(submissionId) {
+    let mock = new Mock.SubmissionsMock().entity._embedded.submissions.find(obj => obj.id == submissionId);
+    return new Promise(resolve => resolve(mock));
 }
 
 export function getPDData() {
-    return new Mock.ProjectDescriptionMock();   
+    let mock = new Mock.ProjectDescriptionMock();
+    return new Promise(resolve => resolve(mock));
 }
 
 export function getPPData() {
-    return new Mock.ProjectPlanMock();
+    let mock = new Mock.ProjectPlanMock();
+    return new Promise(resolve => resolve(mock));
 }
 
 export function getIRData() {
-    return new Mock.InitialReportMock();
+    let mock = new Mock.InitialReportMock();
+    return new Promise(resolve => resolve(mock));
 }
 
 export function getFRData() {
-    return new Mock.FinalReportMock();
+    let mock = new Mock.FinalReportMock();
+    return new Promise(resolve => resolve(mock));
 }
 
 export function getFeedback(submissionId) {
-    return new Mock.FeedbackMock().feedback.filter(obj => obj.submissionId == submissionId);
+    let mock = new Mock.FeedbackMock().entity._embedded.feedback.filter(obj => obj.submissionId == submissionId);
+    return new Promise(resolve => resolve(mock));
 }
