@@ -7,4 +7,5 @@ import project.model.entities.FinalReport;
 
 public interface FinalReportRepository extends MongoRepository<FinalReport, String> {
 
+	FinalReport findFirstByuserId(String id);
 }
