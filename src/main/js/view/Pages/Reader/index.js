@@ -72,6 +72,12 @@ class Reader extends Component {
           inputs[i].disabled = true;
         }
       }
+    } else {
+      for (let i = 0; i < inputs.length; i++) {
+        if (!inputs[i].checked) {
+          inputs[i].disabled = false;
+        }
+      }
     }
   }
 
