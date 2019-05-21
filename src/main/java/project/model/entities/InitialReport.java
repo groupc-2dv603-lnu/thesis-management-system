@@ -12,7 +12,7 @@ import lombok.Data;
 public class InitialReport {
 	@Id
 	private String id;
-	private String studentId;
+	private String userId;
 	private String submissionId;
 	private ArrayList<String> bids;
 	private ArrayList<String> assignedReaders;
@@ -20,13 +20,12 @@ public class InitialReport {
 	private ArrayList<String> feedBackIds;
 	private String grade;
 	private String deadLine;
-	private String submissionDate;
 	
 	
 	
-	public InitialReport(String studentId, String submissionId, ArrayList<String> bids, ArrayList<String> assignedReaders, ArrayList<String> assignedOpponents, 
-			ArrayList<String> feedBackIds, String grade, String deadLine, String submissionDate) {
-		this.studentId = studentId;
+	public InitialReport(String userId, String submissionId, ArrayList<String> bids, ArrayList<String> assignedReaders, ArrayList<String> assignedOpponents, 
+			ArrayList<String> feedBackIds, String grade, String deadLine) {
+		this.userId = userId;
 		this.submissionId = submissionId;
 		this.feedBackIds = feedBackIds;
 		this.bids = bids;
@@ -34,7 +33,6 @@ public class InitialReport {
 		this.assignedOpponents = assignedOpponents;
 		this.grade = grade;
 		this.deadLine = deadLine;
-		this.submissionDate = submissionDate;
 	}
 }
 

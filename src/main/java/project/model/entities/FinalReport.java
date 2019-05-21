@@ -10,19 +10,17 @@ import lombok.Data;
 public class FinalReport {
 	@Id
 	private String id;
-	private String studentId;
+	private String userId;
 	private String submissionId;
 	private String grade;
 	private String deadLine;
-	private String submissionDate;
 	
 	
 	
-	public FinalReport(String studentId, String submissionId, String grade, String deadLine, String submissionDate) {
-		this.studentId = studentId;
+	public FinalReport(String userId, String submissionId, String grade, String deadLine) {
+		this.userId = userId;
 		this.submissionId = submissionId;
 		this.grade = grade;
 		this.deadLine = deadLine;
-		this.submissionDate = submissionDate;
 	}
 }

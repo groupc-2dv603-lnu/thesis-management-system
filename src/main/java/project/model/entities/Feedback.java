@@ -11,13 +11,13 @@ public class Feedback {
 	@Id
 	private String id;
 	private String userId;
-	private String submissionId;
+	private String documentId;
 	private String text;
 	
 	
-	public Feedback(String userId, String submissionId, String text) {
+	public Feedback(String userId, String documentId , String text) {
 		this.userId = userId;
-		this.submissionId = submissionId;
+		this.documentId = documentId;
 		this.text = text;
 		
 	}

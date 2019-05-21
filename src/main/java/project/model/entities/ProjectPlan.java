@@ -10,22 +10,20 @@ import lombok.Data;
 public class ProjectPlan {
 	@Id
 	private String id;
-	private String studentId;
+	private String userId;
 	private String submissionId;
 	private String feedBackId;
 	private String grade;
 	private String deadLine;
-	private String submissionDate;
 	
 	
 	
-	public ProjectPlan(String studentId, String submissionId, String feedBackId, String grade, String deadLine, String submissionDate) {
-		this.studentId = studentId;
+	public ProjectPlan(String userId, String submissionId, String feedBackId, String grade, String deadLine) {
+		this.userId = userId;
 		this.submissionId = submissionId;
 		this.feedBackId = feedBackId;
 		this.grade = grade;
 		this.deadLine = deadLine;
-		this.submissionDate = submissionDate;
 	}
 }
 
