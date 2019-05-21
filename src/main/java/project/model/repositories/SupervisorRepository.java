@@ -9,7 +9,7 @@ import project.model.entities.Supervisor;
 
 public interface SupervisorRepository extends MongoRepository<Supervisor, String>  {
 	Supervisor findFirstById(String id);
-	
+	Supervisor findFirstByUserId(String userId);
 	//@Query("{availableForSupervisor:'?0'}")
 	List<Supervisor> findByAvailableForSupervisorTrue();
 }

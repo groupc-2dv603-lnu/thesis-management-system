@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.model.entities.Feedback;
+import project.model.entities.FinalReport;
 import project.model.entities.InitialReport;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.FeedbackRepository;
+import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.ProjectPlanRepository;
 import project.model.repositories.StudentRepository;
@@ -37,31 +39,33 @@ public class StudentController {
 	private final ProjectPlanRepository projectPlanRepository;
 	private final FeedbackRepository feebackRepository;
 	private final InitialReportRepository initialReportRepository;
+	private final FinalReportRepository finalReportRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
-			InitialReportRepository initialReportRepository) {
+			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
 		this.feebackRepository = feebackRepository;
 		this.initialReportRepository = initialReportRepository;
+		this.finalReportRepository = finalReportRepository;
 	}
 	
-	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
-	Resource<Supervisor> one(@PathVariable String id) {
-		Supervisor supervisor = supervisorRepository.findFirstById(id);
-		return new Resource<>(supervisor,
-				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
-				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
-	}
+//	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
+//	Resource<Supervisor> one(@PathVariable String id) {
+//		Supervisor supervisor = supervisorRepository.findFirstById(id);
+//		return new Resource<>(supervisor,
+//				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
+//				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
+//	}
 	
 	@GetMapping(value = "/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Supervisor>> all() {
 		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
 			    .map(supervisor -> new Resource<>(supervisor,
 			    		
-			    		linkTo(methodOn(StudentController.class).one(supervisor.getId())).withSelfRel(),
-			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
+//			    		linkTo(methodOn(StudentController.class).one(supervisor.getId())).withSelfRel(),
+//			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
 						
@@ -69,11 +73,13 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
 	@PutMapping("/requestSupervisor")
-	void updateSupervisor(@RequestParam String studentId, @RequestParam String id) {
-		
-		supervisorRepository.findById(id)
+	void updateSupervisor(@RequestParam String supervisorId) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		supervisorRepository.findById(supervisorId)
 			.map(supervisor -> {
-				supervisor.getAwaitingResponse().add(studentId);
+				supervisor.getAwaitingResponse().add(user.getId());
 				return supervisorRepository.save(supervisor);
 			});
 			
@@ -83,18 +89,28 @@ public class StudentController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
-		ProjectPlan projectplan = projectPlanRepository.findFirstBystudentId(user.getId());
+		ProjectPlan projectplan = projectPlanRepository.findFirstByuserId(user.getId());
 		return new Resource<>(projectplan,
-				linkTo(methodOn(StudentController.class).one(user.getId())).withSelfRel());
+				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
 	}
 	@GetMapping(value = "/initialReport", produces = "application/json; charset=UTF-8")
 	Resource<InitialReport> one3() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
-		InitialReport initialReport = initialReportRepository.findFirstBystudentId(user.getId());
+		InitialReport initialReport = initialReportRepository.findFirstByuserId(user.getId());
 		return new Resource<>(initialReport,
-				linkTo(methodOn(StudentController.class).one(user.getId())).withSelfRel());
+				linkTo(methodOn(StudentController.class).one3()).withSelfRel());
+	}
+	
+	@GetMapping(value = "/finalReport", produces = "application/json; charset=UTF-8")
+	Resource<FinalReport> one4() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		FinalReport finalReport = finalReportRepository.findFirstByuserId(user.getId());
+		return new Resource<>(finalReport,
+				linkTo(methodOn(StudentController.class).one4()).withSelfRel());
 	}
 	
 	@GetMapping(value = "/feedback/{id}", produces = "application/json; charset=UTF-8")
@@ -106,26 +122,15 @@ public class StudentController {
 	}
 	
 	@GetMapping(value = "/feedback", produces = "application/json; charset=UTF-8")
-	Resources<Resource<Feedback>> all2(@RequestParam String submissionId) {
-		List<Resource<Feedback>> feedbacks = feebackRepository.findBysubmissionId(submissionId).stream()
+	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
+		List<Resource<Feedback>> feedbacks = feebackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
 			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
-			    		linkTo(methodOn(StudentController.class).all2(submissionId)).withRel("feedback")))
+			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
 			    	    .collect(Collectors.toList());
 						
 		return new Resources<>(feedbacks,
-				linkTo(methodOn(StudentController.class).all()).withSelfRel());
+				linkTo(methodOn(StudentController.class).all2(documentId)).withSelfRel());
 	}
-//	@GetMapping(value = "/GetAvailableSupervisors", produces = "application/json; charset=UTF-8")
-//	Resources<Resource<User>> all() {
-//		List<Supervisor> supervisors = supervisorRepository.findByAvailable("yess");
-//		List<Resource<User>> users = repository.findAll().stream()
-//			    .map(user -> new Resource<>(user,
-//			    		linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel(),
-//			    		linkTo(methodOn(UserController.class).all()).withRel("users")))
-//			    	    .collect(Collectors.toList());
-//
-//		return new Resources<>(users,
-//				linkTo(methodOn(UserController.class).all()).withSelfRel());
-//	}
+
 }

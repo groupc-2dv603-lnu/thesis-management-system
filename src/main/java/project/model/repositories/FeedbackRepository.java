@@ -9,6 +9,6 @@ import project.model.entities.Feedback;
 
 public interface FeedbackRepository extends MongoRepository<Feedback, String> {
 	Feedback findFirstById(String id);
-	Feedback findFirstBysubmissionId(String submissionId);
-	List<Feedback> findBysubmissionId(String submissionId);
+	Feedback findFirstBydocumentId(String submissionId);
+	List<Feedback> findBydocumentId(String documentId);
 }

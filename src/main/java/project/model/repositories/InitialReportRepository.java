@@ -7,5 +7,5 @@ import project.model.entities.ProjectPlan;
 
 
 public interface InitialReportRepository extends MongoRepository<InitialReport, String> {
-	InitialReport findFirstBystudentId(String id);
+	InitialReport findFirstByuserId(String id);
 }
