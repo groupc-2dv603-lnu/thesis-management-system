@@ -79,12 +79,56 @@ export const popupClose = {
 }
 
 /* --- Student Submission modules --- */ 
+const submissionRowHeight = '50px'
+const lnuYellow = '#ffee00'
+const standardBorder = '1px solid black'
+
 export const submissionDivStyle = {
   width: '100%',
-  border: '1px solid black',
-  color: 'blue'
+}
+
+export const submissionMenu = {
+  height: submissionRowHeight,
 }
 
 export const submissionButtons = {
-  color: 'blue'
+  color: 'black',
+  background: lnuYellow,
+  border: standardBorder, 
+  width: '25%',
+  height: submissionRowHeight,
+  display: 'inline',
+}
+
+export const downloadSubmission = {
+  color: 'black',
+  background: lnuYellow,
+  width: '200px',
+  height: submissionRowHeight,
+  marginBottom: '20px',
+  marginTop: '20px'
+}
+
+export const popupForm = {
+  width: '80%',
+  margin: '0 auto',
+  textAlign: 'center'
+}
+
+export const deadline = {
+  borderBottom: standardBorder,
+  height: submissionRowHeight,
+  textAlign: 'left',
+  lineHeight: '50px'
+}
+
+export const grade = {
+  borderBottom: standardBorder,
+  height: submissionRowHeight,
+  textAlign: 'left',
+  lineHeight: '50px'
+}
+
+export const input = {
+  marginLeft: '20px'
 }

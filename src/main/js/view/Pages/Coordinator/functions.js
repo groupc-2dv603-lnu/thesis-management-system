@@ -58,3 +58,13 @@ export function submissionSubmitted(userId, type) {
 export function getStudents() {
   return new Mock.StudentMock();
 }
+
+/* ---- Student popups ---- */
+export function getProjectDescription(userId) { 
+  const mock = new Mock.ProjectDescriptionMock()
+  const description = mock.entity.find(description => 
+    userId === description.userId
+  )
+  return description === undefined ? null : description
+
+}

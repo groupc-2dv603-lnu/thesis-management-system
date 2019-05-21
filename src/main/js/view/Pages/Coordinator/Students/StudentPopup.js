@@ -19,9 +19,8 @@ class StudentPopup extends React.Component {
   }
 
   renderPage() {
-    console.log(this.state.studentId);
     if (this.state.page === "projectDescription") {
-      return <ProjectDescription />;
+      return <ProjectDescription userId={this.state.studentId}/>;
     } else if (this.state.page === "projectPlan") {
       return <span>plan</span>;
     } else if (this.state.page === "initialReport") {
@@ -41,17 +40,17 @@ class StudentPopup extends React.Component {
             style={Style.popupClose}
           />
           <h3 style={Style.popupName}>{getName(this.props.studentId)}</h3>
-          <div>
-            <button onClick={() => this.setPage("projectDescription")}>
+          <div style={Style.submissionMenu}>
+            <button style={Style.submissionButtons} onClick={() => this.setPage("projectDescription")}>
               Project Description
             </button>
-            <button onClick={() => this.setPage("projectPlan")}>
+            <button style={Style.submissionButtons} onClick={() => this.setPage("projectPlan")}>
               Project Plan
             </button>
-            <button onClick={() => this.setPage("initialReport")}>
+            <button style={Style.submissionButtons} onClick={() => this.setPage("initialReport")}>
               Initial Report
             </button>
-            <button onClick={() => this.setPage("finalReport")}>
+            <button style={Style.submissionButtons} onClick={() => this.setPage("finalReport")}>
               Final Report
             </button>
           </div>

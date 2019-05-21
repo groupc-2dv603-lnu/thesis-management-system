@@ -138,13 +138,24 @@ export class SubmissionsMock {
 
 export class ProjectDescriptionMock {
   constructor() {
-    this.entity = {
-      id: 101,
-      submissionId: 1,
-      grade: "pass",
-      deadline: "2019-05-12T23:55",
-      submissionDate: "2019-05-10T20:15"
-    };
+    this.entity = [
+      {
+        id: 101,
+        submissionId: 11,
+        userId: 11,
+        grade: "pass",
+        deadline: "2019-05-12T23:55",
+        submissionDate: "2019-05-10T20:15"
+      },
+      {
+        id: 101,
+        submissionId: 11,
+        userId: 99,
+        grade: "fail",
+        deadline: "2019-05-12T23:55",
+        submissionDate: "2019-05-10T20:15"
+      }
+    ];
   }
 }
 
