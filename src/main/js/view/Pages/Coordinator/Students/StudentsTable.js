@@ -10,9 +10,15 @@ import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
 import RCTooltip from "rc-tooltip";
-import * as Style from "../Styles"
+import * as Style from "../Styles";
 const client = require("../../../../client");
 
+/* ---- function imports ---- */
+import {
+  getStudents,
+  getName,
+  submissionSubmitted,
+} from "../functions";
 
 class StudentsTable extends Component {
   constructor(props) {
@@ -26,22 +32,7 @@ class StudentsTable extends Component {
       iTooltip: false,
       fTooltip: false
     };
-  }
-
-  componentDidMount() {
-    client({ method: "GET", path: "/users" }).then(response => {
-      // removes users with roles: null. Dev purpose
-      const students = response.entity._embedded.users.filter(
-        student => student.roles !== null
-      );
-      const stu = [];
-      students.forEach(student => {
-        student.roles.forEach(role => {
-          role === "STUDENT" ? stu.push(student) : null;
-        });
-      });
-      this.setState({ students: stu });
-    });
+    this.students = getStudents();
   }
 
   render() {
@@ -57,7 +48,7 @@ class StudentsTable extends Component {
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
           <Link to={`#`}>
-            <span style={Style.nameColumnStyle}>{props.value}</span>
+            <span>{getName(props.original.userId)}</span>
           </Link>
         )
       },
@@ -84,7 +75,9 @@ class StudentsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to={`#`}>
-            <span style={Style.nameColumnStyle}>y</span>
+            <span>
+              {submissionSubmitted(props.original.userId, "final report")}
+            </span>
           </Link>
         )
       },
@@ -100,7 +93,9 @@ class StudentsTable extends Component {
             visible={!this.state.dTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={Style.tooltip}>Submitted project description</span>}
+            overlay={
+              <span style={Style.tooltip}>Submitted project description</span>
+            }
           >
             <span>D</span>
           </RCTooltip>
@@ -110,8 +105,10 @@ class StudentsTable extends Component {
         style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <Link to="#">
-            <span>x</span>
+          <Link to={`#`}>
+            <span>
+              {submissionSubmitted(props.original.userId, "final report")}
+            </span>
           </Link>
         )
       },
@@ -138,7 +135,9 @@ class StudentsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>x</span>
+            <span>
+              {submissionSubmitted(props.original.userId, "project plan")}
+            </span>
           </Link>
         )
       },
@@ -154,7 +153,9 @@ class StudentsTable extends Component {
             visible={!this.state.iTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={Style.tooltip}>Submitted initial report</span>}
+            overlay={
+              <span style={Style.tooltip}>Submitted initial report</span>
+            }
           >
             <span>I</span>
           </RCTooltip>
@@ -165,7 +166,9 @@ class StudentsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>x</span>
+            <span>
+              {submissionSubmitted(props.original.userId, "initial report")}
+            </span>
           </Link>
         )
       },
@@ -192,13 +195,15 @@ class StudentsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>x</span>
+            <span>
+              {submissionSubmitted(props.original.userId, "final report")}
+            </span>
           </Link>
         )
       }
     ];
 
-    return <ReactTable data={this.state.students} columns={columns} />;
+    return <ReactTable data={this.students.entity} columns={columns} />;
   }
 }
 

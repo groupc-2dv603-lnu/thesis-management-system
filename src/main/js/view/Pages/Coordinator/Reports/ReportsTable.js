@@ -42,9 +42,9 @@ class ReportsTable extends Component {
         accessor: "bidders",
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <span>
-          {props.original.bids.length === 0 ? 'No bids' : getbidderNames(props.original.bids)  }
-          </span>
+          <Link to="#">
+            <span>{props.original.bids.length}</span>
+          </Link>
         )
       },
       {
@@ -55,7 +55,7 @@ class ReportsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>reader1 ...</span>
+            <span>{props.original.assignedReaders.length}</span>
           </Link>
         )
       },
@@ -67,7 +67,7 @@ class ReportsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>opponent1...</span>
+            <span>{props.original.assignedOpponent === null ? '0' : props.original.assignedOpponent.length}</span>
           </Link>
         )
       },
