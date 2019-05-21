@@ -58,7 +58,3 @@ export function submissionSubmitted(userId, type) {
 export function getStudents() {
   return new Mock.StudentMock();
 }
-
-export function tooltip(string) {
-  return <span style={Style.tooltip}>{string}</span>
-}

@@ -10,15 +10,12 @@ import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
 import RCTooltip from "rc-tooltip";
+import StudentPopup from "./StudentPopup";
 import * as Style from "../Styles";
 const client = require("../../../../client");
 
 /* ---- function imports ---- */
-import {
-  getStudents,
-  getName,
-  submissionSubmitted,
-} from "../functions";
+import { getStudents, getName, submissionSubmitted } from "../functions";
 
 class StudentsTable extends Component {
   constructor(props) {
@@ -30,9 +27,21 @@ class StudentsTable extends Component {
       dTooltip: false,
       pTooltip: false,
       iTooltip: false,
-      fTooltip: false
+      fTooltip: false,
+      // sent to studentPopup
+      studentId: null, 
+      showPopup: false
     };
     this.students = getStudents();
+  }
+
+  togglePopup(studentId) {
+    this.setState({
+      studentId: studentId
+    })
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
   }
 
   render() {
@@ -47,9 +56,10 @@ class StudentsTable extends Component {
         resizable: true,
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
-          <Link to={`#`}>
-            <span>{getName(props.original.userId)}</span>
-          </Link>
+          <span onClick={() =>{this.togglePopup(props.original.userId)}
+        }>
+            {getName(props.original.userId)}
+          </span>
         )
       },
       {
@@ -105,11 +115,9 @@ class StudentsTable extends Component {
         style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <Link to={`#`}>
-            <span>
-              {submissionSubmitted(props.original.userId, "final report")}
-            </span>
-          </Link>
+          <span>
+            {submissionSubmitted(props.original.userId, "final report")}
+          </span>
         )
       },
       {
@@ -203,7 +211,14 @@ class StudentsTable extends Component {
       }
     ];
 
-    return <ReactTable data={this.students.entity} columns={columns} />;
+    return (
+      <div>
+        <ReactTable data={this.students.entity} columns={columns} />
+        {this.state.showPopup ? (
+          <StudentPopup studentId={this.state.studentId} closePopup={this.togglePopup.bind(this)} />
+        ) : null}
+      </div>
+    );
   }
 }
 
