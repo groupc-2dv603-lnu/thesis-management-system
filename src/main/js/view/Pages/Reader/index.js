@@ -53,13 +53,26 @@ class Reader extends Component {
     });
   }
 
-  getChosenReports() {
-    const inputs = Array.from(document.getElementsByName("selected"));
-    this.setState({
-      selectedReports: inputs
-        .filter(input => input.checked)
-        .map(input => input.value)
-    });
+  getChosenReports(event) {
+    if (event.target.checked) {
+      this.setState({
+        selectedReports: [...this.state.selectedReports, event.target.value]
+      });
+    } else {
+      this.setState({
+        selectedReports: this.state.selectedReports.filter(
+          id => id !== event.target.value
+        )
+      });
+    }
+    const inputs = document.getElementsByName("selected");
+    if (Array.from(inputs).filter(input => input.checked).length > 3) {
+      for (let i = 0; i < inputs.length; i++) {
+        if (!inputs[i].checked) {
+          inputs[i].disabled = true;
+        }
+      }
+    }
   }
 
   sendBiddedReports() {
@@ -69,30 +82,53 @@ class Reader extends Component {
   render() {
     return (
       <div>
-        <table>
-          <tbody>
-            <tr>
-              <th>Namn</th>
-              <th>Författare</th>
-              <th>ladda ner</th>
-            </tr>
-            {this.state.reports.map((report, index) => (
-              <tr key={index}>
-                <td key={report.name}>{report.name}</td>
-                <td key={report.author}>{report.author}</td>
-                <td key={report.downloadUrl}>ladda ner</td>
-                <td key={report.id}>
-                  <input
-                    type="checkbox"
-                    name="selected"
-                    value={report.id}
-                    onClick={this.getChosenReports.bind(this)}
-                  />
-                </td>
+        <div className="flexDiv">
+          <table className="tableReports">
+            <tbody>
+              <tr>
+                <th>Namn</th>
+                <th>Författare</th>
+                <th>ladda ner</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              {this.state.reports.map((report, index) => (
+                <tr key={index}>
+                  <td key={report.name}>{report.name}</td>
+                  <td key={report.author}>{report.author}</td>
+                  <td key={report.downloadUrl}>ladda ner</td>
+                  <td key={report.id}>
+                    <input
+                      type="checkbox"
+                      name="selected"
+                      value={report.id}
+                      onClick={this.getChosenReports.bind(this)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <table>
+            <tbody>
+              <tr>
+                <th>#</th>
+                <th>Namn</th>
+                <th>Författare</th>
+              </tr>
+              {this.state.selectedReports.map((reportId, index) => {
+                const report = this.state.reports.filter(
+                  rep => rep.id === reportId
+                )[0];
+                return (
+                  <tr key={index}>
+                    <td key={index}>{index + 1}</td>
+                    <td key={report.name}>{report.name}</td>
+                    <td key={report.author}>{report.author}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
         <button onClick={this.sendBiddedReports.bind(this)}>Skicka</button>
       </div>
     );

@@ -225,3 +225,16 @@ button {
 }
 
 /* Reader */
+
+.flexDiv {
+  display: block;
+}
+
+.borderRight {
+  border-right: 1px solid black;
+}
+
+.tableReports {
+  height: 40px;
+  overflow-y: scroll;
+}
