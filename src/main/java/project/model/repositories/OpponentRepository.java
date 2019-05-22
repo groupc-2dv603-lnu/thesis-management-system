@@ -8,4 +8,5 @@ import project.model.entities.Opponent;
 
 public interface OpponentRepository extends MongoRepository<Opponent, String> {
 	Opponent findFirstByuserId(String id);
+	Opponent findFirstById(String id);
 }
