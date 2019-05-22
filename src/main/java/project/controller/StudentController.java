@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 import project.model.entities.Feedback;
 import project.model.entities.FinalReport;
 import project.model.entities.InitialReport;
+import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.FeedbackRepository;
 import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
+import project.model.repositories.ProjectDescriptionRepository;
 import project.model.repositories.ProjectPlanRepository;
 import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
@@ -40,15 +42,17 @@ public class StudentController {
 	private final FeedbackRepository feebackRepository;
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
+	private final ProjectDescriptionRepository projectDescriptionRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
-			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository) {
+			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
 		this.feebackRepository = feebackRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
+		this.projectDescriptionRepository = projectDescriptionRepository;
 	}
 	
 //	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
@@ -111,6 +115,15 @@ public class StudentController {
 		FinalReport finalReport = finalReportRepository.findFirstByuserId(user.getId());
 		return new Resource<>(finalReport,
 				linkTo(methodOn(StudentController.class).one4()).withSelfRel());
+	}
+	@GetMapping(value = "/projectDescription", produces = "application/json; charset=UTF-8")
+	Resource<ProjectDescription> one5() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(user.getId());
+		return new Resource<>(projectDescription,
+				linkTo(methodOn(StudentController.class).one5()).withSelfRel());
 	}
 	
 	@GetMapping(value = "/feedback/{id}", produces = "application/json; charset=UTF-8")
