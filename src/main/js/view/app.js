@@ -8,6 +8,7 @@ import FrontPage from "./Pages/FrontPage";
 import Student from "./Pages/Student";
 import Coordinator from "./Pages/Coordinator";
 import Reader from "./Pages/Reader";
+import Opponent from "./Pages/Opponent";
 
 class App extends Component {
   render() {
@@ -21,6 +22,7 @@ class App extends Component {
             <Route exact path="/student" component={Student} />
             <Route exact path="/coordinator" component={Coordinator} />
             <Route exact path="/reader" component={Reader} />
+            <Route exact path="/opponent" component={Opponent} />
           </div>
           {/* </Switch> */}
         </HashRouter>
