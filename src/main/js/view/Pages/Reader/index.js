@@ -38,7 +38,18 @@ const mockState = {
   ],
   selectedReports: [],
   requestedReports: false,
-  receivedReport: false
+  initialReport: {
+    id: "1253457",
+    name: "report5",
+    author: "Örjan Carlsson",
+    downloadUrl: "www.test433.se"
+  },
+  finalReport: {
+    id: "1253457",
+    name: "report5",
+    author: "Örjan Carlsson",
+    downloadUrl: "www.test433.se"
+  }
 };
 
 class Reader extends Component {
@@ -85,57 +96,103 @@ class Reader extends Component {
     // mock
   }
 
+  sendInitialReport() {
+    console.log(document.getElementById("initialreport").value);
+  }
+
+  sendFinalReport() {
+    console.log(document.getElementById("finalreport").value);
+  }
+
   render() {
     return (
       <div>
-        <div className="flexDiv">
-          <table className="tableReports">
-            <tbody>
-              <tr>
-                <th>Namn</th>
-                <th>Författare</th>
-                <th>ladda ner</th>
-              </tr>
-              {this.state.reports.map((report, index) => (
-                <tr key={index}>
-                  <td key={report.name}>{report.name}</td>
-                  <td key={report.author}>{report.author}</td>
-                  <td key={report.downloadUrl}>ladda ner</td>
-                  <td key={report.id}>
-                    <input
-                      type="checkbox"
-                      name="selected"
-                      value={report.id}
-                      onClick={this.getChosenReports.bind(this)}
-                    />
-                  </td>
+        {this.state.reports.length && (
+          <div>
+            <p>Välj rapporter</p>
+            <table className="tableReports">
+              <tbody>
+                <tr>
+                  <th>Namn</th>
+                  <th>Författare</th>
+                  <th>ladda ner</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <table>
-            <tbody>
-              <tr>
-                <th>#</th>
-                <th>Namn</th>
-                <th>Författare</th>
-              </tr>
-              {this.state.selectedReports.map((reportId, index) => {
-                const report = this.state.reports.filter(
-                  rep => rep.id === reportId
-                )[0];
-                return (
+                {this.state.reports.map((report, index) => (
                   <tr key={index}>
-                    <td key={index}>{index + 1}</td>
                     <td key={report.name}>{report.name}</td>
                     <td key={report.author}>{report.author}</td>
+                    <td key={report.downloadUrl}>ladda ner</td>
+                    <td key={report.id}>
+                      <input
+                        type="checkbox"
+                        name="selected"
+                        value={report.id}
+                        onClick={this.getChosenReports.bind(this)}
+                      />
+                    </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        <button onClick={this.sendBiddedReports.bind(this)}>Skicka</button>
+                ))}
+              </tbody>
+            </table>
+            <p>Valda rapporter</p>
+            <table>
+              <tbody>
+                <tr>
+                  <th>#</th>
+                  <th>Namn</th>
+                  <th>Författare</th>
+                </tr>
+                {this.state.selectedReports.map((reportId, index) => {
+                  const report = this.state.reports.filter(
+                    rep => rep.id === reportId
+                  )[0];
+                  return (
+                    <tr key={index}>
+                      <td key={index}>{index + 1}</td>
+                      <td key={report.name}>{report.name}</td>
+                      <td key={report.author}>{report.author}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <button onClick={this.sendBiddedReports.bind(this)}>Skicka</button>
+          </div>
+        )}
+        {this.state.initialReport && (
+          <div>
+            <p>
+              Initial report: <span>Download</span>
+            </p>
+            <p>
+              {`${this.state.initialReport.name}, ${
+                this.state.initialReport.author
+              }`}
+            </p>
+            <textarea rows="10" cols="70" id="initialreport" />
+            <div>
+              <button onClick={this.sendInitialReport.bind(this)}>
+                Skicka
+              </button>
+            </div>
+          </div>
+        )}
+        {this.state.finalReport && (
+          <div>
+            <p>
+              Final report: <span>Download</span>
+            </p>
+            <p>
+              {`${this.state.finalReport.name}, ${
+                this.state.finalReport.author
+              }`}
+            </p>
+            <textarea rows="10" cols="70" id="finalreport" />
+            <div>
+              <button onClick={this.sendFinalReport.bind(this)}>Skicka</button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
