@@ -1,10 +1,16 @@
-'use strict'
+//TODO dela upp i fler filer
+//TODO design
+//TODO använd inte lokal tid
 
-import React, { Component } from 'react'
-import * as functions from './functions';
+'use strict';
+
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import * as func from './functions';
+import * as styles from './styles';
 
 export default class Supervisor extends Component {
-
+    
     constructor(props) {
         super(props);
 
@@ -12,11 +18,11 @@ export default class Supervisor extends Component {
     }
 
     componentDidMount() {
-        functions.getAppliedStudents().then(response => {
+        func.getAppliedStudents().then(response => {
             this.setState({ studentsApplied: response.entity._embedded.students })
         });
 
-        functions.getSupervisedStudents().then(response => {
+        func.getSupervisedStudents().then(response => {
             this.setState({ supervisedStudents: response.entity._embedded.students })
         });
     }
@@ -29,7 +35,7 @@ export default class Supervisor extends Component {
         const supervisedStudents = this.state.supervisedStudents.map(student =>
             <SupervisedStudent key={student.id} {...student}/>
         )
-        
+    
         return (
             <div>
                 <table className="supervisor-box">
@@ -37,22 +43,33 @@ export default class Supervisor extends Component {
                         {studentRequests}
                     </tbody>
                 </table>
-                <br/>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>
-                                Supervisor for
-                            </th>
-                        </tr>
-                        {supervisedStudents}
-                    </tbody>
-                </table>
 
+                <br/>
+
+                Student you supervise
+                <div style={styles.studentList}>
+                    <table width="100%">
+                        <tbody>
+                            <tr style={{textAlign: "left"}}>
+                                <th style={{verticalAlign: "top"}}>
+                                    Student
+                                </th>
+                                <th>
+                                    Submissions available for review
+                                </th>
+                                <th>
+                                    e-mail
+                                </th>
+                            </tr>
+                            {supervisedStudents}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         )
     }
 }
+
 
 class StudentRequest extends Component {
 
@@ -63,7 +80,7 @@ class StudentRequest extends Component {
     }
 
     componentDidMount() {
-        functions.getUser(this.props.userId).then(response => {
+        func.getUser(this.props.userId).then(response => {
             this.setState({ user: response }) //.entity
         });
     }
@@ -75,8 +92,8 @@ class StudentRequest extends Component {
                     {this.state.user.name} has applied to get you as supervisor
                 </td>
                 <td style={{'whiteSpace':'nowrap'}}>
-                    <button onClick={() => functions.acceptRequest(this.state.user)}>Accept</button>
-                    <button onClick={() => functions.rejectRequest(this.state.user)}>Decline</button>
+                    <button onClick={() => func.acceptRequest(this.state.user)}>Accept</button>
+                    <button onClick={() => func.rejectRequest(this.state.user)}>Decline</button>
                 </td>
             </tr>
         )
@@ -88,20 +105,54 @@ class SupervisedStudent extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { user: {} };
+        this.state = { user: {}, projectPlan: {}, initialReport: {} };
     }
 
     componentDidMount() {
-        functions.getUser(this.props.userId).then(response => {
+        func.getUser(this.props.userId).then(response => {
             this.setState({ user: response }) //.entity
         });
+
+        func.getUserProjectPlan(this.props.userId).then(response => {
+            if(response)
+                this.setState({ projectPlan: response }); //.entity._embedded.submissions
+        })
+        
+        func.getUserInitialReport(this.props.userId).then(response => {
+            if(response)
+                this.setState({ initialReport: response }); //.entity._embedded.submissions
+        })
+        
     }
     
+
     render()  {
+        let currentDate = new Date().toISOString();
+ 
         return (
             <tr>
                 <td>
                     {this.state.user.name}
+                </td>
+                <td>
+                    {(this.state.projectPlan.submissionId && currentDate > this.state.projectPlan.deadline) ?
+                        <div>
+                            <Link to={"/supervisor/submission/" + this.state.projectPlan.submissionId}>
+                                Project Plan
+                            </Link>
+                            <br/>
+                        </div>
+                    : null }
+                    {(this.state.initialReport.submissionId && currentDate > this.state.initialReport.deadline) ?
+                        <div>
+                            <Link to={"/supervisor/submission/" + this.state.initialReport.submissionId}>
+                                Initial Report
+                            </Link>
+                        </div>
+                    : null }
+                </td>
+                <td>
+                    {this.state.user.emailAdress}
                 </td>
             </tr>
         )
