@@ -8,10 +8,10 @@ import project.model.entities.Feedback;
 import project.model.repositories.FeedbackRepository;
 
 @RestController
-public class OpponentReaderController {
+public class OpponentController {
 	private final FeedbackRepository feedbackRepository;
 	
-	OpponentReaderController(FeedbackRepository feedbackRepository) {
+	OpponentController(FeedbackRepository feedbackRepository) {
 		this.feedbackRepository = feedbackRepository;
 	}
 	
