@@ -9,12 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +28,6 @@ import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.ProjectDescriptionRepository;
 import project.model.repositories.ProjectPlanRepository;
-import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 
@@ -39,7 +36,7 @@ public class StudentController {
 	private final UserRepository repository;
 	private final SupervisorRepository supervisorRepository;
 	private final ProjectPlanRepository projectPlanRepository;
-	private final FeedbackRepository feebackRepository;
+	private final FeedbackRepository feedbackRepository;
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
 	private final ProjectDescriptionRepository projectDescriptionRepository;
@@ -49,7 +46,7 @@ public class StudentController {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
-		this.feebackRepository = feebackRepository;
+		this.feedbackRepository = feebackRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
 		this.projectDescriptionRepository = projectDescriptionRepository;
@@ -128,7 +125,7 @@ public class StudentController {
 	
 	@GetMapping(value = "/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
-		Feedback feedback = feebackRepository.findFirstById(id);
+		Feedback feedback = feedbackRepository.findFirstById(id);
 		return new Resource<>(feedback,
 				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
@@ -136,7 +133,7 @@ public class StudentController {
 	
 	@GetMapping(value = "/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
-		List<Resource<Feedback>> feedbacks = feebackRepository.findBydocumentId(documentId).stream()
+		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
 			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
 			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
