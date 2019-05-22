@@ -23,7 +23,7 @@ export const headerSubmissionStyle = {
   fontWeight: headerFontWeight,
   height: headerRowHeight,
   lineHeight: lineHeight,
-  border: "1px solid black",
+  border: "1px solid black"
 };
 
 export const nameColumnStyle = {
@@ -36,18 +36,18 @@ export const submissionColumnStyle = {
 };
 
 export const tooltip = {
-  position: 'relative',
-  display: 'inline-block',
-  width: '100%',
-  height: '20px',
-  textAlign: 'center',
-  marginBottom: '10px'
-}
+  position: "relative",
+  display: "inline-block",
+  width: "100%",
+  height: "20px",
+  textAlign: "center",
+  marginBottom: "10px"
+};
 
 /* ---- PopUp styles ---- */
 
-const innerWidth = "30%"
-const innerHeight = "10%"
+const innerWidth = "30%";
+const innerHeight = "10%";
 
 export const popup = {
   position: "fixed",
@@ -72,63 +72,103 @@ export const popupInner = {
 };
 
 export const popupClose = {
-  float: 'right',
-  width: '20px',
-  height: '20px',
-  margin: '10px'
-}
+  float: "right",
+  width: "20px",
+  height: "20px",
+  margin: "10px"
+};
 
-/* --- Student Submission modules --- */ 
-const submissionRowHeight = '50px'
-const lnuYellow = '#ffee00'
-const standardBorder = '1px solid black'
+/* --- Student Submission modules --- */
+
+const submissionRowHeight = "50px";
+const lnuYellow = "#ffee00";
+const standardBorder = "1px solid black";
 
 export const submissionDivStyle = {
-  width: '100%',
-}
+  width: "100%"
+};
 
 export const submissionMenu = {
-  height: submissionRowHeight,
-}
+  height: submissionRowHeight
+};
 
 export const submissionButtons = {
-  color: 'black',
+  color: "black",
   background: lnuYellow,
-  border: standardBorder, 
-  width: '25%',
+  border: standardBorder,
+  width: "25%",
   height: submissionRowHeight,
-  display: 'inline',
-}
+  display: "inline"
+};
 
 export const downloadSubmission = {
-  color: 'black',
+  color: "black",
   background: lnuYellow,
-  width: '200px',
+  width: "200px",
   height: submissionRowHeight,
-  marginBottom: '20px',
-  marginTop: '20px'
-}
+  marginBottom: "20px",
+  marginTop: "20px"
+};
 
-export const popupForm = {
-  width: '80%',
-  margin: '0 auto',
-  textAlign: 'center'
-}
+export const downloadDiv = {
+  width: "80%",
+  margin: "0 auto",
+  textAlign: "center"
+};
 
-export const deadline = {
+export const formDiv = {
+  width: "80%",
+  margin: "0 auto",
+  textAlign: "center"
+};
+
+export const popupRow = {
   borderBottom: standardBorder,
   height: submissionRowHeight,
-  textAlign: 'left',
-  lineHeight: '50px'
-}
+  textAlign: "left",
+  lineHeight: "50px",
+  display: "block"
+};
 
-export const grade = {
-  borderBottom: standardBorder,
-  height: submissionRowHeight,
-  textAlign: 'left',
-  lineHeight: '50px'
-}
+export const label = {
+  width: "20%",
+  display: "inline-block"
+};
 
 export const input = {
-  marginLeft: '20px'
+  border: standardBorder
+};
+
+export const select = {
+  border: standardBorder
+};
+
+export const submitButton = {
+  border: standardBorder,
+  bottom: '0'
+}
+
+export const feedback = {
+  width: "100%",
+  textAlign: "left"
+};
+export const textarea = {
+  height: "120px",
+  width: "100%",
+  border: standardBorder,
+  marginTop: "5px"
+};
+
+export const feedbackInfo ={
+  position: 'relative',
+  display: 'block',
+  height: '20px'
+}
+
+export const feedbackLabel = {
+  border: standardBorder
+}
+
+export const feedbackName = {
+  border: standardBorder
 }

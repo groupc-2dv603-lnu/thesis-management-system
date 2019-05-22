@@ -141,7 +141,7 @@ export class ProjectDescriptionMock {
     this.entity = [
       {
         id: 101,
-        submissionId: 11,
+        submissionId: 1,
         userId: 11,
         grade: "pass",
         deadline: "2019-05-12T23:55",
@@ -149,7 +149,7 @@ export class ProjectDescriptionMock {
       },
       {
         id: 101,
-        submissionId: 11,
+        submissionId: 2,
         userId: 99,
         grade: "fail",
         deadline: "2019-05-12T23:55",
@@ -212,7 +212,7 @@ export class FeedbackMock {
           {
             id: 22,
             submissionId: 1,
-            userId: 11,
+            userId: 10,
             role: "coordinator",
             text:
               "This is feedback from a mock object. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean bibendum vestibulum bibendum. Proin tempus sapien et consequat sollicitudin. Sed ut diam id magna auctor ultricies. Donec ac aliquam libero. Mauris eu elementum odio, sit amet faucibus sapien. Suspendisse lectus urna, sollicitudin in dignissim sit amet, pretium in enim. Nullam sodales metus diam, in iaculis augue bibendum nec. Cras bibendum vitae sem vitae fringilla. Vivamus pellentesque felis et vulputate pharetra. Integer est urna, lacinia eget eros quis, viverra sodales ipsum." +
@@ -222,7 +222,7 @@ export class FeedbackMock {
           {
             id: 33,
             submissionId: 2,
-            userId: 11,
+            userId: 12,
             role: "coordinator",
             text: "Some feedback from the coordinator"
           },

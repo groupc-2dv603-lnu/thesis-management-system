@@ -68,3 +68,12 @@ export function getProjectDescription(userId) {
   return description === undefined ? null : description
 
 }
+
+export function getFeedback(submissionId) {
+  const mock = new Mock.FeedbackMock()
+
+  return mock.entity._embedded.feedback.find(fb => 
+    fb.submissionId === submissionId
+  )
+ 
+}
