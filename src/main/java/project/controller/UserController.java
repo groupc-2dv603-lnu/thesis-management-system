@@ -144,7 +144,23 @@ class UserController {
 
 	}
 	@DeleteMapping("/admin/deleteUser")
-	void deleteEmployee(@RequestParam String userId) {
+	void deleteUser(@RequestParam String userId) {
+		User user = repository.findFirstById(userId);
+		for(int i=0; i < user.getRoles().length; i++){
+			if(user.getRoles()[i].equals(Role.STUDENT)) {
+				Student student = studentRepository.findFirstByuserId(user.getId());
+				studentRepository.deleteById(student.getId());
+			} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
+				Supervisor supervisor = supervisorRepository.findFirstByuserId(user.getId());
+				supervisorRepository.deleteById(supervisor.getId());
+			} else if(user.getRoles()[i].equals(Role.OPPONENT)) {
+				Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
+				opponentRepository.deleteById(opponent.getId());
+			}else if(user.getRoles()[i].equals(Role.READER)) {
+				Reader reader = readerRepository.findFirstByuserId(user.getId());
+				readerRepository.deleteById(reader.getId());
+			}
+		}
 		repository.deleteById(userId);
 	}
 	

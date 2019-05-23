@@ -6,4 +6,6 @@ import project.model.entities.Reader;
 
 public interface ReaderRepository extends MongoRepository<Reader, String> {
 
+	Reader findFirstByuserId(String id);
+
 }
