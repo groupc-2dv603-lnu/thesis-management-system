@@ -9,6 +9,7 @@ import * as style from "./submissionStyles";
  */
 // Mock import
 import { getSubmissions } from "./SubMock";
+import SubmissionPopup from "./SubmissionPopup";
 
 class Submission extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class Submission extends Component {
           );
         })}
         {this.state.showPopup ? (
-          <Popup
+          <SubmissionPopup
             submission={this.state.submission}
             closePopup={this.togglePopup.bind(this)}
           />

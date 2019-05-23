@@ -229,3 +229,13 @@ export const noBids = {
   width: '100%',
   textAlign: 'center'
 }
+
+export const subPopupBody = {
+  border: standardBorder,
+  width: '60%',
+  margin: '0 auto',
+}
+
+export const deadlineInput = {
+  width: '100%',
+}
