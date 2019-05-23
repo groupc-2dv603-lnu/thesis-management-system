@@ -92,7 +92,7 @@ class UserController {
 //		return newUser;
 //	}
 
-	@PostMapping("/createUser")
+	@PostMapping("/admin/createUser")
 	User newUser2(@RequestBody User user) {
 		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
 		if(findUser == null) {
@@ -104,6 +104,17 @@ class UserController {
 			//return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
 		}
 		
+	}
+	@PutMapping("/admin/assignRoles")
+	User updateUser(@RequestBody User updateUser) {
+		User finduser = repository.findFirstByEmailAdress(updateUser.getEmailAdress());
+		if(finduser != null) {
+			finduser.setRoles(updateUser.getRoles());
+			return repository.save(finduser);
+		} else {
+			return finduser;
+		}
+
 	}
 	
 }
