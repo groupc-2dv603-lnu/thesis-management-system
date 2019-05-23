@@ -2,6 +2,7 @@ package project.model.entities;
 
 import java.util.ArrayList;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -9,6 +10,8 @@ import lombok.Data;
 @Data
 @Document(collection = "supervisors")
 public class Supervisor {
+	@Id
+	private String id;
 	private String userId;
 	private Boolean availableForSupervisor;
 	private ArrayList<String> assignedStudents;

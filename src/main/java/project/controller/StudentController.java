@@ -81,7 +81,7 @@ public class StudentController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);	
-		Supervisor supervisor = supervisorRepository.findFirstByUserId(supervisorUserId);
+		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
 		supervisor.getAwaitingResponse().add(user.getId());
 		return supervisorRepository.save(supervisor);
 
