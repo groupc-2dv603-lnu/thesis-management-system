@@ -78,97 +78,119 @@ export const popupClose = {
   margin: "10px"
 };
 
-/* --- Student Submission modules --- */
+export const popupName = {
+  width: "100%",
+  textAlign: "center"
+};
+
+/* ---  Submission  --- */
 
 const submissionRowHeight = "50px";
 const lnuYellow = "#ffee00";
 const standardBorder = "1px solid black";
 
-export const submissionDivStyle = {
-  width: "100%"
+export const submissionDiv = {
+  width: "80%",
+  border: standardBorder,
+  margin: '0 auto'
 };
 
+export const submissionHeader = {
+  background: lnuYellow,
+  border: standardBorder,
+  textAlign: "center",
+  fontWeight: 'bold',
+  height: '40px',
+  lineHeight: '40px'
+}
+
+export const submissionBody = {
+  border: standardBorder,
+}
+
+export const submissionRow = {
+  border: standardBorder,
+  height: '30px',
+  width: '100%'
+}
+
+export const submissionLeftColumn = {
+  borderRight: standardBorder,
+  width: '25%',
+  height: '100%',
+  float: 'left',
+  lineHeight: '30px',
+  marginLeft: '3px',
+  fontWeight: 'bold'
+
+}
+export const submissionRightColumn = {
+  height: '100%',
+  float: 'left',
+  lineHeight: '30px',
+  marginLeft: '3px',
+
+}
+
+export const submissionEditColumn = {
+  float: 'right',
+  lineHeight: '30px',
+  marginRight: '5px'
+}
+
 export const submissionMenu = {
-  height: submissionRowHeight
+  height: submissionRowHeight,
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  background: lnuYellow,
+  borderTop: "2px solid black",
+  borderBottom: "2px solid black",
+  marginBottom: '20px'
 };
 
 export const submissionButtons = {
   color: "black",
-  background: lnuYellow,
   border: standardBorder,
-  width: "25%",
-  height: submissionRowHeight,
-  display: "inline"
-};
-
-export const downloadSubmission = {
-  color: "black",
   background: lnuYellow,
-  width: "200px",
-  height: submissionRowHeight,
-  marginBottom: "20px",
-  marginTop: "20px"
+  width: "15%",
+  textAlign: "center",
+  height: submissionRowHeight
 };
 
-export const downloadDiv = {
-  width: "80%",
-  margin: "0 auto",
-  textAlign: "center"
+export const submissionNotFoundDiv = {
+  border: standardBorder,
+  height: "100px",
+  textAlign: "center",
+  marginTop: "50px"
+};
+export const submissionNotFound = {
+  fontWeight: "bold"
 };
 
-export const formDiv = {
-  width: "80%",
-  margin: "0 auto",
-  textAlign: "center"
+/* ---- feedback ---- */
+export const submissionFeedbackRow = {
+  height: '120px',
+  borderTop: standardBorder,
+  borderLeft: standardBorder
+}
+export const textarea = {
+  height: "90%",
+  width: "170%",
+  border: 'none',
+  resize: 'none',
+  padding: '2px'
 };
 
-export const popupRow = {
+export const submissionFeedbackFromRow = {
+  borderLeft: standardBorder,
+  borderRight: standardBorder,
   borderBottom: standardBorder,
-  height: submissionRowHeight,
-  textAlign: "left",
-  lineHeight: "50px",
-  display: "block"
-};
-
-export const label = {
-  width: "20%",
-  display: "inline-block"
-};
-
-export const input = {
-  border: standardBorder
-};
-
-export const select = {
-  border: standardBorder
-};
+  height: '30px',
+  width: '100%'
+}
 
 export const submitButton = {
-  border: standardBorder,
-  bottom: '0'
-}
-
-export const feedback = {
-  width: "100%",
-  textAlign: "left"
-};
-export const textarea = {
-  height: "120px",
-  width: "100%",
-  border: standardBorder,
-  marginTop: "5px"
-};
-
-export const feedbackInfo ={
-  position: 'relative',
-  display: 'block',
-  height: '20px'
-}
-
-export const feedbackLabel = {
-  border: standardBorder
-}
-
-export const feedbackName = {
-  border: standardBorder
+  marginLeft: '40%',
+  marginTop: '5px'
 }

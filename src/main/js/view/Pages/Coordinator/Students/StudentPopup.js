@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import * as Style from "../Styles";
 import { getName } from "../functions";
-import ProjectDescription from "./ProjectDescription";
+import SubmissionBox from "./SubmissionBox";
 
 class StudentPopup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: "projectDescription",
-      studentId: this.props.studentId
+      page: "project description"
     };
   }
 
@@ -19,15 +18,13 @@ class StudentPopup extends React.Component {
   }
 
   renderPage() {
-    if (this.state.page === "projectDescription") {
-      return <ProjectDescription userId={this.state.studentId}/>;
-    } else if (this.state.page === "projectPlan") {
-      return <span>plan</span>;
-    } else if (this.state.page === "initialReport") {
-      return <span>initialReport</span>;
-    } else if (this.state.page === "finalReport") {
-      return <span>Final</span>;
-    }
+    return (
+      <SubmissionBox
+        userId={this.props.userId}
+        type={this.state.page}
+        key={this.state.page}
+      />
+    );
   }
 
   render() {
@@ -39,18 +36,30 @@ class StudentPopup extends React.Component {
             onClick={this.props.closePopup}
             style={Style.popupClose}
           />
-          <h3 style={Style.popupName}>{getName(this.props.studentId)}</h3>
+          <h3 style={Style.popupName}>{getName(this.props.userId)}</h3>
           <div style={Style.submissionMenu}>
-            <button style={Style.submissionButtons} onClick={() => this.setPage("projectDescription")}>
+            <button
+              style={Style.submissionButtons}
+              onClick={() => this.setPage("project description")}
+            >
               Project Description
             </button>
-            <button style={Style.submissionButtons} onClick={() => this.setPage("projectPlan")}>
+            <button
+              style={Style.submissionButtons}
+              onClick={() => this.setPage("project plan")}
+            >
               Project Plan
             </button>
-            <button style={Style.submissionButtons} onClick={() => this.setPage("initialReport")}>
+            <button
+              style={Style.submissionButtons}
+              onClick={() => this.setPage("initial report")}
+            >
               Initial Report
             </button>
-            <button style={Style.submissionButtons} onClick={() => this.setPage("finalReport")}>
+            <button
+              style={Style.submissionButtons}
+              onClick={() => this.setPage("final report")}
+            >
               Final Report
             </button>
           </div>

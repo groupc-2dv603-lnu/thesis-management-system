@@ -8,14 +8,21 @@
 import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
-import { Link } from "react-router-dom";
 import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
 import * as Style from "../Styles";
 const client = require("../../../../client");
 
 /* ---- function imports ---- */
-import { getStudents, getName, submissionSubmitted } from "../functions";
+import {
+  getStudents,
+  getName,
+  submissionSubmitted,
+  supervisorAssigned,
+  submittedTrue,
+  submittedFalse,
+  descriptionSubmitted
+} from "../functions";
 
 class StudentsTable extends Component {
   constructor(props) {
@@ -29,16 +36,16 @@ class StudentsTable extends Component {
       iTooltip: false,
       fTooltip: false,
       // sent to studentPopup
-      studentId: null, 
+      selectedUserId: null,
       showPopup: false
     };
-    this.students = getStudents();
+    this.state.students = getStudents();
   }
 
-  togglePopup(studentId) {
+  togglePopup(userId) {
     this.setState({
-      studentId: studentId
-    })
+      selectedUserId: userId
+    });
     this.setState({
       showPopup: !this.state.showPopup
     });
@@ -47,8 +54,14 @@ class StudentsTable extends Component {
   render() {
     /* ---- Table ---- */
     const columnMaxWidth = 60;
+    const projectDescription = 'project description'
+    const projectPlan = 'project plan'
+    const initialReport = 'initial report'
+    const finalReport = 'final report'
+
     const columns = [
       {
+        /* ----- TABLE NAME ----- */
         Header: "Name",
         headerStyle: Style.headerNameCellStyle,
         style: Style.nameColumnStyle,
@@ -56,13 +69,17 @@ class StudentsTable extends Component {
         resizable: true,
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
-          <span onClick={() =>{this.togglePopup(props.original.userId)}
-        }>
-            {getName(props.original.userId)}
+          <span
+            onClick={() => {
+              this.togglePopup(props.original.id);
+            }}
+          >
+            {props.original.name}
           </span>
         )
       },
       {
+        /* ----- ASSIGNED SUPERVISOR ----- */
         Header: () => (
           <RCTooltip
             onMouseEnter={() =>
@@ -84,14 +101,13 @@ class StudentsTable extends Component {
         accessor: "supervisor",
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <Link to={`#`}>
-            <span>
-              {submissionSubmitted(props.original.userId, "final report")}
-            </span>
-          </Link>
+          <span>
+            {supervisorAssigned() === true ? submittedTrue() : submittedFalse()}
+          </span>
         )
       },
       {
+        /* ----- PROJECT DESCRIPTION ----- */
         Header: () => (
           <RCTooltip
             onMouseEnter={() =>
@@ -116,11 +132,15 @@ class StudentsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <span>
-            {submissionSubmitted(props.original.userId, "final report")}
+            {submissionSubmitted(props.original.id, projectDescription) ===
+            true
+              ? submittedTrue()
+              : submittedFalse()}
           </span>
         )
       },
       {
+        /* ----- PROJECT PLAN ----- */
         Header: () => (
           <RCTooltip
             onMouseEnter={() =>
@@ -142,14 +162,16 @@ class StudentsTable extends Component {
         style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <Link to="#">
-            <span>
-              {submissionSubmitted(props.original.userId, "project plan")}
-            </span>
-          </Link>
+          <span>
+            {submissionSubmitted(props.original.id, projectPlan) ===
+            true
+              ? submittedTrue()
+              : submittedFalse()}
+          </span>
         )
       },
       {
+        /* ----- INITIAL REPORT ----- */
         Header: () => (
           <RCTooltip
             onMouseEnter={() =>
@@ -173,14 +195,16 @@ class StudentsTable extends Component {
         style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <Link to="#">
-            <span>
-              {submissionSubmitted(props.original.userId, "initial report")}
-            </span>
-          </Link>
+          <span>
+            {submissionSubmitted(props.original.id, initialReport) ===
+            true
+              ? submittedTrue()
+              : submittedFalse()}
+          </span>
         )
       },
       {
+        /* ----- FINAL REPORT ----- */
         Header: () => (
           <RCTooltip
             onMouseEnter={() =>
@@ -202,20 +226,24 @@ class StudentsTable extends Component {
         style: Style.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <Link to="#">
-            <span>
-              {submissionSubmitted(props.original.userId, "final report")}
-            </span>
-          </Link>
+          <span>
+            {submissionSubmitted(props.original.id, finalReport) ===
+            true
+              ? submittedTrue()
+              : submittedFalse()}
+          </span>
         )
       }
     ];
 
     return (
       <div>
-        <ReactTable data={this.students.entity} columns={columns} />
+        <ReactTable data={this.state.students} columns={columns} />
         {this.state.showPopup ? (
-          <StudentPopup studentId={this.state.studentId} closePopup={this.togglePopup.bind(this)} />
+          <StudentPopup
+            userId={this.state.selectedUserId}
+            closePopup={this.togglePopup.bind(this)}
+          />
         ) : null}
       </div>
     );

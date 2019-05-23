@@ -14,7 +14,8 @@ export class UsersMock {
           {
             id: 10,
             name: "Widow Pacman",
-            emailAdress: "pacmanwidow@wakawaka.com"
+            emailAdress: "pacmanwidow@wakawaka.com",
+            roles: ["student"]
           },
           {
             id: 11,
@@ -39,20 +40,12 @@ export class UsersMock {
 
 export class StudentMock {
   constructor() {
-    this.entity = [
-      {
-        id: 50,
-        userId: 99,
-        supervisorId: 10,
-        supervisorAssigned: true
-      },
-      {
-        id: 54,
-        userId: 11,
-        supervisorId: null,
-        supervisorAssigned: false
+      this.entity = {
+          id: 99,
+          userId: 1,
+          supervisorId: 10,
+          supervisorAssigned: true,
       }
-    ];
   }
 }
 
@@ -76,56 +69,57 @@ export class SubmissionsMock {
         submissions: [
           {
             id: 1,
-            studentId: 99,
+            studentId: 1,
             type: "project description",
-            status: "active",
-            fileURL: "some_url"
+            status: "finished",
+            fileURL: "some_url",
+            submissionDate: '2019-12-24'
           },
           {
             id: 2,
-            studentId: 99,
+            studentId: 1,
             type: "project plan",
-            status: "submitted",
+            status: "active",
             fileURL: "some_url"
           },
           {
             id: 3,
-            studentId: 99,
+            studentId: 1,
             type: "initial report",
-            status: "submitted",
+            status: "disabled",
             fileURL: ""
           },
           {
             id: 4,
-            studentId: 99,
+            studentId: 1,
             type: "final report",
-            status: "active",
+            status: "disabled",
             fileURL: ""
           },
           {
             id: 1,
-            studentId: 11,
+            studentId: 10,
             type: "project description",
-            status: "submitted",
-            fileURL: "some_url"
-          },
-          {
-            id: 2,
-            studentId: 11,
-            type: "project plan",
             status: "finished",
             fileURL: "some_url"
           },
           {
+            id: 2,
+            studentId: 10,
+            type: "project plan",
+            status: "active",
+            fileURL: "some_url"
+          },
+          {
             id: 3,
-            studentId: 11,
+            studentId: 10,
             type: "initial report",
             status: "active",
             fileURL: ""
           },
           {
             id: 4,
-            studentId: 11,
+            studentId: 10,
             type: "final report",
             status: "finished",
             fileURL: ""
@@ -138,42 +132,33 @@ export class SubmissionsMock {
 
 export class ProjectDescriptionMock {
   constructor() {
-    this.entity = [
-      {
-        id: 101,
-        submissionId: 1,
-        userId: 11,
-        grade: "pass",
-        deadline: "2019-05-12T23:55",
-        submissionDate: "2019-05-10T20:15"
-      },
-      {
-        id: 101,
-        submissionId: 2,
-        userId: 99,
-        grade: "fail",
-        deadline: "2019-05-12T23:55",
-        submissionDate: "2019-05-10T20:15"
+      this.entity = {
+          id: 101,
+          userId: 1,
+          submissionId: 1,
+          grade: "pass",
+          deadline: "2019-05-12T23:55",
+          submissionDate: "2019-05-10T20:15",
       }
-    ];
   }
 }
 
 export class ProjectPlanMock {
   constructor() {
-    this.entity = {
+    this.entity =  {
       id: 102,
-      submissionId: 2,
+      submissionId: 1,
+      userId: 1,
       grade: "pass",
       deadline: "2019-05-24T23:55",
       submissionDate: "2019-05-20T20:15"
-    };
+    }
   }
 }
 
 export class InitialReportMock {
   constructor() {
-    this.entity = [
+    this.entity = 
       {
         id: 103,
         studentId: 99,
@@ -184,24 +169,25 @@ export class InitialReportMock {
         bids: [],
         assignedReaders: [11, 12],
         assignedOpponent: null
-      },
-      (this.entity = {
+      }
+    }
+}
+
+export class FinalReportMock {
+  constructor() {
+    this.entity = 
+      {
         id: 103,
-        studentId: 11,
+        studentId: 99,
         submissionId: 3,
         // grade: "pass",
         deadline: "2019-05-30T23:55",
         submissionDate: "2019-05-29T20:15",
-        bids: [11, 12, 99],
-        assignedReaders: [],
-        assignedOpponent: [11]
-      })
-    ];
-  }
-}
-
-export class FinalReportMock {
-  constructor() {}
+        bids: [],
+        assignedReaders: [11, 12],
+        assignedOpponent: null
+      }
+    }
 }
 
 export class FeedbackMock {

@@ -1,30 +1,39 @@
 import React, { Component } from "react";
-import { getName } from "../functions";
+import { getName, capitalizeFirstLetter } from "../functions";
 import * as Style from "../Styles";
 
 class Feedback extends Component {
+  onChange() {
+    console.log("change textvalue");
+  }
+
   render() {
+    console.log("props", this.props);
     return (
       <div>
-        {this.props.feedback !== undefined ? (
-          <div style={Style.feedback}>
-            <span style={Style.feedbackInfo}>Feedback</span>
-            <span style={Style.feedbackInfo}>
-              Provided by: {getName(this.props.feedback.userId)}
-            </span>
-            <span style={Style.feedbackInfo}>
-              Role: {this.props.feedback.role}
-            </span>
+        <div style={Style.submissionFeedbackRow}>
+          <span style={Style.submissionLeftColumn}>Feedback</span>
+          <span style={Style.submissionRightColumn}>
             <textarea
               style={Style.textarea}
-              value={this.props.feedback.text}
-              onChange={()=> this.props.handleChangeFeedback(event)}
-              ></textarea>
+              onChange={() => this.onChange()}
+              value={
+                this.props.feedback !== null
+                  ? this.props.feedback.text
+                  : "No feedback provided"
+              }
+            />
+          </span>
+        </div>
+        {this.props.feedback !== null ? (
+          <div style={Style.submissionFeedbackFromRow}>
+            <span style={Style.submissionLeftColumn}>From</span>
+            <span style={Style.submissionRightColumn}>
+              {capitalizeFirstLetter(this.props.feedback.role)}:{" "}
+              {getName(this.props.feedback.userId)}
+            </span>
           </div>
-          
-        ) : (
-          <div>'no feedback provided'</div>
-        )}
+        ) : null}
       </div>
     );
   }

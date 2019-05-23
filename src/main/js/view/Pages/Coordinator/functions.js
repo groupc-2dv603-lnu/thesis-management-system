@@ -1,13 +1,13 @@
 import * as Mock from "./Mocks";
 import React, { Component } from "react";
-export function capitalizeFirstLetter(string) {
-  if (string == null) return "N/A";
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 //TODO unfinished/mocks
 
 /* --- "global" ---- */
+export function capitalizeFirstLetter(string) {
+  if (string == null) return "N/A";
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export function getName(userId) {
   const users = new Mock.UsersMock();
@@ -35,45 +35,79 @@ export function getIRData() {
 }
 
 /* --- students page ---- */
-export function submissionSubmitted(userId, type) {
-  const submissions = new Mock.SubmissionsMock();
-  let sub = null;
-  submissions.entity._embedded.submissions.forEach(submission => {
-    if (submission.studentId === userId && submission.type === type) {
-      if (
-        submission.status === "finished" ||
-        submission.status === "submitted"
-      ) {
-        sub = submission;
-      }
+export function getStudents() {
+  const mock = new Mock.UsersMock();
+
+  let students = [];
+  mock.entity._embedded.users.forEach(user => {
+    if ("roles" in user) {
+      user.roles.forEach(role => {
+        if (role === "student") {
+          students.push(user);
+        }
+      });
     }
   });
-  return sub === null ? (
-    <i className="fas fa-check" />
-  ) : (
-    <i className="fas fa-times" />
+  return students;
+}
+
+// Shows the same for each only one mock created
+// correct if getStudent/{id}
+export function supervisorAssigned() {
+  const mock = new Mock.StudentMock();
+  return mock.entity.supervisorAssigned;
+}
+
+export function submissionSubmitted(userId, type) {
+  const mock = new Mock.SubmissionsMock();
+  let submission = mock.entity._embedded.submissions.find(
+    sub => userId === sub.studentId && sub.type === type
   );
+
+  if (submission !== undefined) {
+    return submission.status === "finished" ? true : false;
+  }
+
+  return false;
 }
 
-export function getStudents() {
-  return new Mock.StudentMock();
+export function submittedTrue() {
+  return <i className="fas fa-check" />;
 }
 
-/* ---- Student popups ---- */
-export function getProjectDescription(userId) { 
-  const mock = new Mock.ProjectDescriptionMock()
-  const description = mock.entity.find(description => 
-    userId === description.userId
-  )
-  return description === undefined ? null : description
+export function submittedFalse() {
+  return <i className="fas fa-times" />;
+}
 
+/* ---- Getters ---- */
+export function getSubmission(userId, type) {
+  const mock = new Mock.SubmissionsMock();
+  let submission = mock.entity._embedded.submissions.find(
+    sub => userId === sub.studentId && sub.type === type
+  );
+  return submission !== undefined ? submission : null;
+}
+
+export function getThesis(submissionId, thesisPart) {
+  if (thesisPart === "project description") {
+    return new Mock.ProjectDescriptionMock().entity;
+  } else if (thesisPart === "project plan") {
+    return new Mock.ProjectPlanMock().entity;
+  } else if (thesisPart === "initial report") {
+    return new Mock.InitialReportMock().entity;
+  } else if (thesisPart === "final report") {
+    return new Mock.FinalReportMock().entity;
+  } else {
+    return null;
+  }
 }
 
 export function getFeedback(submissionId) {
-  const mock = new Mock.FeedbackMock()
+  console.log(submissionId);
+  const mock = new Mock.FeedbackMock();
 
-  return mock.entity._embedded.feedback.find(fb => 
-    fb.submissionId === submissionId
-  )
- 
+  const feedback = mock.entity._embedded.feedback.find(
+    fb => fb.submissionId === submissionId
+  );
+  return feedback === undefined ? null : feedback;
 }
