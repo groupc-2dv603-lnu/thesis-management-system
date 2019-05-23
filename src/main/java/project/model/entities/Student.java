@@ -2,13 +2,15 @@ package project.model.entities;
 
 
 
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Data
+
 @Document(collection = "students")
 public class Student {
+
 	private String UserId;
 	private String AssignedSupervisorId;
 	

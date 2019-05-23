@@ -5,5 +5,6 @@ public enum Role {
     STUDENT,
     READER,
     SUPERVISOR,
+    OPPONENT,
     Student
 }

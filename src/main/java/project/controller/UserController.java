@@ -20,13 +20,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.model.entities.Opponent;
+import project.model.entities.Reader;
 
 //import project.model.entities.Student;
 
 import project.model.entities.Role;
-
+import project.model.entities.Student;
+import project.model.entities.Supervisor;
 import project.model.entities.User;
+import project.model.repositories.OpponentRepository;
+import project.model.repositories.ReaderRepository;
 import project.model.repositories.StudentRepository;
+import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 import project.model.services.EncryptionService;
 
@@ -38,11 +44,18 @@ class UserController {
 
 	private final UserRepository repository;
 	private final StudentRepository studentRepository;
+	private final SupervisorRepository supervisorRepository;
+	private final OpponentRepository opponentRepository;
+	private final ReaderRepository readerRepository;
 	
 	
-	UserController(UserRepository repository,StudentRepository studentRepository) {
+	UserController(UserRepository repository,StudentRepository studentRepository, SupervisorRepository supervisorRepository, OpponentRepository opponentRepository,
+			ReaderRepository readerRepository) {
 		this.repository = repository;
 		this.studentRepository = studentRepository;
+		this.supervisorRepository = supervisorRepository;
+		this.opponentRepository = opponentRepository;
+		this.readerRepository = readerRepository;
 	}
 
 	@GetMapping(value = "/users/{id}", produces = "application/json; charset=UTF-8")
@@ -99,8 +112,20 @@ class UserController {
 		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
 		if(findUser == null) {
 			user.setPassword(enrypt.hash(user.getPassword()));
-			return repository.save(user);
-
+			repository.save(user);
+			for(int i=0; i < user.getRoles().length; i++){
+				if(user.getRoles()[i].equals(Role.STUDENT)) {
+					studentRepository.save(new Student(user.getId(), ""));
+				} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
+					supervisorRepository.save(new Supervisor(user.getId(), false, new ArrayList<String>(), new ArrayList<String>()));
+				} else if(user.getRoles()[i].equals(Role.OPPONENT)) {
+					opponentRepository.save(new Opponent(user.getId(), ""));
+				}else if(user.getRoles()[i].equals(Role.READER)) {
+					readerRepository.save(new Reader(user.getId(), "", ""));
+				}
+			}
+			//return repository.save(user);
+			return user;
 		} else  {
 			return findUser;
 			//return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
