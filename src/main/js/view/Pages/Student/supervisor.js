@@ -1,19 +1,26 @@
 'use strict'
 
 import React, { Component } from 'react';
-import { requestSupervisor, getAvailableSupervisors } from './functions';
-import { getStudentData, getOwnUser, getUser } from './functions';
+import * as func from './functions';
 
 class SupervisorBox extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { supervisorPopup: false };
+        this.state = { supervisorPopup: false, studentData: {}, assignedSupervisor: {} };
         this.openSupervisorPopup = this.openSupervisorPopup.bind(this);
         this.closeSupervisorPopup = this.closeSupervisorPopup.bind(this);
 
-        this.studentData = getStudentData();
-        this.assignedSupervisor = getOwnUser(this.studentData.supervisorId);
+    }
+    
+    componentDidMount() {
+        func.getStudentData().then(studentResponse => {
+            this.setState({ studentData: studentResponse.entity });
+            func.getUser(studentResponse.entity.supervisorId).then(supervisorResponse => {
+                this.setState({ assignedSupervisor: supervisorResponse.entity })
+            })
+        });
+
     }
 
     openSupervisorPopup() {
@@ -29,7 +36,7 @@ class SupervisorBox extends Component {
             <div>
                 <div className="supervisor-box">
 
-                    {!this.studentData.supervisorId ? (
+                    {!this.state.studentData.supervisorId ? (
                         <p>
                             You have not yet requested a supervisor. You need to be assigned to a supervisor before your plan can be evaluated
                             <br />
@@ -38,18 +45,18 @@ class SupervisorBox extends Component {
                         </p>
                     ) : ''}
 
-                    {(this.studentData.supervisorId && !this.studentData.supervisorAssigned) ? (
+                    {(this.state.studentData.supervisorId && !this.state.studentData.supervisorAssigned) ? (
                         <p>
-                            Request for supervisor sent. Awaiting response from {this.assignedSupervisor.name}.
+                            Request for supervisor sent. Awaiting response from {this.state.assignedSupervisor.name}.
                             <br />
                             <br />
                             <button onClick={() => this.openSupervisorPopup()}>Request new supervisor</button>
                         </p>
                     ) : ''}
 
-                    {this.studentData.supervisorId && this.studentData.supervisorAssigned ? (
+                    {this.state.studentData.supervisorId && this.state.studentData.supervisorAssigned ? (
                         <p>
-                            Supervisor: {this.assignedSupervisor.name}
+                            Supervisor: {this.state.assignedSupervisor.name}
                         </p>
                     ): ''}
 
@@ -58,7 +65,7 @@ class SupervisorBox extends Component {
                 {/* SupervisorPopup */}
                 {this.state.supervisorPopup ? (
                     <div className="popup">
-                        <SupervisorPopup />
+                        <SupervisorPopup studentData={this.state.studentData} />
                         <button onClick={() => this.closeSupervisorPopup()}>Close</button>
                     </div>
                 ) : ''}
@@ -75,14 +82,14 @@ class SupervisorPopup extends Component {
     }
 
     componentDidMount() {
-        getAvailableSupervisors().then(response => {
+        func.getAvailableSupervisors().then(response => {
             this.setState({ availableSupervisors: response.entity._embedded.supervisors });
         });
     }
 
     render() {
         const supervisors = this.state.availableSupervisors.map(sv =>
-            <Supervisor key={sv.userId} supervisor={sv} />
+            <Supervisor key={sv.userId} supervisor={sv} studentData={this.props.studentData} />
         );
         
         return (
@@ -109,8 +116,9 @@ class Supervisor extends Component {
     }
 
     componentDidMount() {
-        getUser(this.props.supervisor.userId).then(response => {
-            this.setState({ user: response.entity });
+        func.getUser(this.props.supervisor.userId).then(userResponse => {
+            this.setState({ user: userResponse.entity });
+            console.log(this.props.studentData.supervisorId, this.props.supervisor.userId)
         })
     }
 
@@ -118,10 +126,10 @@ class Supervisor extends Component {
         return (
             <tr>
                 <td>
-                    { this.state.user.name }
+                    {this.state.user.name}
                 </td>
                 <td>
-                    <button onClick={() => requestSupervisor(this.props.supervisor)}>Request supervisor</button>
+                    <button disabled={this.props.studentData.supervisorId == this.props.supervisor.userId} onClick={() => func.requestSupervisor(this.props.supervisor)}>Request supervisor</button>
                 </td>
             </tr>
         )

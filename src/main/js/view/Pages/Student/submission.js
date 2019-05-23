@@ -22,22 +22,22 @@ class Submission extends Component {
         let currentDate = new Date().toISOString(); // TODO get date from server
 
         // submission graded
-        // if(this.props.reportData.grade != null) {
-        if(this.props.submissionData && this.props.submissionData.status == "finished") {
+        if(this.props.documentData.grade) {
+        // if(this.props.submissionData && this.props.submissionData.status == "finished") {
             line1 = "Status: Graded";
-            line2 = "Grade: " + capitalizeFirstLetter(this.props.reportData.grade);
-            styleClass = this.props.submissionData.status;
+            line2 = "Grade: " + capitalizeFirstLetter(this.props.documentData.grade);
+            styleClass = "finished"; // this.props.submissionData.status;
         }
         // deadline is set (but not graded) == submission counted as active
-        // else if(this.props.reportData.deadline) {
-            else if(this.props.submissionData && this.props.submissionData.status == "active") {
+        else if(this.props.documentData.deadline) {
+            // else if(this.props.submissionData && this.props.submissionData.status == "active") {
                 line1 = "Status: " + (this.props.submissionData.fileURL ? "Submitted" : "Not submitted");
-                line2 = "Deadline: " + new Date(this.props.reportData.deadline).toUTCString();
-                styleClass = this.props.submissionData.status; //"active";
-            }
-            else {
-                line1 = "N/A"
-                styleClass = "disabled";
+                line2 = "Deadline: " + new Date(this.props.documentData.deadline).toUTCString();
+                styleClass = "active"; // this.props.submissionData.status;
+        }
+        else {
+            line1 = "N/A"
+            styleClass = "disabled";
         }
 
         return (
@@ -46,13 +46,13 @@ class Submission extends Component {
                     <div className="header" onClick={() => this.toggleShowFeedback()}>{capitalizeFirstLetter(this.props.type)}</div>
                     <div className="content">
                         {/* finished or active submission */}
-                        {this.props.reportData.deadline != null ? (
+                        {this.props.documentData.deadline != null ? (
                             <div>
                                 {line1}
                                 <br />
                                 {line2}
                                 {/* show file upload for active submission */}
-                                {currentDate < this.props.reportData.deadline && !this.props.reportData.grade ? (
+                                {currentDate < this.props.documentData.deadline && !this.props.documentData.grade ? (
                                     <div>
                                         <br />
                                         <input type="file" id="file"/>
@@ -60,7 +60,7 @@ class Submission extends Component {
                                         <button onClick={() => uploadFile(document.getElementById("file").files[0])}>Upload</button>
                                     </div>
                                 // deadline passed
-                                ) : (this.props.reportData.deadline && !this.props.reportData.grade) ? (
+                                ) : (this.props.documentData.deadline && !this.props.documentData.grade) ? (
                                         <div style={{"color":"red"}}>
                                             <br/>
                                             Submission deadline has passed. If you missed it, contact your coordinator to open up the submission again

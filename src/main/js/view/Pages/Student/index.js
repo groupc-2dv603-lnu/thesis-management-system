@@ -2,13 +2,14 @@
 // design för icke tillgänglig data
 // separera css-fil - eller ha alla styles som konstanter i js-filerna
 // implementera db-hämtning
+// design för när man väntar på svar på en supervisor-förfrågan  
 
 'use strict';
 
 import React, { Component } from 'react';
 import SupervisorBox from './supervisor';
 import Submission from './submission';
-import { getPDData, getPPData, getIRData, getFRData, getSubmissionData } from './functions'
+import * as func from './functions'
 
 class Student extends Component {
     constructor(props) {
@@ -38,30 +39,30 @@ class Student extends Component {
         //     })
         // }
 
-        getPDData().then(response => {
+        func.getFromAPI("/projectDescription").then(response => {
             if(response.entity) {
-                getSubmissionData(response.entity.submissionId).then(submission => {
+                func.getSubmissionData(response.entity.submissionId).then(submission => {
                     this.setState({ PDData: response.entity, PDSubmissionData: submission }); //.entity
                 });
             }
         })
-        getPPData().then(response => {
+        func.getFromAPI("/projectPlan").then(response => {
             if(response.entity) {
-                   getSubmissionData(response.entity.submissionId).then(submission => {
+                func.getSubmissionData(response.entity.submissionId).then(submission => {
                     this.setState({ PPData: response.entity, PPSubmissionData: submission }); //.entity
                 });
             }
         })
-        getIRData().then(response => {
+        func.getFromAPI("/initialReport").then(response => {
             if(response.entity) {
-                getSubmissionData(response.entity.submissionId).then(submission => {
+                func.getSubmissionData(response.entity.submissionId).then(submission => {
                     this.setState({ IRData: response.entity, IRSubmissionData: submission }); //.entity
                 });
             }
         })
-        getFRData().then(response => {
+        func.getFromAPI("/finalReport").then(response => {
             if(response.entity) {
-                getSubmissionData(response.entity.submissionId).then(submission => {
+                func.getSubmissionData(response.entity.submissionId).then(submission => {
                     this.setState({ FRData: response.entity, FRSubmissionData: submission }); //.entity
                 });
             }
@@ -74,10 +75,10 @@ class Student extends Component {
                 <SupervisorBox />
 
                 <h2>Thesis Submissions</h2>
-                <Submission reportData={this.state.PDData} submissionData={this.state.PDSubmissionData} type="Project Description"/>
-                <Submission reportData={this.state.PPData} submissionData={this.state.PPSubmissionData} type="Project Plan"/>
-                <Submission reportData={this.state.IRData} submissionData={this.state.IRSubmissionData} type="Initial Report"/>
-                <Submission reportData={this.state.FRData} submissionData={this.state.FRSubmissionData} type="Final Report"/>
+                <Submission documentData={this.state.PDData} submissionData={this.state.PDSubmissionData} type="Project Description"/>
+                <Submission documentData={this.state.PPData} submissionData={this.state.PPSubmissionData} type="Project Plan"/>
+                <Submission documentData={this.state.IRData} submissionData={this.state.IRSubmissionData} type="Initial Report"/>
+                <Submission documentData={this.state.FRData} submissionData={this.state.FRSubmissionData} type="Final Report"/>
                 {/*
                 */}
                 

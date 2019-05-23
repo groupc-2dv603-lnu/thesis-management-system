@@ -11,6 +11,10 @@ export function capitalizeFirstLetter(string) {
 }
 
 
+export function getFromAPI(getPath) {
+    return client({ method: 'GET', path: getPath });
+}
+
 //TODO unfinished/mocks
 
 export function uploadFile(file) {
@@ -28,7 +32,7 @@ export function requestSupervisor(supervisor) {
     // });
 }
 
-export function getOwnUser(userId) {
+export function getMockUser(userId) {
     let mock = new Mock.UsersMock().entity._embedded.users.find(obj => obj.id == userId);
     return new Promise(resolve => resolve(mock));
 }
@@ -51,25 +55,29 @@ export function getSubmissionData(submissionId) {
     return new Promise(resolve => resolve(mock));
 }
 
-export function getPDData() {
-    let mock = new Mock.ProjectDescriptionMock();
-    return new Promise(resolve => resolve(mock));
-}
+// export function getPDData() {
+//     // let mock = new Mock.ProjectDescriptionMock();
+//     // return new Promise(resolve => resolve(mock));
+//     return getFromAPI('/projectDescription');
+// }
 
-export function getPPData() {
-    let mock = new Mock.ProjectPlanMock();
-    return new Promise(resolve => resolve(mock));
-}
+// export function getPPData() {
+//     // let mock = new Mock.ProjectPlanMock();
+//     // return new Promise(resolve => resolve(mock));
+//     return get('/projectPlan');
+// }
 
-export function getIRData() {
-    let mock = new Mock.InitialReportMock();
-    return new Promise(resolve => resolve(mock));
-}
+// export function getIRData() {
+//     // let mock = new Mock.InitialReportMock();
+//     // return new Promise(resolve => resolve(mock));
+//     return get('/intialReport');
+// }
 
-export function getFRData() {
-    let mock = new Mock.FinalReportMock();
-    return new Promise(resolve => resolve(mock));
-}
+// export function getFRData() {
+//     // let mock = new Mock.FinalReportMock();
+//     // return new Promise(resolve => resolve(mock));
+//     return get('/finalReport');
+// }
 
 export function getFeedback(submissionId) {
     let mock = new Mock.FeedbackMock().entity._embedded.feedback.filter(obj => obj.submissionId == submissionId);
