@@ -48,7 +48,7 @@ class UserController {
 		User user = repository.findFirstById(id);
 		return new Resource<>(user,
 			    linkTo(methodOn(UserController.class).one(id)).withSelfRel(),
-			    linkTo(methodOn(UserController.class).all()).withRel("employees"));
+			    linkTo(methodOn(UserController.class).all()).withRel("users"));
 		
 	}
 	
@@ -64,18 +64,18 @@ class UserController {
 				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
 
-	@PutMapping("/users/{id}")
-	User updateUser(@RequestBody User newUser, @PathVariable String id) {
-		return repository.findById(id)
-			.map(user -> {
-				user.setName(newUser.getName());
-				return repository.save(user);
-			})
-			.orElseGet(() -> {
-				newUser.setId(id);
-				return repository.save(newUser2());
-			});
-	}
+//	@PutMapping("/users/{id}")
+//	User updateUser(@RequestBody User newUser, @PathVariable String id) {
+//		return repository.findById(id)
+//			.map(user -> {
+//				user.setName(newUser.getName());
+//				return repository.save(user);
+//			})
+//			.orElseGet(() -> {
+//				newUser.setId(id);
+//				return repository.save(newUser());
+//			});
+//	}
 //	@PostMapping("/createUser")
 //	User newUser2() {
 //		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
@@ -92,9 +92,18 @@ class UserController {
 //		return newUser;
 //	}
 
-	@PostMapping("/users")
-	User newUser2() {
-		return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
+	@PostMapping("/createUser")
+	User newUser2(@RequestBody User user) {
+		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
+		if(findUser == null) {
+			user.setPassword(enrypt.hash(user.getPassword()));
+			return repository.save(user);
+
+		} else  {
+			return findUser;
+			//return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
+		}
+		
 	}
 	
 }
