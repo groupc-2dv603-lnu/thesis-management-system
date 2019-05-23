@@ -30,8 +30,12 @@ export function getbidderNames(bidders) {
   return bidderNames;
 }
 
-export function getIRData() {
-  return new Mock.InitialReportMock();
+export function getInitialReports(users) {
+  let initialReports = []
+  users.forEach(user => {
+    initialReports.push(new Mock.InitialReportMock().entity)
+  })
+  return initialReports
 }
 
 /* --- students page ---- */
@@ -51,8 +55,22 @@ export function getStudents() {
   return students;
 }
 
-// Shows the same for each only one mock created
-// correct if getStudent/{id}
+export function getOpponents() {
+  const mock = new Mock.UsersMock();
+
+  let opponent = [];
+  mock.entity._embedded.users.forEach(user => {
+    if ("roles" in user) {
+      user.roles.forEach(role => {
+        if (role === "opponent") {
+          opponent.push(user.id);
+        }
+      });
+    }
+  });
+  return opponent;
+}
+
 export function supervisorAssigned() {
   const mock = new Mock.StudentMock();
   return mock.entity.supervisorAssigned;
@@ -88,6 +106,10 @@ export function getSubmission(userId, type) {
   return submission !== undefined ? submission : null;
 }
 
+export function getInitialReport() {
+  return new Mock.InitialReportMock().entity
+}
+
 export function getThesis(submissionId, thesisPart) {
   if (thesisPart === "project description") {
     return new Mock.ProjectDescriptionMock().entity;
@@ -103,7 +125,6 @@ export function getThesis(submissionId, thesisPart) {
 }
 
 export function getFeedback(submissionId) {
-  console.log(submissionId);
   const mock = new Mock.FeedbackMock();
 
   const feedback = mock.entity._embedded.feedback.find(

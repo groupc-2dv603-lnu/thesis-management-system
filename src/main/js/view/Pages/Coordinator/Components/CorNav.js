@@ -11,17 +11,17 @@ class CorNav extends Component {
     return (
       <div style={divStyle}>
         <button style={btnStyle}>
-          <Link style={linkStyle} to="/coordinator/corSubmissions" replace>
+          <Link style={linkStyle} to="/coordinator/submissions" replace>
             Submissions
           </Link>
         </button>
         <button style={btnStyle}>
-          <Link style={linkStyle} to="/coordinator/corStudents" replace>
+          <Link style={linkStyle} to="/coordinator/students" replace>
             Students
           </Link>
         </button>
         <button style={btnStyle}>
-          <Link style={linkStyle} to="/coordinator/corReports" replace>
+          <Link style={linkStyle} to="/coordinator/reports" replace>
             Reports
           </Link>
         </button>

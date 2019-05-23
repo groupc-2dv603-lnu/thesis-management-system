@@ -3,12 +3,9 @@ import { getName, capitalizeFirstLetter } from "../functions";
 import * as Style from "../Styles";
 
 class Feedback extends Component {
-  onChange() {
-    console.log("change textvalue");
-  }
 
   render() {
-    console.log("props", this.props);
+    console.log('feedbackprops', this.props)
     return (
       <div>
         <div style={Style.submissionFeedbackRow}>
@@ -16,12 +13,8 @@ class Feedback extends Component {
           <span style={Style.submissionRightColumn}>
             <textarea
               style={Style.textarea}
-              onChange={() => this.onChange()}
-              value={
-                this.props.feedback !== null
-                  ? this.props.feedback.text
-                  : "No feedback provided"
-              }
+              onChange={() => this.props.onFeedbackChange(event)}
+              value={this.props.feedback.text}
             />
           </span>
         </div>

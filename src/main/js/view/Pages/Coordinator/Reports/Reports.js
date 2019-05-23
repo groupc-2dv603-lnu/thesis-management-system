@@ -8,8 +8,7 @@ import CorNav from '../Components/CorNav';
 import ReportsTable from './ReportsTable';
 
 
-class CorReports extends Component {
-
+class Reports extends Component {
 render() {
   return (
     <div>
@@ -20,4 +19,4 @@ render() {
   }
 }
  
-export default CorReports
+export default Reports

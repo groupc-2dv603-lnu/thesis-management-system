@@ -10,9 +10,9 @@ import Student from './Pages/Student'
 
 /* Coordinator */ 
 import Coordinator from './Pages/Coordinator'
-import CorSubmissions from './Pages/Coordinator/Submissions/CorSubmissions'
-import CorStudents from './Pages/Coordinator/Students/CorStudents'
-import CorReports from './Pages/Coordinator/Reports/CorReports'
+import Submissions from './Pages/Coordinator/Submissions/Submissions'
+import Students from './Pages/Coordinator/Students/Students'
+import Reports from './Pages/Coordinator/Reports/Reports'
 
 class App extends Component {
     constructor(props) {
@@ -40,9 +40,9 @@ class App extends Component {
                            
                             {/* Coordinator */}
                             <Route exact path='/coordinator' component={Coordinator} />
-                            <Route exact path='/coordinator/corSubmissions' component={CorSubmissions} />
-                            <Route exact path='/coordinator/corStudents' component={CorStudents} />
-                            <Route exact path='/coordinator/corReports' component={CorReports} />
+                            <Route exact path='/coordinator/submissions' component={Submissions} />
+                            <Route exact path='/coordinator/students' component={Students} />
+                            <Route exact path='/coordinator/reports' component={Reports} />
 
                             </div>
                     {/*</Switch>*/}

@@ -16,12 +16,10 @@ const client = require("../../../../client");
 /* ---- function imports ---- */
 import {
   getStudents,
-  getName,
   submissionSubmitted,
   supervisorAssigned,
   submittedTrue,
   submittedFalse,
-  descriptionSubmitted
 } from "../functions";
 
 class StudentsTable extends Component {

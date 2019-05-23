@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
-import * as Style from "../Styles"
+import * as Style from "../Styles";
+import ReportPopup from "./ReportPopup";
 
 /* ---- mock imports ---- */
-import { getIRData, getName, getbidderNames } from '../functions'
+import { getStudents, getInitialReports, getName } from "../functions";
 
 const client = require("../../../../client");
 
@@ -13,14 +14,25 @@ class ReportsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      students: [],
-    }
-    this.initialReports = getIRData()
+      users: [],
+      initialReports: [],
+      selectedReportId: null,
+      showPopup: false
+    };
+    this.state.users = getStudents();
+    this.state.initialReports = getInitialReports(this.state.users);
+  }
 
+  togglePopup(reportId) {
+    this.setState({
+      selectedReportId: reportId
+    });
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
   }
 
   render() {
- 
     /* ---- Table ---- */
     const columnMaxWidth = 120;
     const columns = [
@@ -32,7 +44,13 @@ class ReportsTable extends Component {
         resizable: true,
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
-            <span>{getName(props.original.studentId)}</span>
+          <span
+            onClick={() => {
+              this.togglePopup(props.original.id);
+            }}
+          >
+            {getName(props.original.userId)}
+          </span>
         )
       },
       {
@@ -67,13 +85,27 @@ class ReportsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>{props.original.assignedOpponent === null ? '0' : props.original.assignedOpponent.length}</span>
+            <span>
+              {props.original.assignedOpponent === null
+                ? "0"
+                : props.original.assignedOpponent.length}
+            </span>
           </Link>
         )
-      },
+      }
     ];
 
-    return <ReactTable data={this.initialReports.entity} columns={columns} />;
+    return (
+      <div>
+        <ReactTable data={this.state.initialReports} columns={columns} />{" "}
+        {this.state.showPopup ? (
+          <ReportPopup
+            report={this.state.selectedReportId}
+            closePopup={this.togglePopup.bind(this)}
+          />
+        ) : null}
+      </div>
+    );
   }
 }
 /* ---- Table configs ---- */
@@ -84,7 +116,4 @@ Object.assign(ReactTableDefaults, {
   resizable: false,
   showPageSizeOptions: false
 });
-
-
- 
 export default ReportsTable;

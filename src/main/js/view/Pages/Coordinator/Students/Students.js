@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import CorNav from '../Components/CorNav';
 import StudentsTable from './StudentsTable'
 
-class CorStudents extends Component {
+class Students extends Component {
 
 render() {
   return (
@@ -26,4 +26,4 @@ const tableStyle = {
   marginTop: '40px',
 }
  
-export default CorStudents
+export default Students

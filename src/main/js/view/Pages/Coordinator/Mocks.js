@@ -20,17 +20,21 @@ export class UsersMock {
           {
             id: 11,
             name: "Some Guy",
-            emailAdress: "someguy@google.com"
+            emailAdress: "someguy@google.com",
+            roles: ["opponent"]
+
           },
           {
             id: 12,
             name: "I.C. Wiener",
-            emailAdress: "i.c.wiener@joke.com"
+            emailAdress: "i.c.wiener@joke.com",
+            roles: ["opponent"]
           },
           {
             id: 99,
             name: "Dr. Zoidberg",
-            emailAdress: "zoidipoo@woobwoob.com"
+            emailAdress: "zoidipoo@woobwoob.com",
+            roles: ["opponent"]
           }
         ]
       }
@@ -161,14 +165,15 @@ export class InitialReportMock {
     this.entity = 
       {
         id: 103,
-        studentId: 99,
+        userId: 1,
         submissionId: 3,
         grade: "a",
         deadline: "2019-05-30T23:55",
         submissionDate: "2019-05-29T20:15",
-        bids: [],
-        assignedReaders: [11, 12],
-        assignedOpponent: null
+        bids: [11,12,10],
+        //bids: [],
+        assignedReaders: [],
+        assignedOpponent: []
       }
     }
 }
@@ -178,14 +183,11 @@ export class FinalReportMock {
     this.entity = 
       {
         id: 103,
-        studentId: 99,
+        userId: 1,
         submissionId: 3,
         grade: "b",
         deadline: "2019-05-30T23:55",
         submissionDate: "2019-05-29T20:15",
-        bids: [],
-        assignedReaders: [11, 12],
-        assignedOpponent: null
       }
     }
 }
@@ -221,8 +223,8 @@ export class FeedbackMock {
           },
           {
             id: 55,
-            submissionId: 3,
-            userId: 13,
+            submissionId: 4,
+            userId: 12,
             role: "reader",
             text: "Some other reader feedback"
           }

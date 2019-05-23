@@ -6,7 +6,7 @@ import Submission from "./Submission";
  * TODO
  *  -
  */
-class CorSubmissions extends Component {
+class Submissions extends Component {
   render() {
     return (
       <div>
@@ -17,4 +17,4 @@ class CorSubmissions extends Component {
   }
 }
 
-export default CorSubmissions;
+export default Submissions;

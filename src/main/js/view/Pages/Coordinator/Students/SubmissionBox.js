@@ -25,6 +25,11 @@ class SubmissionBox extends Component {
     this.state.feedback = getFeedback(this.state.submission.id);
   }
 
+  onFeedbackChange(event) {
+    this.state.feedback.text = event.target.value
+    this.setState({feedback: this.state.feedback})
+    console.log('feedbackText', this.state.feedback.text)
+  }
   downloadSubmission() {
     console.log("submission downloaded");
   }
@@ -150,7 +155,10 @@ class SubmissionBox extends Component {
                 </span>
               </div>
               {this.hasFeedback() === true ? (
-                <Feedback feedback={this.state.feedback} />
+                <Feedback 
+                feedback={this.state.feedback}
+                onFeedbackChange={() => this.onFeedbackChange(event)}
+                 />
               ) : (
                 <div style={Style.submissionRow}>
                   <span style={Style.submissionLeftColumn}>Feedback</span>

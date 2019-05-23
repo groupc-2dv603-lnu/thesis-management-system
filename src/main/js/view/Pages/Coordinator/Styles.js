@@ -194,3 +194,38 @@ export const submitButton = {
   marginLeft: '40%',
   marginTop: '5px'
 }
+
+/* ---- Reports ---- */
+export const bidsDiv = {
+  border: standardBorder,
+  width: '60%',
+  margin: '20px auto'
+}
+
+export const reportTypeHeader = {
+  border: standardBorder,
+  height: '25px',
+  lineHeight: '25px',
+  background: lnuYellow,
+  fontWeight: 'bold',
+  width: '100%',
+  display: 'inline-block',
+  textAlign: 'center'
+}
+
+export const bidRow = {
+  border: standardBorder,
+  height: '20px',
+  lineHeight: '20px'
+}
+
+export const plus = {
+  float: 'right',
+  marginRight: '3px',
+  lineHeight: '20px'
+}
+
+export const noBids = {
+  width: '100%',
+  textAlign: 'center'
+}
