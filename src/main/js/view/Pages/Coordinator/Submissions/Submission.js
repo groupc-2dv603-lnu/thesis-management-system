@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import { capitalizeFirstLetter, checkDeadline } from "../functions";
-import * as style from "./submissionStyles";
+import { capitalizeFirstLetter, checkDeadline, getSubmissions } from "../functions";
+import * as Style from "../Styles";
+import SubmissionPopup from "./SubmissionPopup";
+
 /**
  *  Submission component
  *  TODO:
  *    - Form, post changes, 
  *    - Styling
  */
-// Mock import
-import { getSubmissions } from "./SubMock";
-import SubmissionPopup from "./SubmissionPopup";
 
 class Submission extends Component {
   constructor(props) {
@@ -32,27 +31,27 @@ class Submission extends Component {
 
   render() {
     return (
-      <div style={style.bodyDiv}>
+      <div style={Style.bodyDiv}>
         {this.state.submissions.map(submission => {
           return (
-            <div style={style.submissionDiv} key={submission.id}>
-              <div style={style.submissionHeaderStyle}>
+            <div style={Style.submissionDiv} key={submission.id}>
+              <div style={Style.submissionHeaderStyle}>
                 {capitalizeFirstLetter(submission.type)}
                 <i
                   className="far fa-edit"
-                  style={style.edit}
+                  style={Style.edit}
                   onClick={() => this.togglePopup(submission)}
                 />
               </div>
-              <div style={style.submissionRowStyle}>
-                <span style={style.keyStyle}>Deadline</span>
-                <span style={style.valueStyle}>
+              <div style={Style.submissionRowStyle}>
+                <span style={Style.keyStyle}>Deadline</span>
+                <span style={Style.valueStyle}>
                   {checkDeadline(submission.deadline)}{" "}
                 </span>
               </div>
-              <div style={style.submissionRowStyle}>
-                <span style={style.keyStyle}>Status</span>
-                <span style={style.valueStyle}>
+              <div style={Style.submissionRowStyle}>
+                <span style={Style.keyStyle}>Status</span>
+                <span style={Style.valueStyle}>
                   {capitalizeFirstLetter(submission.status)}
                 </span>
               </div>
@@ -70,43 +69,5 @@ class Submission extends Component {
   }
 }
 
-//https://codepen.io/bastianalbers/pen/PWBYvz
-class Popup extends React.Component {
-  render() {
-    console.log("props", this.props);
-    return (
-      <div style={style.popup}>
-        <div style={style.popupInner}>
-          <i
-            className="fas fa-window-close"
-            onClick={this.props.closePopup}
-            style={style.popupClose}
-          />
-          <h1>Edit {capitalizeFirstLetter(this.props.submission.type)}</h1>
-          <form>
-            <div>
-              <label>Deadline</label>
-              <input
-                type="text"
-                placeholder={capitalizeFirstLetter(
-                  this.props.submission.deadline
-                )}
-              />
-            </div>
-            <div>
-              <label>Status</label>
-              <input
-                type="text"
-                placeholder={capitalizeFirstLetter(
-                  this.props.submission.status
-                )}
-              />
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  }
-}
 
 export default Submission;

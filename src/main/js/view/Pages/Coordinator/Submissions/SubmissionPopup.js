@@ -9,18 +9,25 @@ class SubmissionPopup extends Component {
       submission: null
     };
     console.log("subpopupProps", this.props);
+    console.log('subpopupState', this.state)
   }
 
   setDeadline(event) {
-    console.log(event.target.value)
+    this.props.submission.deadline = event.target.value
+  }
+
+  setStatus(event) {
+    this.props.submission.deadline = event.target.value
   }
 
   handleSubmit() {
-    console.log('handle submit!')
+    console.log('Send this:', this.props.submission)
   }
 
   render() {
-    const status = ['disabled', 'active', 'finished']
+    let i = 0;
+    const status = ["disabled", "active", "finished"];
+    const dateFormatPlaceholder = 'xxxx-xx-xx'
 
     return (
       <div style={Style.popup}>
@@ -34,18 +41,32 @@ class SubmissionPopup extends Component {
             {capitalizeFirstLetter(this.props.submission.type)}
           </h3>
           <div style={Style.subPopupBody}>
-            <input
-              style={Style.deadlineInput}
-              type="text"
-              placeholder="Set deadline"
-              onChange={() => this.setDeadline(event)}
-            />
-            <select>
-              {status.map(status => {
-                return <option value={status}>{capitalizeFirstLetter(status)}</option>
-              })}
-            </select>
-            <button onClick={() => this.handleSubmit()}>Submit</button>
+            <div style={Style.subPopupRow}>
+              <span style={Style.subPopupLeft}>Deadline: </span>
+              <input
+                style={Style.deadlineInput}
+                type="text"
+                placeholder={dateFormatPlaceholder}
+                onChange={() => this.setDeadline(event)}
+              />
+            </div>
+
+            <div style={Style.subPopupRow}>
+              <span style={Style.subPopupLeft}>Status: </span>
+
+              <select onChange={() => this.setStatus(event)}>
+                {status.map(status => {
+                  return (
+                    <option value={status} key={i++}>
+                      {capitalizeFirstLetter(status)}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div style={Style.subPopupRow}>
+              <button onClick={() => this.handleSubmit()}>Submit</button>
+            </div>
           </div>
         </div>
       </div>

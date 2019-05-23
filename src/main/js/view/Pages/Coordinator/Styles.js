@@ -89,12 +89,13 @@ const submissionRowHeight = "50px";
 const lnuYellow = "#ffee00";
 const standardBorder = "1px solid black";
 
+/*
 export const submissionDiv = {
   width: "80%",
   border: standardBorder,
   margin: '0 auto'
 };
-
+*/
 export const submissionHeader = {
   background: lnuYellow,
   border: standardBorder,
@@ -230,12 +231,77 @@ export const noBids = {
   textAlign: 'center'
 }
 
+/* ---- SubmissionPage ---- */
 export const subPopupBody = {
-  border: standardBorder,
   width: '60%',
   margin: '0 auto',
 }
 
 export const deadlineInput = {
-  width: '100%',
+  height: '90%',
+  width: '75%',
+  border: 'none'
 }
+
+export const subPopupRow = {
+  height: '25px',
+  width: '100%'
+}
+
+export const subPopupLeft = {
+  width: '25%',
+  display: 'inline-block',
+}
+
+/* ---- Submissionpopup ---- */
+export const subPageRowHeight = "30px";
+export const subPagelineHeight = "30px";
+
+export const bodyDiv = {
+  width: "80%",
+  marginTop: "30px",
+  marginLeft: "10%"
+};
+
+export const submissionDiv = {
+  marginTop: "30px",
+  border: "1px solid black"
+};
+
+export const submissionHeaderStyle = {
+  fontSize: "14px",
+  fontWeight: "bold",
+  textAlign: "center",
+  borderBottom: "1px solid black",
+  height: "30px",
+  background: "#ffee00",
+  lineHeight: subPagelineHeight
+};
+
+export const submissionRowStyle = {
+  width: "100%",
+  height: subPageRowHeight,
+  borderBottom: "1px solid black"
+};
+
+export const keyStyle = {
+  width: "30%",
+  height: subPageRowHeight,
+  lineHeight: subPagelineHeight,
+  float: "left",
+  background: "lightgrey",
+  borderRight: "1px solid black"
+};
+
+export const valueStyle = {
+  width: "68%",
+  float: "right",
+  height: subPageRowHeight,
+  lineHeight: subPagelineHeight
+};
+
+export const edit = {
+  float: "right",
+  lineHeight: subPagelineHeight,
+  marginRight: "10px"
+};

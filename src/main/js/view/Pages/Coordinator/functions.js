@@ -16,9 +16,12 @@ export function getName(userId) {
 }
 
 /* --- submission page ---- */
-
 export function checkDeadline(date) {
   return date === null ? "Not set" : date;
+}
+
+export function getSubmissions() {
+  return new Mock.SubMock().submissions;
 }
 
 /* --- reports page ---- */
@@ -31,11 +34,27 @@ export function getbidderNames(bidders) {
 }
 
 export function getInitialReports(users) {
-  let initialReports = []
+  let initialReports = [];
   users.forEach(user => {
-    initialReports.push(new Mock.InitialReportMock().entity)
-  })
-  return initialReports
+    initialReports.push(new Mock.InitialReportMock().entity);
+  });
+  return initialReports;
+}
+
+export function getOpponents() {
+  const mock = new Mock.UsersMock();
+
+  let opponent = [];
+  mock.entity._embedded.users.forEach(user => {
+    if ("roles" in user) {
+      user.roles.forEach(role => {
+        if (role === "opponent") {
+          opponent.push(user.id);
+        }
+      });
+    }
+  });
+  return opponent;
 }
 
 /* --- students page ---- */
@@ -55,21 +74,7 @@ export function getStudents() {
   return students;
 }
 
-export function getOpponents() {
-  const mock = new Mock.UsersMock();
 
-  let opponent = [];
-  mock.entity._embedded.users.forEach(user => {
-    if ("roles" in user) {
-      user.roles.forEach(role => {
-        if (role === "opponent") {
-          opponent.push(user.id);
-        }
-      });
-    }
-  });
-  return opponent;
-}
 
 export function supervisorAssigned() {
   const mock = new Mock.StudentMock();
@@ -85,7 +90,6 @@ export function submissionSubmitted(userId, type) {
   if (submission !== undefined) {
     return submission.status === "finished" ? true : false;
   }
-
   return false;
 }
 
@@ -107,7 +111,7 @@ export function getSubmission(userId, type) {
 }
 
 export function getInitialReport() {
-  return new Mock.InitialReportMock().entity
+  return new Mock.InitialReportMock().entity;
 }
 
 export function getThesis(submissionId, thesisPart) {
@@ -132,3 +136,4 @@ export function getFeedback(submissionId) {
   );
   return feedback === undefined ? null : feedback;
 }
+
