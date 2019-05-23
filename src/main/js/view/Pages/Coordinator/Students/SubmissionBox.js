@@ -23,8 +23,6 @@ class SubmissionBox extends Component {
       this.props.type
     );
     this.state.feedback = getFeedback(this.state.submission.id);
-    console.log("state subBox", this.state);
-    console.log("props subBox", this.props);
   }
 
   downloadSubmission() {
@@ -40,18 +38,53 @@ class SubmissionBox extends Component {
   }
 
   hasDeadline() {
-    return true
+    return true;
   }
 
-  showDeadline() {
-    return this.state.thesisPart !== null ? this.state.thesisPart.deadline : 'Not set'
+  hasDeadline() {
+    return this.state.thesisPart !== null
+      ? this.state.thesisPart.deadline
+      : "Not set";
+  }
+
+  setDeadline(event) {
+    this.state.thesisPart.deadline = event.target.value;
+    console.log('deadline changed to', this.state.thesisPart.deadline)
+  }
+
+  statusOptions(option) {
+    let i = 0;
+    return option.map(value => (
+      <option value={value} key={i++}>
+        {capitalizeFirstLetter(value)}
+      </option>
+    ));
   }
 
   setStatus(event) {
-    this.state.submission.status = event.target.value
-    this.setState({submission: this.state.submission})
+    this.state.submission.status = event.target.value;
+    console.log("status changed to", this.state.submission.status);
   }
+
+  setGrade(event) {
+    this.state.thesisPart.grade = event.target.value;
+    console.log("grade changed to", this.state.thesisPart.grade);
+  }
+
+  gradeOptions(option) {
+    let i = 0;
+    return option.map(value => (
+      <option value={value} key={i++}>
+        {capitalizeFirstLetter(value)}
+      </option>
+    ));
+  }
+
   render() {
+    const grading1 = ["pass", "fail"];
+    const grading2 = ["a", "b", "c", "d", "e", "f"];
+    const status = ["disabled", "active", "finished"];
+
     return (
       <div>
         {this.props.submission !== null ? (
@@ -72,17 +105,25 @@ class SubmissionBox extends Component {
                   {capitalizeFirstLetter(this.state.submission.status)}
                 </span>
                 <span style={Style.submissionEditColumn}>
-                  <select onChange={() => this.setStatus(event)}>
-                    <option value="disabled">Disabled</option>
-                    <option value="active">Active</option>
-                    <option value="finished">Finished</option>
+                  <select
+                    placeholder="set status"
+                    onChange={() => this.setStatus(event)}
+                  >
+                    {this.statusOptions(status)}
                   </select>
                 </span>
               </div>
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Deadline</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.showDeadline()}
+                  {this.hasDeadline()}
+                </span>
+                <span style={Style.submissionEditColumn}>
+                  <input
+                    type="text"
+                    placeholder="change deadline"
+                    onChange={() => this.setDeadline(event)}
+                  />
                 </span>
               </div>
               <div style={Style.submissionRow}>
@@ -93,7 +134,20 @@ class SubmissionBox extends Component {
               </div>
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Grade</span>
-                <span style={Style.submissionRightColumn}>pass</span>
+                <span style={Style.submissionRightColumn}>
+                  {capitalizeFirstLetter(this.state.thesisPart.grade)}
+                </span>
+                <span style={Style.submissionEditColumn}>
+                  <select
+                    placeholder="set grade"
+                    onChange={() => this.setGrade(event)}
+                  >
+                    {this.state.submission.type === "project description" ||
+                    this.state.submission.type === "project plan"
+                      ? this.gradeOptions(grading1)
+                      : this.gradeOptions(grading2)}
+                  </select>
+                </span>
               </div>
               {this.hasFeedback() === true ? (
                 <Feedback feedback={this.state.feedback} />
