@@ -1,3 +1,27 @@
+const lnuYellow = "#ffee00";
+const standardBorder = "1px solid black";
+
+export const body = {
+  width: "600px",
+}
+/* ---- nav ---- */
+export const navButtonsDiv = {
+  width: "100%",
+  height: '50px',
+  textAlign: 'center',
+  marginTop: '20px',
+  marginBottom: '40px'
+};
+
+export const btnStyle = {
+  height: '40px',
+  width: '120px',
+  background: lnuYellow,
+  display: 'inline-block',
+  border: standardBorder,
+}
+
+
 /* ---- TABLE STYLING ---- */
 export const headerBackgroundColor = "#ffe000";
 export const headerFontColor = "black";
@@ -13,7 +37,7 @@ export const headerNameCellStyle = {
   fontWeight: headerFontWeight,
   height: headerRowHeight,
   lineHeight: lineHeight,
-  border: "1px solid black"
+  border: standardBorder
 };
 
 // width is set in renderMethod
@@ -23,7 +47,7 @@ export const headerSubmissionStyle = {
   fontWeight: headerFontWeight,
   height: headerRowHeight,
   lineHeight: lineHeight,
-  border: "1px solid black"
+  border: standardBorder
 };
 
 export const nameColumnStyle = {
@@ -86,16 +110,7 @@ export const popupName = {
 /* ---  Submission  --- */
 
 const submissionRowHeight = "50px";
-const lnuYellow = "#ffee00";
-const standardBorder = "1px solid black";
 
-/*
-export const submissionDiv = {
-  width: "80%",
-  border: standardBorder,
-  margin: '0 auto'
-};
-*/
 export const submissionHeader = {
   background: lnuYellow,
   border: standardBorder,
@@ -265,14 +280,14 @@ export const bodyDiv = {
 
 export const submissionDiv = {
   marginTop: "30px",
-  border: "1px solid black"
+  border: standardBorder
 };
 
 export const submissionHeaderStyle = {
   fontSize: "14px",
   fontWeight: "bold",
   textAlign: "center",
-  borderBottom: "1px solid black",
+  borderBottom: standardBorder,
   height: "30px",
   background: "#ffee00",
   lineHeight: subPagelineHeight
@@ -281,7 +296,7 @@ export const submissionHeaderStyle = {
 export const submissionRowStyle = {
   width: "100%",
   height: subPageRowHeight,
-  borderBottom: "1px solid black"
+  borderBottom: standardBorder
 };
 
 export const keyStyle = {
@@ -290,7 +305,7 @@ export const keyStyle = {
   lineHeight: subPagelineHeight,
   float: "left",
   background: "lightgrey",
-  borderRight: "1px solid black"
+  borderRight: standardBorder
 };
 
 export const valueStyle = {

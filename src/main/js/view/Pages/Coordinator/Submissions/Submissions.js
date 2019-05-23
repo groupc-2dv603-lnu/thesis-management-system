@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import CorNav from "../Components/CorNav";
 import Submission from "./Submission";
 /**
  * Indexpage for coordinator submissions
@@ -10,7 +9,6 @@ class Submissions extends Component {
   render() {
     return (
       <div>
-        <CorNav />
         <Submission />
       </div>
     );
