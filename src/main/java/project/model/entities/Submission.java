@@ -28,7 +28,7 @@ public class Submission {
     private String fileUrl;         //TODO: do something with this
 //    private String fileName;        //TODO: redundant?
 
-    private Binary file;
+//    private Binary file;
     private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
 
 
@@ -41,13 +41,13 @@ public class Submission {
 
 
         //TODO: might be redundant. Remove?
-        try {
-            byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
-            this.file = new Binary(bytes);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
+//            this.file = new Binary(bytes);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         this.filePath = null;
     }
 
@@ -59,12 +59,12 @@ public class Submission {
         }
 
 
-        try {
-            byte[] bytes = Files.readAllBytes(newFile.toPath());
-            this.file = new Binary(bytes);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            byte[] bytes = Files.readAllBytes(newFile.toPath());
+//            this.file = new Binary(bytes);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

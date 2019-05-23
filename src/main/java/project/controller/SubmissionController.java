@@ -4,29 +4,20 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
-import project.model.entities.DemoFile;
 import project.model.entities.Submission;
-import project.model.repositories.DemoFileRepository;
 import project.model.repositories.SubmissionRepository;
 
 @RestController
@@ -44,9 +35,22 @@ public class SubmissionController {
     Resource<Submission> one(@PathVariable String id) {
         Submission submission = subRepository.findFirstById(id);
 
+        //TODO: OLD CODE BELOW
+//        try {
+//            //TODO: new File below should not be static
+//            FileCopyUtils.copy(submission.getFile().getData(), new File("C:\\Users\\Timme\\Documents\\Skola\\2DV603 - Software Design\\Assignment4_Project\\test.pdf"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        //Code to save file in "uploads" folder
         try {
-            //TODO: new File below should not be static
-            FileCopyUtils.copy(submission.getFile().getData(), new File("C:\\Users\\Timme\\Documents\\Skola\\2DV603 - Software Design\\Assignment4_Project\\test.pdf"));
+            /*Path bytes =*/ Files.copy(
+                    new File(".\\src\\main\\resources\\uploads\\" + submission.getId() + ".pdf").toPath(),
+                    new File("C:\\Users\\Timme\\Documents\\Skola\\2DV603 - Software Design\\Assignment4_Project\\test.pdf").toPath(),
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.COPY_ATTRIBUTES,
+                    LinkOption.NOFOLLOW_LINKS);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,20 +97,60 @@ public class SubmissionController {
         subRepository.save(newSubmission);
         OLD CODE ABOVE
         */
+        subRepository.save(newSubmission);
+        File src = new File(newSubmission.getFilePath());
+        try {
+            Path bytes = Files.copy(
+                    new File(newSubmission.getFilePath()).toPath(), //src folder
+                    new File(".\\src\\main\\resources\\uploads\\" + newSubmission.getId() + ".pdf").toPath(), //TODO:uploads folder
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.COPY_ATTRIBUTES,
+                    LinkOption.NOFOLLOW_LINKS);
+        } catch (IOException e) {
+            System.out.println("AIDS");
+            e.printStackTrace();
+        }
 
-        Files.copy(newSubmission.getFilePath(), "../resources/uploads/" + newSubmission.getId() );
-        
+        Submission updated = subRepository.findFirstById(newSubmission.getId());
+        updated.setFileUrl("/submissions/" + updated.getId());
+        updated.setFilePath(null);
+        subRepository.save(updated);
 
-        return "Successfully uploaded file: " + newSubmission.getId();
+        return "Successfully uploaded file: \"" + src.getName() + "\" with ID: " + updated.getId() + "\n";
     }
 
 
 
     @DeleteMapping("/submissions/{id}")
     String deleteSubmission(@PathVariable String id) {
+        File storedFile = new File(".\\src\\main\\resources\\uploads\\" + id + ".pdf");
+
         subRepository.deleteById(id);
 
-        return "File deleted";
+        return "File deleted: " + storedFile.delete();
+    }
+
+
+
+
+
+    /* DEVELOP METHODS TO CLEAR ENTIRE SUBMISSION COLLECTION INSTANTLY */
+    @DeleteMapping("/submissions")
+    String deleteAllSubmissions() {
+
+        List<Submission> submissions = subRepository.findAll();
+        for (Submission sub : submissions){
+            deleteSubmissionById(sub.getId());
+        }
+
+        return "All documents in collection \"submissions\" deleted.";
+    }
+
+    void deleteSubmissionById(String id) {
+        File storedFile = new File(".\\src\\main\\resources\\uploads\\" + id + ".pdf");
+
+        subRepository.deleteById(id);
+        storedFile.delete();
     }
 
 }
