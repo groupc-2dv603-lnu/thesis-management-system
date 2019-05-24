@@ -2,6 +2,8 @@ package project.controller;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.model.entities.Opponent;
+import project.model.entities.ProjectPlan;
 import project.model.entities.Reader;
 
 //import project.model.entities.Student;
@@ -78,35 +81,15 @@ class UserController {
 		return new Resources<>(users,
 				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
-
-//	@PutMapping("/users/{id}")
-//	User updateUser(@RequestBody User newUser, @PathVariable String id) {
-//		return repository.findById(id)
-//			.map(user -> {
-//				user.setName(newUser.getName());
-//				return repository.save(user);
-//			})
-//			.orElseGet(() -> {
-//				newUser.setId(id);
-//				return repository.save(newUser());
-//			});
-//	}
-//	@PostMapping("/createUser")
-//	User newUser2() {
-//		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-//		String result = encoder.encode("myPassword");
-//		
-//		User newUser = new User("Jens", result, "Jens@hotmail.com", new Role[] { Role.STUDENT });
-//		repository.save(newUser);
-//		for(int i=0; i < newUser.getRoles().length; i++){
-////			if(newUser.getRoles() == "Student") {
-////				System.out.print(newUser.getId());
-////				studentRepository.save(new Student(newUser.getId(), "None"));
-////			}
-//		}
-//		return newUser;
-//	}
-
+	@GetMapping(value = "/loginUser", produces = "application/json; charset=UTF-8")
+	Resource<User> one1() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		return new Resource<>(user,
+				linkTo(methodOn(UserController.class).one1()).withSelfRel());
+	}
+	
 	@PostMapping("/admin/createUser")
 	User newUser2(@RequestBody User user) {
 		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
