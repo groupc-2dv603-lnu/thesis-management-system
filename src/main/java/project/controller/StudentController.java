@@ -72,7 +72,12 @@ public class StudentController {
 //			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
-						
+//		ArrayList<User> user = new ArrayList<User>();
+//		for(int i=0; i < supervisors.size(); i++){
+//			User findUser = repository.findFirstById(supervisors.get(i).getContent().getId());
+//			user.add(findUser);
+//			supervisors.get(i).getContent()
+//		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
