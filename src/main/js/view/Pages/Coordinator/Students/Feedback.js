@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { getName, capitalizeFirstLetter } from "../functions";
-import * as Style from "../Styles";
+import * as Style from "../Styles/SubmissionBoxStyle";
 
 class Feedback extends Component {
 

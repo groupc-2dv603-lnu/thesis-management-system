@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
-import * as Style from "../Styles";
+import * as Style from "../Styles/TableStyles";
 import ReportPopup from "./ReportPopup";
 
 /* ---- mock imports ---- */

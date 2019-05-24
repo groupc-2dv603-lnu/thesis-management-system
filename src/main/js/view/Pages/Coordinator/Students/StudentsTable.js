@@ -1,19 +1,11 @@
-/**
- * TODO
- *  - Add links to studentpage and submissions
- *  - Add supervisorName if assigned
- *  - Fix tooltipBug, doesnt disappear after mouseLeave
- *  - Fix tooltipstyling, width 100% expands over whole page
- */
+
 import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
-import * as Style from "../Styles";
+import * as Style from "../Styles/TableStyles";
 const client = require("../../../../client");
-
-/* ---- function imports ---- */
 import {
   getStudents,
   submissionSubmitted,
@@ -21,6 +13,13 @@ import {
   submittedTrue,
   submittedFalse,
 } from "../functions";
+
+/**
+ * TODO
+ *  - Add supervisorName if assigned
+ *  - Fix tooltipBug, doesnt disappear after mouseLeave
+ *  - Fix tooltipstyling, width 100% expands over whole page
+ */
 
 class StudentsTable extends Component {
   constructor(props) {

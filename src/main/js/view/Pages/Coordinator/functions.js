@@ -1,7 +1,11 @@
 import * as Mock from "./Mocks";
 import React, { Component } from "react";
+import client from '../../../client'
 
-//TODO unfinished/mocks
+export function getFromAPI(getPath) {
+  return client({ method: 'GET', path: getPath });
+}
+
 
 /* --- "global" ---- */
 export function capitalizeFirstLetter(string) {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import * as Style from "../Styles";
+import * as Style from "../Styles/ReportStyles";
+import * as PopupStyle from "../Styles/PopupStyles";
 import { getInitialReport, getName, getOpponents } from "../functions";
 
 class ReportPopup extends Component {
@@ -142,52 +143,56 @@ class ReportPopup extends Component {
 
   render() {
     return (
-      <div style={Style.popup}>
-        <div style={Style.popupInner}>
+      <div style={PopupStyle.popup}>
+        <div style={PopupStyle.popupInner}>
           <i
             className="fas fa-window-close"
             onClick={this.props.closePopup}
-            style={Style.popupClose}
+            style={PopupStyle.popupClose}
           />
-          <h3 style={Style.popupName}>{getName(this.state.report.userId)}</h3>
-          <div style={Style.bidsDiv}>
-            <span style={Style.reportTypeHeader}>Bidders</span>
-            {this.state.bids.length > 0 ? (
-              this.showBids()
-            ) : (
-              <div style={Style.noBids}>Report has no bidders</div>
-            )}
+          <h3 style={PopupStyle.popupHeader}>
+            {getName(this.state.report.userId)}
+          </h3>
+          <div style={PopupStyle.popupBody}>
+            <div style={Style.bidsDiv}>
+              <span style={Style.reportTypeHeader}>Bidders</span>
+              {this.state.bids.length > 0 ? (
+                this.showBids()
+              ) : (
+                <div style={Style.noBids}>Report has no bidders</div>
+              )}
+            </div>
+            <div style={Style.bidsDiv}>
+              <span style={Style.reportTypeHeader}>Readers</span>
+              {this.state.assignedReaders.length > 0 ? (
+                this.showReaders()
+              ) : (
+                <div style={Style.noBids}>Report has no readers</div>
+              )}
+            </div>
+            <div style={Style.bidsDiv}>
+              <span style={Style.reportTypeHeader}>Assigned opponent</span>
+              {this.state.assignedOpponent.length > 0 ? (
+                this.showAssignedOpponent()
+              ) : (
+                <div style={Style.noBids}>Report has no assigned opponent</div>
+              )}
+            </div>
+            <div style={Style.bidsDiv}>
+              <span style={Style.reportTypeHeader}>Available opponents</span>
+              {this.state.availableOpponents.length > 0 ? (
+                this.showAvailbableOpponents()
+              ) : (
+                <div style={Style.noBids}>There is no available opponents</div>
+              )}
+            </div>{" "}
+            <button
+              onClick={() => this.handleSubmit()}
+              style={PopupStyle.submitButton}
+            >
+              Submit
+            </button>
           </div>
-          <div style={Style.bidsDiv}>
-            <span style={Style.reportTypeHeader}>Readers</span>
-            {this.state.assignedReaders.length > 0 ? (
-              this.showReaders()
-            ) : (
-              <div style={Style.noBids}>Report has no readers</div>
-            )}
-          </div>
-          <div style={Style.bidsDiv}>
-            <span style={Style.reportTypeHeader}>Assigned opponent</span>
-            {this.state.assignedOpponent.length > 0 ? (
-              this.showAssignedOpponent()
-            ) : (
-              <div style={Style.noBids}>Report has no assigned opponent</div>
-            )}
-          </div>
-          <div style={Style.bidsDiv}>
-            <span style={Style.reportTypeHeader}>Available opponents</span>
-            {this.state.availableOpponents.length > 0 ? (
-              this.showAvailbableOpponents()
-            ) : (
-              <div style={Style.noBids}>There is no available opponents</div>
-            )}
-          </div>{" "}
-          <button
-            onClick={() => this.handleSubmit()}
-            style={Style.submitButton}
-          >
-            Submit
-          </button>
         </div>
       </div>
     );

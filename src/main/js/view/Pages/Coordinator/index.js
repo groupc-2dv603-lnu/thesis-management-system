@@ -5,13 +5,13 @@ import CorNav from "./CorNav";
 import Submissions from '../Coordinator/Submissions/Submissions'
 import Students from '../Coordinator/Students/Students'
 import Reports from '../Coordinator/Reports/Reports'
-import * as Style from './Styles'
+import * as Style from './Styles/Styles'
 
 class Coordinator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: "submissions"
+      page: "students" //sets 'first' page
     };
     console.log("propsIndex", this.props);
     console.log("stateIndex", this.state);
@@ -19,7 +19,6 @@ class Coordinator extends Component {
   }
 
   handleChange(page) {
-    console.log(page)
     this.setState({ page: page });
   }
 

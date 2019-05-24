@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { capitalizeFirstLetter, checkDeadline, getSubmissions } from "../functions";
-import * as Style from "../Styles";
+import * as SubStyle from "../Styles/SubmissionsStyle";
 import SubmissionPopup from "./SubmissionPopup";
 
 /**
@@ -31,27 +31,27 @@ class Submission extends Component {
 
   render() {
     return (
-      <div style={Style.bodyDiv}>
+      <div style={SubStyle.bodyDiv}>
         {this.state.submissions.map(submission => {
           return (
-            <div style={Style.submissionDiv} key={submission.id}>
-              <div style={Style.submissionHeaderStyle}>
+            <div style={SubStyle.submissionDiv} key={submission.id}>
+              <div style={SubStyle.submissionHeaderStyle}>
                 {capitalizeFirstLetter(submission.type)}
                 <i
                   className="far fa-edit"
-                  style={Style.edit}
+                  style={SubStyle.edit}
                   onClick={() => this.togglePopup(submission)}
                 />
               </div>
-              <div style={Style.submissionRowStyle}>
-                <span style={Style.keyStyle}>Deadline</span>
-                <span style={Style.valueStyle}>
+              <div style={SubStyle.submissionRowStyle}>
+                <span style={SubStyle.keyStyle}>Deadline</span>
+                <span style={SubStyle.valueStyle}>
                   {checkDeadline(submission.deadline)}{" "}
                 </span>
               </div>
-              <div style={Style.submissionRowStyle}>
-                <span style={Style.keyStyle}>Status</span>
-                <span style={Style.valueStyle}>
+              <div style={SubStyle.submissionRowStyle}>
+                <span style={SubStyle.keyStyle}>Status</span>
+                <span style={SubStyle.valueStyle}>
                   {capitalizeFirstLetter(submission.status)}
                 </span>
               </div>

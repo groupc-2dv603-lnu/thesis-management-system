@@ -5,7 +5,9 @@ import {
   getThesis,
   getFeedback
 } from "../functions";
-import * as Style from "../Styles";
+import * as Style from "../Styles/SubmissionBoxStyle";
+import * as PopupStyle from '../Styles/PopupStyles'
+
 import Feedback from "./Feedback";
 
 class SubmissionBox extends Component {
@@ -93,9 +95,9 @@ class SubmissionBox extends Component {
     return (
       <div>
         {this.props.submission !== null ? (
-          <div style={Style.submissionDiv}>
+          <div style={Style.subBoxDiv}>
             <div
-              style={Style.submissionHeader}
+              style={Style.subBoxHeader}
               onClick={() => this.downloadSubmission()}
             >
               <span style={Style.submissionHeaderName}>
@@ -169,7 +171,7 @@ class SubmissionBox extends Component {
               )}
               <div style={Style.submissionRow}>
                 <button
-                  style={Style.submitButton}
+                  style={PopupStyle.submitButton}
                   onClick={() => this.submitChanges()}
                 >
                   Submit

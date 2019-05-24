@@ -1,15 +1,9 @@
 import React, { Component } from "react";
-import * as Style from './Styles'
+import * as Style from './Styles/Styles'
 
 class CorNav extends Component {
   constructor(props) {
     super(props);
-    console.log('propsNav', this.props)
-  }
-
-  setPage(page) {
-    console.log(page)
-
   }
 
   render() {
