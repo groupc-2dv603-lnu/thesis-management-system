@@ -18,10 +18,13 @@
   },
   "homepage": "https://github.com/groupc-2dv603-lnu/thesis-management-system",
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "rc-tooltip": "^3.7.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
+    "react-table": "^6.10.0",
     "rest": "^2.0.0"
   },
   "scripts": {

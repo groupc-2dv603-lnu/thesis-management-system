@@ -12,13 +12,13 @@ import lombok.Data;
 public class Student {
 	@Id
 	private String id;
-	private String UserId;
-	private String AssignedSupervisorId;
+	private String userId;
+	private String assignedSupervisorId;
 	
 	
-	public Student(String UserId, String AssignedSupervisorId) {
-		this.UserId = UserId;
-		this.AssignedSupervisorId = AssignedSupervisorId;
+	public Student(String userId, String assignedSupervisorId) {
+		this.userId = userId;
+		this.assignedSupervisorId = assignedSupervisorId;
 
 		
 	}

@@ -3,6 +3,7 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import project.model.entities.FinalReport;
 import project.model.entities.InitialReport;
 import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
+import project.model.entities.Role;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.FeedbackRepository;
@@ -69,22 +72,31 @@ public class StudentController {
 //			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
-						
+//		ArrayList<User> user = new ArrayList<User>();
+//		for(int i=0; i < supervisors.size(); i++){
+//			User findUser = repository.findFirstById(supervisors.get(i).getContent().getId());
+//			user.add(findUser);
+//			supervisors.get(i).getContent()
+//		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
 	@PutMapping("/requestSupervisor")
-	void updateSupervisor(@RequestParam String supervisorId) {
+	Supervisor updateSupervisor(@RequestParam String supervisorUserId) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
-		User user = repository.findFirstByEmailAdress(name);
-		supervisorRepository.findById(supervisorId)
-			.map(supervisor -> {
-				supervisor.getAwaitingResponse().add(user.getId());
-				return supervisorRepository.save(supervisor);
-			});
-			
+		User user = repository.findFirstByEmailAdress(name);	
+		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
+		supervisor.getAwaitingResponse().add(user.getId());
+		return supervisorRepository.save(supervisor);
+
 	}
+//	@PostMapping("/saveSupervisor")
+//	Supervisor newUser2() {
+//		ArrayList<String> test = new ArrayList<String>();
+//		ArrayList<String> test2 = new ArrayList<String>();
+//		return supervisorRepository.save(new Supervisor("5cd92d7c6436232844a07a124", true, test, test2));
+//	}
 	@GetMapping(value = "/projectPlan", produces = "application/json; charset=UTF-8")
 	Resource<ProjectPlan> one1() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

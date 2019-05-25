@@ -10,6 +10,7 @@ import Coordinator from "./Pages/Coordinator";
 import Reader from "./Pages/Reader";
 import PrivateRoute from "./utils/PrivateRoute";
 const client = require("../client");
+import Opponent from "./Pages/Opponent";
 
 class App extends Component {
   componentDidMount() {
@@ -34,6 +35,7 @@ class App extends Component {
               path="/reader"
               component={Reader}
             />
+            <Route exact path="/opponent" component={Opponent} />
           </div>
           {/* </Switch> */}
         </HashRouter>
