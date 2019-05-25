@@ -1,76 +1,78 @@
+/**
+ * TODO
+ *  - needs GET all students (using mock)
+ *  - Add supervisorName if assigned
+ *  - Fix tooltipBug, doesnt disappear after mouseLeave
+ *  - Fix tooltipstyling, width 100% expands over whole page
+ */
 
 import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
-import * as Style from "../Styles/TableStyles";
-const client = require("../../../../client");
+import * as TableStyle from "../Styles/TableStyles";
 import {
-  getStudents,
   submissionSubmitted,
   supervisorAssigned,
   submittedTrue,
-  submittedFalse,
+  submittedFalse
 } from "../functions";
-
-/**
- * TODO
- *  - Add supervisorName if assigned
- *  - Fix tooltipBug, doesnt disappear after mouseLeave
- *  - Fix tooltipstyling, width 100% expands over whole page
- */
+import * as func from "../func";
+import * as mock from "../functions";
 
 class StudentsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      students: [],
-      // tooltips for headerColumns
       sTooltip: false,
       dTooltip: false,
       pTooltip: false,
       iTooltip: false,
       fTooltip: false,
-      // sent to studentPopup
-      selectedUserId: null,
-      showPopup: false
+      selectedUser: null,
+      showPopup: false,
+      students: [],
+      loading: true,
+      pages: -1
     };
-    this.state.students = getStudents();
   }
 
-  togglePopup(userId) {
-    this.setState({
-      selectedUserId: userId
-    });
-    this.setState({
-      showPopup: !this.state.showPopup
-    });
+  async componentDidMount() {
+    /* fetch mock
+    const students = await mock.getStudents();
+    this.setState({ students: students.entity._embedded.students });
+    */
+    /* fetch from api
+    const students = await func.getStudents();
+    this.setState({ students: students });
+    */
+  }
+
+  togglePopup(user) {
+    this.setState({ selectedUser: user });
+    this.setState({ showPopup: !this.state.showPopup });
   }
 
   render() {
     /* ---- Table ---- */
     const columnMaxWidth = 60;
-    const projectDescription = 'project description'
-    const projectPlan = 'project plan'
-    const initialReport = 'initial report'
-    const finalReport = 'final report'
+    const projectDescription = "project description";
+    const projectPlan = "project plan";
+    const initialReport = "initial report";
+    const finalReport = "final report";
 
     const columns = [
       {
         /* ----- TABLE NAME ----- */
         Header: "Name",
-        headerStyle: Style.headerNameCellStyle,
-        style: Style.nameColumnStyle,
+        headerStyle: TableStyle.headerNameCellStyle,
+        style: TableStyle.nameColumnStyle,
         accessor: "name",
         resizable: true,
         filterable: false, // ugly but good, case sensitive...
         Cell: props => (
-          <span
-            onClick={() => {
-              this.togglePopup(props.original.id);
-            }}
-          >
+          <span onClick={() => this.togglePopup(props.original)}>
             {props.original.name}
           </span>
         )
@@ -88,19 +90,19 @@ class StudentsTable extends Component {
             visible={!this.state.sTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={Style.tooltip}>Assigned supervisor</span>}
+            overlay={
+              <span style={TableStyle.tooltip}>Assigned supervisor</span>
+            }
           >
             <span>S</span>
           </RCTooltip>
         ),
-        headerStyle: Style.headerSubmissionStyle,
-        style: Style.submissionColumnStyle,
+        headerStyle: TableStyle.headerSubmissionStyle,
+        style: TableStyle.submissionColumnStyle,
         accessor: "supervisor",
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <span>
-            {supervisorAssigned() === true ? submittedTrue() : submittedFalse()}
-          </span>
+          <span>{func.booleanSymbol(props.original.supervisorAssigned)}</span>
         )
       },
       {
@@ -117,24 +119,19 @@ class StudentsTable extends Component {
             placement="top"
             trigger={["hover"]}
             overlay={
-              <span style={Style.tooltip}>Submitted project description</span>
+              <span style={TableStyle.tooltip}>
+                Submitted project description
+              </span>
             }
           >
             <span>D</span>
           </RCTooltip>
         ),
         accessor: "description",
-        headerStyle: Style.headerSubmissionStyle,
-        style: Style.submissionColumnStyle,
+        headerStyle: TableStyle.headerSubmissionStyle,
+        style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => (
-          <span>
-            {submissionSubmitted(props.original.id, projectDescription) ===
-            true
-              ? submittedTrue()
-              : submittedFalse()}
-          </span>
-        )
+        Cell: props => <span>y</span>
       },
       {
         /* ----- PROJECT PLAN ----- */
@@ -149,23 +146,18 @@ class StudentsTable extends Component {
             visible={!this.state.pTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={Style.tooltip}>Submitted project plan</span>}
+            overlay={
+              <span Style={TableStyle.tooltip}>Submitted project plan</span>
+            }
           >
             <span>P</span>
           </RCTooltip>
         ),
         accessor: "plan",
-        headerStyle: Style.headerSubmissionStyle,
-        style: Style.submissionColumnStyle,
+        headerStyle: TableStyle.headerSubmissionStyle,
+        style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => (
-          <span>
-            {submissionSubmitted(props.original.id, projectPlan) ===
-            true
-              ? submittedTrue()
-              : submittedFalse()}
-          </span>
-        )
+        Cell: props => <span>y</span>
       },
       {
         /* ----- INITIAL REPORT ----- */
@@ -181,24 +173,17 @@ class StudentsTable extends Component {
             placement="top"
             trigger={["hover"]}
             overlay={
-              <span style={Style.tooltip}>Submitted initial report</span>
+              <span style={TableStyle.tooltip}>Submitted initial report</span>
             }
           >
             <span>I</span>
           </RCTooltip>
         ),
         accessor: "initial",
-        headerStyle: Style.headerSubmissionStyle,
-        style: Style.submissionColumnStyle,
+        headerStyle: TableStyle.headerSubmissionStyle,
+        style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => (
-          <span>
-            {submissionSubmitted(props.original.id, initialReport) ===
-            true
-              ? submittedTrue()
-              : submittedFalse()}
-          </span>
-        )
+        Cell: props => <span>y</span>
       },
       {
         /* ----- FINAL REPORT ----- */
@@ -213,32 +198,43 @@ class StudentsTable extends Component {
             visible={!this.state.fTooltip ? false : true}
             placement="top"
             trigger={["hover"]}
-            overlay={<span style={Style.tooltip}>Submitted final report</span>}
+            overlay={
+              <span style={TableStyle.tooltip}>Submitted final report</span>
+            }
           >
             <div>F</div>
           </RCTooltip>
         ),
         accessor: "final",
-        headerStyle: Style.headerSubmissionStyle,
-        style: Style.submissionColumnStyle,
+        headerStyle: TableStyle.headerSubmissionStyle,
+        style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => (
-          <span>
-            {submissionSubmitted(props.original.id, finalReport) ===
-            true
-              ? submittedTrue()
-              : submittedFalse()}
-          </span>
-        )
+        Cell: props => <span>y</span>
       }
     ];
 
     return (
       <div>
-        <ReactTable data={this.state.students} columns={columns} />
+        <ReactTable
+          data={this.state.students}
+          pages={this.state.pages}
+          loading={this.state.loading}
+          manual
+          onFetchData={async (state, instance) => {
+            this.setState({ loading: true });
+            const students = await func.getStudentsForTable();
+
+            this.setState({
+              students: students,
+              pages: 1,
+              loading: false
+            });
+          }}
+          columns={columns}
+        />
         {this.state.showPopup ? (
           <StudentPopup
-            userId={this.state.selectedUserId}
+            user={this.state.selectedUser}
             closePopup={this.togglePopup.bind(this)}
           />
         ) : null}

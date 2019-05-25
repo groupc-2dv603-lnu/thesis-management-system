@@ -1,29 +1,21 @@
-import React, { Component } from 'react';
-import StudentsTable from './StudentsTable'
-import * as func from '../functions'
+import React, { Component } from "react";
+import StudentsTable from "./StudentsTable";
+import * as func from "../func";
 
 class Students extends Component {
   constructor(props) {
     super(props);
-    this.state = { students: [] };
-    //console.log('studentsState', this.state)
-    //console.log('studentsProps', this.props)
-
-    func.getFromAPI("/users").then(response => {
-      console.log(response)
-    })
   }
-render() {
-  return (
-    
-    <div>
-      <div> 
-      <StudentsTable></StudentsTable>
+
+  render() {
+    return (
+      <div>
+        <div>
+          <StudentsTable/>
+        </div>
       </div>
-    </div>
-    )
+    );
   }
 }
 
- 
-export default Students
+export default Students;

@@ -13,8 +13,6 @@ class Coordinator extends Component {
     this.state = {
       page: "students" //sets 'first' page
     };
-    console.log("propsIndex", this.props);
-    console.log("stateIndex", this.state);
     this.handleChange = this.handleChange.bind(this)
   }
 

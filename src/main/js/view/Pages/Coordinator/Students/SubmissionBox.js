@@ -7,6 +7,8 @@ import {
 } from "../functions";
 import * as Style from "../Styles/SubmissionBoxStyle";
 import * as PopupStyle from '../Styles/PopupStyles'
+import * as func from "../func";
+
 
 import Feedback from "./Feedback";
 
@@ -18,13 +20,17 @@ class SubmissionBox extends Component {
       thesisPart: null,
       feedback: null
     };
+    console.log('boxstate', this.state)
+    console.log('boxprops', this.props)
 
+    /*
     this.state.submission = getSubmission(this.props.userId, this.props.type);
     this.state.thesisPart = getThesis(
       this.state.submission.id,
       this.props.type
     );
     this.state.feedback = getFeedback(this.state.submission.id);
+    */
   }
 
   onFeedbackChange(event) {
@@ -101,7 +107,7 @@ class SubmissionBox extends Component {
               onClick={() => this.downloadSubmission()}
             >
               <span style={Style.submissionHeaderName}>
-                {capitalizeFirstLetter(this.state.submission.type)} submission{" "}
+                {/*func.capitalizeFirstLetter(this.state.submission.type)*/} submission{" "}
                 <i className="fas fa-download" />
               </span>
             </div>
@@ -109,7 +115,7 @@ class SubmissionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Status</span>
                 <span style={Style.submissionRightColumn}>
-                  {capitalizeFirstLetter(this.state.submission.status)}
+                  {func.capitalizeFirstLetter(this.state.submission.status)}
                 </span>
                 <span style={Style.submissionEditColumn}>
                   <select
@@ -149,10 +155,10 @@ class SubmissionBox extends Component {
                     placeholder="set grade"
                     onChange={() => this.setGrade(event)}
                   >
-                    {this.state.submission.type === "project description" ||
+                    {/*this.state.submission.type === "project description" ||
                     this.state.submission.type === "project plan"
                       ? this.gradeOptions(grading1)
-                      : this.gradeOptions(grading2)}
+        : this.gradeOptions(grading2) */}
                   </select>
                 </span>
               </div>

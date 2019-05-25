@@ -1,3 +1,8 @@
+/**
+ * this is for dev only
+ * func.js will be used in prod.
+ */
+
 import * as Mock from "./Mocks";
 import React, { Component } from "react";
 import client from '../../../client'
@@ -11,6 +16,10 @@ export function getFromAPI(getPath) {
 export function capitalizeFirstLetter(string) {
   if (string == null) return "N/A";
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function getStudents() {
+  return new Mock.StudentsMock()
 }
 
 export function getName(userId) {
@@ -62,6 +71,7 @@ export function getOpponents() {
 }
 
 /* --- students page ---- */
+/*
 export function getStudents() {
   const mock = new Mock.UsersMock();
 
@@ -77,7 +87,7 @@ export function getStudents() {
   });
   return students;
 }
-
+*/
 
 
 export function supervisorAssigned() {
@@ -97,13 +107,7 @@ export function submissionSubmitted(userId, type) {
   return false;
 }
 
-export function submittedTrue() {
-  return <i className="fas fa-check" />;
-}
 
-export function submittedFalse() {
-  return <i className="fas fa-times" />;
-}
 
 /* ---- Getters ---- */
 export function getSubmission(userId, type) {

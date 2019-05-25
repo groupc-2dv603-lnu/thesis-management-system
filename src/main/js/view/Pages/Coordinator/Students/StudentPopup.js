@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import * as Style from "../Styles/Styles";
 import * as PopupStyle from "../Styles/PopupStyles";
 import * as SubBox from "../Styles/SubmissionBoxStyle";
-
-import { getName } from "../functions";
+import * as func from "../func";
 import SubmissionBox from "./SubmissionBox";
 
 class StudentPopup extends React.Component {
@@ -21,13 +20,16 @@ class StudentPopup extends React.Component {
   }
 
   renderPage() {
+     // Breaks page, get list of students
+    /*
     return (
       <SubmissionBox
-        userId={this.props.userId}
+        user={this.props.user}
         type={this.state.page}
         key={this.state.page}
       />
     );
+    */
   }
 
   render() {
@@ -39,7 +41,7 @@ class StudentPopup extends React.Component {
             onClick={this.props.closePopup}
             style={PopupStyle.popupClose}
           />
-          <h3 style={PopupStyle.popupHeader}>{getName(this.props.userId)}</h3>
+          <h3 style={PopupStyle.popupHeader}>{func.capitalizeFirstLetter(this.props.user.name)}</h3>
           <div style={PopupStyle.popupBody}>
             <div style={SubBox.submissionMenu}>
               <button

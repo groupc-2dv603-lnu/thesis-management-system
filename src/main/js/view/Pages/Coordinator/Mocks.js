@@ -1,4 +1,29 @@
 "use strict";
+export class StudentsMock {
+  constructor() {
+    this.entity = {
+      _embedded: {
+        students: [
+          {
+            userId: "5ce7b3a06436233f4c46cc55",
+            supervisorAssigned: false,
+            supervisorId: "5cd92d216436230d9c2dd099"
+          },
+          {
+            userId: "5ce7a2bb6436231334ebfd37",
+            supervisorAssigned: true,
+            supervisorId: "5cd92d216436230d9c2dd099"
+          },
+          {
+            userId: "5ce7a43e6436234558898d02",
+            supervisorAssigned: true,
+            supervisorId: "5cd92d216436230d9c2dd099"
+          }
+        ]
+      }
+    };
+  }
+}
 
 export class UsersMock {
   constructor() {
@@ -22,7 +47,6 @@ export class UsersMock {
             name: "Some Guy",
             emailAdress: "someguy@google.com",
             roles: ["opponent"]
-
           },
           {
             id: 12,
@@ -44,12 +68,12 @@ export class UsersMock {
 
 export class StudentMock {
   constructor() {
-      this.entity = {
-          id: 99,
-          userId: 1,
-          supervisorId: 10,
-          supervisorAssigned: true,
-      }
+    this.entity = {
+      id: 99,
+      userId: 1,
+      supervisorId: 10,
+      supervisorAssigned: true
+    };
   }
 }
 
@@ -77,7 +101,7 @@ export class SubmissionsMock {
             type: "project description",
             status: "finished",
             fileURL: "some_url",
-            submissionDate: '2019-12-24'
+            submissionDate: "2019-12-24"
           },
           {
             id: 2,
@@ -136,60 +160,58 @@ export class SubmissionsMock {
 
 export class ProjectDescriptionMock {
   constructor() {
-      this.entity = {
-          id: 101,
-          userId: 1,
-          submissionId: 1,
-          grade: "pass",
-          deadline: "2019-05-12T23:55",
-          submissionDate: "2019-05-10T20:15",
-      }
+    this.entity = {
+      id: 101,
+      userId: 1,
+      submissionId: 1,
+      grade: "pass",
+      deadline: "2019-05-12T23:55",
+      submissionDate: "2019-05-10T20:15"
+    };
   }
 }
 
 export class ProjectPlanMock {
   constructor() {
-    this.entity =  {
+    this.entity = {
       id: 102,
       submissionId: 1,
       userId: 1,
       grade: "pass",
       deadline: "2019-05-24T23:55",
       submissionDate: "2019-05-20T20:15"
-    }
+    };
   }
 }
 
 export class InitialReportMock {
   constructor() {
-    this.entity = 
-      {
-        id: 103,
-        userId: 1,
-        submissionId: 3,
-        grade: "a",
-        deadline: "2019-05-30T23:55",
-        submissionDate: "2019-05-29T20:15",
-        bids: [11,12,10],
-        //bids: [],
-        assignedReaders: [],
-        assignedOpponent: []
-      }
-    }
+    this.entity = {
+      id: 103,
+      userId: 1,
+      submissionId: 3,
+      grade: "a",
+      deadline: "2019-05-30T23:55",
+      submissionDate: "2019-05-29T20:15",
+      bids: [11, 12, 10],
+      //bids: [],
+      assignedReaders: [],
+      assignedOpponent: []
+    };
+  }
 }
 
 export class FinalReportMock {
   constructor() {
-    this.entity = 
-      {
-        id: 103,
-        userId: 1,
-        submissionId: 3,
-        grade: "b",
-        deadline: "2019-05-30T23:55",
-        submissionDate: "2019-05-29T20:15",
-      }
-    }
+    this.entity = {
+      id: 103,
+      userId: 1,
+      submissionId: 3,
+      grade: "b",
+      deadline: "2019-05-30T23:55",
+      submissionDate: "2019-05-29T20:15"
+    };
+  }
 }
 
 export class FeedbackMock {
@@ -235,32 +257,32 @@ export class FeedbackMock {
 }
 
 export class SubMock {
-    constructor() {
-      this.submissions = [
-        {
-          id: 1,
-          type: 'project description',
-          status: 'finished',
-          deadline: '2019-05-18',
-        },
-        {
-          id: 2,
-          type: 'project plan',
-          status: 'active',
-          deadline: '2019-05-30'
-        },
-        {
-          id: 3,
-          type: 'initial report',
-          status: 'disabled',
-          deadline: null
-        },
-        {
-          id: 4,
-          type: 'final report',
-          status: 'disabled',
-          deadline: null
-        }
-      ]
-    }
+  constructor() {
+    this.submissions = [
+      {
+        id: 1,
+        type: "project description",
+        status: "finished",
+        deadline: "2019-05-18"
+      },
+      {
+        id: 2,
+        type: "project plan",
+        status: "active",
+        deadline: "2019-05-30"
+      },
+      {
+        id: 3,
+        type: "initial report",
+        status: "disabled",
+        deadline: null
+      },
+      {
+        id: 4,
+        type: "final report",
+        status: "disabled",
+        deadline: null
+      }
+    ];
+  }
 }
