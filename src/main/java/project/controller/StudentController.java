@@ -63,7 +63,7 @@ public class StudentController {
 //				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
 //	}
 	
-	@GetMapping(value = "/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Supervisor>> all() {
 		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
 			    .map(supervisor -> new Resource<>(supervisor,
@@ -81,7 +81,7 @@ public class StudentController {
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
-	@PutMapping("/requestSupervisor")
+	@PutMapping("/student/requestSupervisor")
 	Supervisor updateSupervisor(@RequestParam String supervisorUserId) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -97,7 +97,7 @@ public class StudentController {
 //		ArrayList<String> test2 = new ArrayList<String>();
 //		return supervisorRepository.save(new Supervisor("5cd92d7c6436232844a07a124", true, test, test2));
 //	}
-	@GetMapping(value = "/projectPlan", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/projectPlan", produces = "application/json; charset=UTF-8")
 	Resource<ProjectPlan> one1() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -106,7 +106,7 @@ public class StudentController {
 		return new Resource<>(projectplan,
 				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
 	}
-	@GetMapping(value = "/initialReport", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/initialReport", produces = "application/json; charset=UTF-8")
 	Resource<InitialReport> one3() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -116,7 +116,7 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one3()).withSelfRel());
 	}
 	
-	@GetMapping(value = "/finalReport", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/finalReport", produces = "application/json; charset=UTF-8")
 	Resource<FinalReport> one4() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -125,7 +125,7 @@ public class StudentController {
 		return new Resource<>(finalReport,
 				linkTo(methodOn(StudentController.class).one4()).withSelfRel());
 	}
-	@GetMapping(value = "/projectDescription", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/projectDescription", produces = "application/json; charset=UTF-8")
 	Resource<ProjectDescription> one5() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -135,7 +135,7 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one5()).withSelfRel());
 	}
 	
-	@GetMapping(value = "/feedback/{id}", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
 		return new Resource<>(feedback,
@@ -143,7 +143,7 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
 	}
 	
-	@GetMapping(value = "/feedback", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
