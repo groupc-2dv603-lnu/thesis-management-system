@@ -27,7 +27,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
           //  .antMatcher("/users")
             .authorizeRequests()
             .antMatchers("/admin/**").hasAuthority(String.valueOf(Role.ADMIN))
-            .antMatchers("/student/**").hasAuthority(String.valueOf(Role.STUDENT))
+//            .antMatchers("/student/**").hasAuthority(String.valueOf(Role.STUDENT))
+//            .antMatchers("/opponent/**").hasAuthority(String.valueOf(Role.OPPONENT))
+//            .antMatchers("/reader/**").hasAuthority(String.valueOf(Role.READER))
+//            .antMatchers("/supervisor/**").hasAuthority(String.valueOf(Role.SUPERVISOR))
+//            .antMatchers("/coordinator/**").hasAuthority(String.valueOf(Role.COORDINATOR))
             
                // .anyRequest()
                // .hasAuthority(String.valueOf(Role.ADMIN))
