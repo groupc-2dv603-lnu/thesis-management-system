@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import project.model.enums.Grade;
 
 @Data
 @Document(collection = "projectPlans")
@@ -17,12 +18,11 @@ public class ProjectPlan {
 	private String deadLine;
 	
 	
-	
-	public ProjectPlan(String userId, String submissionId, String feedBackId, String grade, String deadLine) {
+	public ProjectPlan(String userId, String submissionId, String feedBackId, Grade grade, String deadLine) {
 		this.userId = userId;
 		this.submissionId = submissionId;
 		this.feedBackId = feedBackId;
-		this.grade = grade;
+		this.grade = grade.label;
 		this.deadLine = deadLine;
 	}
 }

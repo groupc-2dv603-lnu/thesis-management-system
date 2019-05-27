@@ -3,7 +3,6 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,17 +21,10 @@ import project.model.entities.FinalReport;
 import project.model.entities.InitialReport;
 import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
-import project.model.entities.Role;
 import project.model.entities.Student;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
-import project.model.repositories.FeedbackRepository;
-import project.model.repositories.FinalReportRepository;
-import project.model.repositories.InitialReportRepository;
-import project.model.repositories.ProjectDescriptionRepository;
-import project.model.repositories.ProjectPlanRepository;
-import project.model.repositories.SupervisorRepository;
-import project.model.repositories.UserRepository;
+import project.model.repositories.*;
 
 @RestController
 public class StudentController {
