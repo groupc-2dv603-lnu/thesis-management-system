@@ -1,8 +1,8 @@
-'use strict'
+"use strict"
 
-import * as Mock from './mocks';
+import * as Mock from "./mocks";
 
-const client = require('../../../client');
+const client = require("../../../client");
 
 export function capitalizeFirstLetter(string) {
     if(string == null)
@@ -12,7 +12,11 @@ export function capitalizeFirstLetter(string) {
 
 
 export function getFromAPI(getPath) {
-    return client({ method: 'GET', path: getPath });
+    return client({ method: "GET", path: getPath });
+}
+
+function putToAPI(putPath) {
+    client({ method: "PUT", path: putPath });
 }
 
 //TODO unfinished/mocks
@@ -22,14 +26,26 @@ export function uploadFile(file) {
 }
 
 export function requestSupervisor(supervisor) {
-    getUser(supervisor.userId).then((response) => {
-        console.log('Requesting supervisor: ', response)
-    });
+    if(getOwnUser().supervisorId) {
+        alert("You cannot request a new supervisor while a previous request is unanswered");
+        return;
+    }
+    // getUser(supervisor.userId).then((response) => {
+    //     console.log("Requesting supervisor: ", response)
+    // });
 
-    // return client({ method: 'PUT', path: '/requestSupervisor' })
+    putToAPI("/student/requestSupervisor?supervisorUserId=" + supervisor.userId);
+    // .then(() => {
+    //     console.log(getOwnUser().name + "requested supervisor " + supervisor.userId + " successfully");
+    // })
     // .catch((error) => {
     //     console.log(error)
     // });
+}
+
+
+function getOwnUser() {
+    return getFromAPI("/loginUser")
 }
 
 export function getMockUser(userId) {
@@ -38,7 +54,7 @@ export function getMockUser(userId) {
 }
 
 export function getUser(userId) {
-    return client({ method: 'GET', path: '/users/' + userId });
+    return getFromAPI("/users/" + userId)
 }
 
  export function getStudentData() {
@@ -47,7 +63,7 @@ export function getUser(userId) {
 }
 
 export function getAvailableSupervisors() {
-    return client({ method: 'GET', path: '/getAvailableSupervisors' });
+    return getFromAPI("/student/getAvailableSupervisors");
 }
 
 export function getSubmissionData(submissionId) {
@@ -58,28 +74,29 @@ export function getSubmissionData(submissionId) {
 // export function getPDData() {
 //     // let mock = new Mock.ProjectDescriptionMock();
 //     // return new Promise(resolve => resolve(mock));
-//     return getFromAPI('/projectDescription');
+//     return getFromAPI("/projectDescription");
 // }
 
 // export function getPPData() {
 //     // let mock = new Mock.ProjectPlanMock();
 //     // return new Promise(resolve => resolve(mock));
-//     return get('/projectPlan');
+//     return get("/projectPlan");
 // }
 
 // export function getIRData() {
 //     // let mock = new Mock.InitialReportMock();
 //     // return new Promise(resolve => resolve(mock));
-//     return get('/intialReport');
+//     return get("/intialReport");
 // }
 
 // export function getFRData() {
 //     // let mock = new Mock.FinalReportMock();
 //     // return new Promise(resolve => resolve(mock));
-//     return get('/finalReport');
+//     return get("/finalReport");
 // }
 
-export function getFeedback(submissionId) {
-    let mock = new Mock.FeedbackMock().entity._embedded.feedback.filter(obj => obj.submissionId == submissionId);
-    return new Promise(resolve => resolve(mock));
+export function getFeedback(documentId) {
+    // let mock = new Mock.FeedbackMock().entity._embedded.feedback.filter(obj => obj.submissionId == submissionId);
+    // return new Promise(resolve => resolve(mock));
+    getFromAPI("/student/feedback?" + documentId);
 }

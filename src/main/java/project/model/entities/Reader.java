@@ -6,18 +6,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
 @Data
-@Document(collection = "opponents")
-public class Opponent {
-
+@Document(collection = "readers")
+public class Reader {
 	@Id
 	private String id;
 	private String userId;
 	private String initialReportId;
+	private String finalReportId;
 	
 	
-	public Opponent(String userId, String initialReportId) {
+	public Reader(String userId, String initialReportId, String finalReportId) {
 
 		this.userId = userId;
 		this.initialReportId = initialReportId;
+		this.finalReportId = finalReportId;
 	}
 }

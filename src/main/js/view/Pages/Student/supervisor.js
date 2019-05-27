@@ -16,6 +16,7 @@ class SupervisorBox extends Component {
     componentDidMount() {
         func.getStudentData().then(studentResponse => {
             this.setState({ studentData: studentResponse.entity });
+            // this.setState({ assignedSupervisor: { name: "Mr Pacman" }})
             func.getUser(studentResponse.entity.supervisorId).then(supervisorResponse => {
                 this.setState({ assignedSupervisor: supervisorResponse.entity })
             })
@@ -48,9 +49,9 @@ class SupervisorBox extends Component {
                     {(this.state.studentData.supervisorId && !this.state.studentData.supervisorAssigned) ? (
                         <p>
                             Request for supervisor sent. Awaiting response from {this.state.assignedSupervisor.name}.
+                            {/* <br />
                             <br />
-                            <br />
-                            <button onClick={() => this.openSupervisorPopup()}>Request new supervisor</button>
+                            <button onClick={() => this.openSupervisorPopup()}>Request new supervisor</button> */}
                         </p>
                     ) : ''}
 
@@ -65,8 +66,14 @@ class SupervisorBox extends Component {
                 {/* SupervisorPopup */}
                 {this.state.supervisorPopup ? (
                     <div className="popup">
+                        <i className="fas fa-window-close link right" onClick={() => this.closeSupervisorPopup()} />
                         <SupervisorPopup studentData={this.state.studentData} />
-                        <button onClick={() => this.closeSupervisorPopup()}>Close</button>
+                        <br/>
+                        <div style={{"color": "red"}}>
+                            {this.state.studentData.supervisorId ? "Cannot request new supervisor until previous request has been answered" : null}
+                        </div>
+                        {/* <br/>
+                        <button onClick={() => this.closeSupervisorPopup()}>Close</button> */}
                     </div>
                 ) : ''}
             </div>
@@ -118,7 +125,6 @@ class Supervisor extends Component {
     componentDidMount() {
         func.getUser(this.props.supervisor.userId).then(userResponse => {
             this.setState({ user: userResponse.entity });
-            console.log(this.props.studentData.supervisorId, this.props.supervisor.userId)
         })
     }
 
@@ -129,7 +135,10 @@ class Supervisor extends Component {
                     {this.state.user.name}
                 </td>
                 <td>
-                    <button disabled={this.props.studentData.supervisorId == this.props.supervisor.userId} onClick={() => func.requestSupervisor(this.props.supervisor)}>Request supervisor</button>
+                    <button disabled={this.props.studentData.supervisorId} onClick={() => func.requestSupervisor(this.props.supervisor)}>
+                    {/* <button disabled={this.props.studentData.supervisorId== this.props.supervisor.userId} onClick={() => func.requestSupervisor(this.props.supervisor)}>  */}
+                        {this.props.studentData.supervisorId == this.props.supervisor.userId ? 'Awaiting response...' : 'Request supervisor'}
+                    </button>
                 </td>
             </tr>
         )

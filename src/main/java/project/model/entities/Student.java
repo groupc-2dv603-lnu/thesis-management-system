@@ -2,6 +2,7 @@ package project.model.entities;
 
 
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -9,13 +10,17 @@ import lombok.Data;
 @Data
 @Document(collection = "students")
 public class Student {
-	private String UserId;
-	private String AssignedSupervisorId;
+	@Id
+	private String id;
+	private String userId;
+	private String assignedSupervisorId;
+	private String pendingSupervisor;
 	
 	
-	public Student(String UserId, String AssignedSupervisorId) {
-		this.UserId = UserId;
-		this.AssignedSupervisorId = AssignedSupervisorId;
+	public Student(String userId, String assignedSupervisorId, String pendingSupervisor) {
+		this.userId = userId;
+		this.assignedSupervisorId = assignedSupervisorId;
+		this.pendingSupervisor = pendingSupervisor;
 
 		
 	}

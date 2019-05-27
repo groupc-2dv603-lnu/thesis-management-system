@@ -24,6 +24,7 @@ import project.model.entities.InitialReport;
 import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Role;
+import project.model.entities.Student;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.FeedbackRepository;
@@ -31,6 +32,7 @@ import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.ProjectDescriptionRepository;
 import project.model.repositories.ProjectPlanRepository;
+import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 
@@ -43,9 +45,11 @@ public class StudentController {
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
 	private final ProjectDescriptionRepository projectDescriptionRepository;
+	private final StudentRepository studentRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
-			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository) {
+			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository,
+			StudentRepository studentRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
@@ -53,6 +57,7 @@ public class StudentController {
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
 		this.projectDescriptionRepository = projectDescriptionRepository;
+		this.studentRepository = studentRepository;
 	}
 	
 //	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
@@ -63,7 +68,7 @@ public class StudentController {
 //				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
 //	}
 	
-	@GetMapping(value = "/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Supervisor>> all() {
 		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
 			    .map(supervisor -> new Resource<>(supervisor,
@@ -72,27 +77,37 @@ public class StudentController {
 //			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
-						
+//		ArrayList<User> user = new ArrayList<User>();
+//		for(int i=0; i < supervisors.size(); i++){
+//			User findUser = repository.findFirstById(supervisors.get(i).getContent().getId());
+//			user.add(findUser);
+//			supervisors.get(i).getContent()
+//		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
-	@PutMapping("/requestSupervisor")
+	@PutMapping("/student/requestSupervisor")
 	Supervisor updateSupervisor(@RequestParam String supervisorUserId) {
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
-		User user = repository.findFirstByEmailAdress(name);	
-		Supervisor supervisor = supervisorRepository.findFirstByUserId(supervisorUserId);
-		supervisor.getAwaitingResponse().add(user.getId());
-		return supervisorRepository.save(supervisor);
+		
+		User user = repository.findFirstByEmailAdress(name);
+		Student student = studentRepository.findFirstByuserId(user.getId());
+		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
+		
+		if("awaiting".equals(student.getPendingSupervisor()) || "accepted".equals(student.getPendingSupervisor())) {
+			return supervisor;
+		} else {
+			supervisor.getAwaitingResponse().add(user.getId());
+			student.setPendingSupervisor("awaiting");
+			
+			studentRepository.save(student);
+			return supervisorRepository.save(supervisor);
+		}
 
 	}
-//	@PostMapping("/saveSupervisor")
-//	Supervisor newUser2() {
-//		ArrayList<String> test = new ArrayList<String>();
-//		ArrayList<String> test2 = new ArrayList<String>();
-//		return supervisorRepository.save(new Supervisor("5cd92d7c6436232844a07a124", true, test, test2));
-//	}
-	@GetMapping(value = "/projectPlan", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/projectPlan", produces = "application/json; charset=UTF-8")
 	Resource<ProjectPlan> one1() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -101,7 +116,7 @@ public class StudentController {
 		return new Resource<>(projectplan,
 				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
 	}
-	@GetMapping(value = "/initialReport", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/initialReport", produces = "application/json; charset=UTF-8")
 	Resource<InitialReport> one3() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -111,7 +126,7 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one3()).withSelfRel());
 	}
 	
-	@GetMapping(value = "/finalReport", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/finalReport", produces = "application/json; charset=UTF-8")
 	Resource<FinalReport> one4() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -120,7 +135,7 @@ public class StudentController {
 		return new Resource<>(finalReport,
 				linkTo(methodOn(StudentController.class).one4()).withSelfRel());
 	}
-	@GetMapping(value = "/projectDescription", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/projectDescription", produces = "application/json; charset=UTF-8")
 	Resource<ProjectDescription> one5() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
@@ -130,7 +145,7 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one5()).withSelfRel());
 	}
 	
-	@GetMapping(value = "/feedback/{id}", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
 		return new Resource<>(feedback,
@@ -138,7 +153,7 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
 	}
 	
-	@GetMapping(value = "/feedback", produces = "application/json; charset=UTF-8")
+	@GetMapping(value = "/student/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,

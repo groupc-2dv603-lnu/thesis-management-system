@@ -1,27 +1,50 @@
-'use strict';
+"use strict";
 
-import React, { Component } from 'react'
-const client = require('../../../client');
+import React, { Component } from "react";
+import CorNav from "./CorNav";
+import Submissions from '../Coordinator/Submissions/Submissions'
+import Students from '../Coordinator/Students/Students'
+import Reports from '../Coordinator/Reports/Reports'
+import * as Style from './Styles'
 
 class Coordinator extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { users: [] };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      page: "submissions"
+    };
+    console.log("propsIndex", this.props);
+    console.log("stateIndex", this.state);
+    this.handleChange = this.handleChange.bind(this)
+  }
 
-    componentDidMount() {
-        client({ method: 'GET', path: '/users' }).then(response => {
-            this.setState({ users: response.entity._embedded.users });
-        });
-    }
+  handleChange(page) {
+    console.log(page)
+    this.setState({ page: page });
+  }
 
-    render() {
-        return (
-            <div>
-                <p>Coordinator page</p>
-            </div>
-        )
+  renderPage() {
+    if(this.state.page === 'submissions') {
+      return <Submissions></Submissions>
+    } else if (this.state.page === 'students') {
+      return <Students></Students>
+    } else if (this.state.page === 'reports') {
+      return <Reports></Reports>
     }
+  }
+  render() {
+    return (
+      <div style={Style.body}>
+        <CorNav
+          handleChange={this.handleChange}
+          key={this.state.page}
+          page={this.state.page}
+        />
+        {this.renderPage()}
+      </div>
+      
+    );
+  }
 }
 
-export default Coordinator
+export default Coordinator;

@@ -1,8 +1,6 @@
 // TODO
-// design för icke tillgänglig data
 // separera css-fil - eller ha alla styles som konstanter i js-filerna
 // implementera db-hämtning
-// design för när man väntar på svar på en supervisor-förfrågan  
 
 'use strict';
 
@@ -15,80 +13,79 @@ class Student extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { PDData: {}, PPData: {}, IRData: {}, FRData: {}, PDSubmissionData: {}, PPSubmissionData: {}, IRSubmissionData: {}, FRSubmissionData: {} }
+        // this.state = { PDData: {}, PPData: {}, IRData: {}, FRData: {}, PDSubmissionData: {}, PPSubmissionData: {}, IRSubmissionData: {}, FRSubmissionData: {} ];
+        this.state = { submissions: [], render: false };
     }
 
-    componentDidMount() { // TODO (low importance) state should only be set once to avoid multiple re-renders (performance issue)
-        // let reportCalls = [ getPDData(), getPPData(), getIRData(), getFRData() ];
-        // let reportData = [ "PDData", "PPData", "IRData", "FRData" ];
-        // let submissionData = [ this.state.PDSubmissionData, this.state.PPSubmissionData, this.state.IRSubmissionData, this.state.FRSubmissionData ];
+    componentDidMount() {
 
-        // // reportCalls.forEach(reportCall => {
-        // for(let i = 0; i < 4; i ++) {
-        //     reportCalls[i].then(response => {
-        //         getSubmissionData(response.entity.submissionId).then(submission => {
-        //             this.setState({ reportData[i]: response.entity, submissionData[i]: submission });
+        const reportCalls = ["projectDescription", "projectPlan", "initialReport", "finalReport"];
+
+        let reports = new Array(4);
+        let count = 0;
+
+        // reportCalls.forEach(call => {
+
+        for(let i = 0; i < reportCalls.length; i ++) {
+            func.getFromAPI("/student/" + reportCalls[i]).then(report => {
+                // func.getSubmissionData(report.entity.submissionId).then(submission => {
+                    let submission = {} // temp testData
+                    reports[i] = <Submission key={reportCalls[i]} documentData={report.entity} type={reportCalls[i]} submissionData={submission.entity}/>
+                // })
+            })
+            .then(() => {
+                count ++;
+                if(count == 4) {
+                    this.setState({ submissions: reports });
+                }
+            })
+        };
+
+        // func.getFromAPI("/student/projectDescription").then(documentResponse => {
+        //     if(documentResponse.entity) {
+        //         func.getSubmissionData(documentResponse.entity.submissionId).then(submission => {
+        //             // this.submissions.push(
+        //             //     <Submission key={documentResponse.entity.id} documentData={documentResponse.entity} submissionData={submission} type="Test document"/>
+        //             // );
+        //             this.setState({ PDData: documentResponse.entity, PDSubmissionData: submission }); //.entity
         //         });
+        //     }
         // })
-
-        // for(let i = 0; i < 4; i ++) {
-        //     getPDData().then(response => {
-        //         getSubmissionData(response.entity.submissionId).then(submission => {
-        //             this.setState({ PDData: response.entity, PDSubmissionData: submission }); //.entity
+        // func.getFromAPI("/student/projectPlan").then(documentResponse => {
+        //     if(documentResponse.entity) {
+        //         func.getSubmissionData(documentResponse.entity.submissionId).then(submission => {
+        //             this.setState({ PPData: documentResponse.entity, PPSubmissionData: submission }); //.entity
         //         });
-        //     })
-        // }
-
-        func.getFromAPI("/projectDescription").then(response => {
-            if(response.entity) {
-                func.getSubmissionData(response.entity.submissionId).then(submission => {
-                    this.setState({ PDData: response.entity, PDSubmissionData: submission }); //.entity
-                });
-            }
-        })
-        func.getFromAPI("/projectPlan").then(response => {
-            if(response.entity) {
-                func.getSubmissionData(response.entity.submissionId).then(submission => {
-                    this.setState({ PPData: response.entity, PPSubmissionData: submission }); //.entity
-                });
-            }
-        })
-        func.getFromAPI("/initialReport").then(response => {
-            if(response.entity) {
-                func.getSubmissionData(response.entity.submissionId).then(submission => {
-                    this.setState({ IRData: response.entity, IRSubmissionData: submission }); //.entity
-                });
-            }
-        })
-        func.getFromAPI("/finalReport").then(response => {
-            if(response.entity) {
-                func.getSubmissionData(response.entity.submissionId).then(submission => {
-                    this.setState({ FRData: response.entity, FRSubmissionData: submission }); //.entity
-                });
-            }
-        })
+        //     }
+        // })
+        // func.getFromAPI("/student/initialReport").then(documentResponse => {
+        //     if(documentResponse.entity) {
+        //         func.getSubmissionData(documentResponse.entity.submissionId).then(submission => {
+        //             this.setState({ IRData: documentResponse.entity, IRSubmissionData: submission }); //.entity
+        //         });
+        //     }
+        // })
+        // func.getFromAPI("/student/finalReport").then(documentResponse => {
+        //     if(documentResponse.entity) {
+        //         func.getSubmissionData(documentResponse.entity.submissionId).then(submission => {
+        //             this.setState({ FRData: documentResponse.entity, FRSubmissionData: submission }); //.entity
+        //         });
+        //     }
+        // })
     }
 
-    render() {
+    render() {        
         return (
             <div>
                 <SupervisorBox />
 
                 <h2>Thesis Submissions</h2>
+                {this.state.submissions}
+                {/*
                 <Submission documentData={this.state.PDData} submissionData={this.state.PDSubmissionData} type="Project Description"/>
                 <Submission documentData={this.state.PPData} submissionData={this.state.PPSubmissionData} type="Project Plan"/>
                 <Submission documentData={this.state.IRData} submissionData={this.state.IRSubmissionData} type="Initial Report"/>
                 <Submission documentData={this.state.FRData} submissionData={this.state.FRSubmissionData} type="Final Report"/>
-                {/*
-                */}
-                
-
-                {/* Only construct components when data has been fetched */}
-                {/*
-                {this.state.PDData ? <Submission reportData={this.state.PDData} type={reportType.PD}/> : null }
-                {this.state.PPData ? <Submission reportData={this.state.PPData} type={reportType.PP}/> : null }
-                {this.state.IRData ? <Submission reportData={this.state.IRData} type={reportType.IR}/> : null }
-                {this.state.FRData ? <Submission reportData={this.state.FRData} type={reportType.FR}/> : null } 
                 */}
                
             </div>

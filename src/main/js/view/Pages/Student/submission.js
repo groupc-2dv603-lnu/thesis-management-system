@@ -1,7 +1,7 @@
 'use strict'
 
 import React, { Component } from 'react';
-import { capitalizeFirstLetter, uploadFile, getFeedback, getUser } from './functions';
+import * as func from './functions';
 
 class Submission extends Component {
 
@@ -25,7 +25,7 @@ class Submission extends Component {
         if(this.props.documentData.grade) {
         // if(this.props.submissionData && this.props.submissionData.status == "finished") {
             line1 = "Status: Graded";
-            line2 = "Grade: " + capitalizeFirstLetter(this.props.documentData.grade);
+            line2 = "Grade: " + func.capitalizeFirstLetter(this.props.documentData.grade);
             styleClass = "finished"; // this.props.submissionData.status;
         }
         // deadline is set (but not graded) == submission counted as active
@@ -43,7 +43,7 @@ class Submission extends Component {
         return (
             <div>
                 <div className={"submission " + styleClass}>
-                    <div className="header" onClick={() => this.toggleShowFeedback()}>{capitalizeFirstLetter(this.props.type)}</div>
+                    <div className="header" onClick={() => this.toggleShowFeedback()}>{func.capitalizeFirstLetter(this.props.type)}</div>
                     <div className="content">
                         {/* finished or active submission */}
                         {this.props.documentData.deadline != null ? (
@@ -57,7 +57,7 @@ class Submission extends Component {
                                         <br />
                                         <input type="file" id="file"/>
                                         <br/>
-                                        <button onClick={() => uploadFile(document.getElementById("file").files[0])}>Upload</button>
+                                        <button onClick={() => func.uploadFile(document.getElementById("file").files[0])}>Upload</button>
                                     </div>
                                 // deadline passed
                                 ) : (this.props.documentData.deadline && !this.props.documentData.grade) ? (
@@ -67,7 +67,9 @@ class Submission extends Component {
                                         </div>
                                 ) : ''}
                                 {/* Feedback */}
-                                {this.state.showFeedback && this.props.submissionData.status == "finished" ? <FeedbackList submissionId={this.props.submissionData.id}/> : ''}
+                                {/* {this.state.showFeedback && this.props.submissionData.status == "finished" ? */}
+                                 <FeedbackList documentId={this.props.documentData.id}/> 
+                                {/* : ''} */}
                                 
                             </div>
                         ) : (
@@ -94,7 +96,7 @@ class FeedbackList extends Component {
     }
 
     componentDidMount() {
-        getFeedback(this.props.submissionId).then(response => {
+        getFeedback(this.props.id).then(response => {
             this.setState({ feedback: response }); //.entity._embedded.feedback
         });
     }
