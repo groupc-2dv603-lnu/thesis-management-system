@@ -1,7 +1,6 @@
 'use strict'
 
 import * as Mock from './mocks';
-
 export function capitalizeFirstLetter(string) {
     if(string == null)
         return "N/A";
