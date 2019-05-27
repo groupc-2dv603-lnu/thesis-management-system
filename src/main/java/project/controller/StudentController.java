@@ -107,12 +107,6 @@ public class StudentController {
 		}
 
 	}
-//	@PostMapping("/saveSupervisor")
-//	Supervisor newUser2() {
-//		ArrayList<String> test = new ArrayList<String>();
-//		ArrayList<String> test2 = new ArrayList<String>();
-//		return supervisorRepository.save(new Supervisor("5cd92d7c6436232844a07a124", true, test, test2));
-//	}
 	@GetMapping(value = "/student/projectPlan", produces = "application/json; charset=UTF-8")
 	Resource<ProjectPlan> one1() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

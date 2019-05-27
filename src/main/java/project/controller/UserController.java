@@ -141,7 +141,40 @@ class UserController {
 	@PutMapping("/admin/assignRoles")
 	User updateUser(@RequestBody User updateUser) {
 		User finduser = repository.findFirstByEmailAdress(updateUser.getEmailAdress());
+		Boolean oldRoleStudent = false;
+		Boolean newRoleStudent = false;
 		if(finduser != null) {
+			for(int i=0; i < finduser.getRoles().length; i++) {
+				if(finduser.getRoles()[i].equals(Role.STUDENT)) {
+					oldRoleStudent = true;
+				}
+			}
+			
+			for(int i=0; i < updateUser.getRoles().length; i++) {
+				if(updateUser.getRoles()[i].equals(Role.STUDENT)) {
+					newRoleStudent = true;
+				}
+			}
+			
+			if(oldRoleStudent.equals(false) && newRoleStudent.equals(true)) {
+				projectDescriptionRepository.save(new ProjectDescription(finduser.getId(), null, null, null));
+				projectPlanRepository.save(new ProjectPlan(finduser.getId(), null, null, null, null));
+				initialReportRepository.save(new InitialReport(finduser.getId(), null, null, null, null, null, null, null));
+				finalReportRepository.save(new FinalReport(finduser.getId(), null, null, null));
+
+			} else if(oldRoleStudent.equals(true) && newRoleStudent.equals(false)) {
+				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(finduser.getId());
+				projectDescriptionRepository.deleteById(projectDescription.getId());
+				
+				ProjectPlan projectPlan = projectPlanRepository.findFirstByuserId(finduser.getId());
+				projectPlanRepository.deleteById(projectPlan.getId());
+				
+				InitialReport initialReport = initialReportRepository.findFirstByuserId(finduser.getId());
+				initialReportRepository.deleteById(initialReport.getId());
+				
+				FinalReport finalReport = finalReportRepository.findFirstByuserId(finduser.getId());
+				finalReportRepository.deleteById(finalReport.getId());
+			}
 			finduser.setRoles(updateUser.getRoles());
 			return repository.save(finduser);
 		} else {
