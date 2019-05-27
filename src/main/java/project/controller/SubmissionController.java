@@ -47,7 +47,7 @@ public class SubmissionController {
         try {
             /*Path bytes =*/ Files.copy(
                     new File(".\\src\\main\\resources\\uploads\\" + submission.getId() + ".pdf").toPath(),
-                    new File("C:\\Users\\Timme\\Documents\\Skola\\2DV603 - Software Design\\Assignment4_Project\\test.pdf").toPath(),
+                    new File("C:\\Users\\Timme\\Documents\\Skola\\2DV603 - Software Design\\Assignment4_Project\\test.pdf").toPath(), //Destination dir
                     StandardCopyOption.REPLACE_EXISTING,
                     StandardCopyOption.COPY_ATTRIBUTES,
                     LinkOption.NOFOLLOW_LINKS);

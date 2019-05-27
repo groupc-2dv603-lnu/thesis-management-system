@@ -23,7 +23,8 @@ public class Submission {
     @Id
     private String id;
     @CreatedDate
-    private Date createdDate;
+    private Date submissionDate;
+    private String userId;
     private SubmissionStatus submissionStatus;
     private String fileUrl;         //TODO: do something with this
 //    private String fileName;        //TODO: redundant?
