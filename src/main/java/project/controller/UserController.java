@@ -116,7 +116,7 @@ class UserController {
 			repository.save(user);
 			for(int i=0; i < user.getRoles().length; i++){
 				if(user.getRoles()[i].equals(Role.STUDENT)) {
-					studentRepository.save(new Student(user.getId(), ""));
+					studentRepository.save(new Student(user.getId(), "", null));
 					projectDescriptionRepository.save(new ProjectDescription(user.getId(), null, null, null));
 					projectPlanRepository.save(new ProjectPlan(user.getId(), null, null, null, null));
 					initialReportRepository.save(new InitialReport(user.getId(), null, null, null, null, null, null, null));
