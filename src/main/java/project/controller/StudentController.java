@@ -24,6 +24,7 @@ import project.model.entities.InitialReport;
 import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Role;
+import project.model.entities.Student;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
 import project.model.repositories.FeedbackRepository;
@@ -31,6 +32,7 @@ import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.ProjectDescriptionRepository;
 import project.model.repositories.ProjectPlanRepository;
+import project.model.repositories.StudentRepository;
 import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 
@@ -43,9 +45,11 @@ public class StudentController {
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
 	private final ProjectDescriptionRepository projectDescriptionRepository;
+	private final StudentRepository studentRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
-			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository) {
+			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository,
+			StudentRepository studentRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
@@ -53,6 +57,7 @@ public class StudentController {
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
 		this.projectDescriptionRepository = projectDescriptionRepository;
+		this.studentRepository = studentRepository;
 	}
 	
 //	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
@@ -83,12 +88,23 @@ public class StudentController {
 	}
 	@PutMapping("/student/requestSupervisor")
 	Supervisor updateSupervisor(@RequestParam String supervisorUserId) {
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
-		User user = repository.findFirstByEmailAdress(name);	
+		
+		User user = repository.findFirstByEmailAdress(name);
+		Student student = studentRepository.findFirstByuserId(user.getId());
 		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
-		supervisor.getAwaitingResponse().add(user.getId());
-		return supervisorRepository.save(supervisor);
+		
+		if("awaiting".equals(student.getPendingSupervisor()) || "accepted".equals(student.getPendingSupervisor())) {
+			return supervisor;
+		} else {
+			supervisor.getAwaitingResponse().add(user.getId());
+			student.setPendingSupervisor("awaiting");
+			
+			studentRepository.save(student);
+			return supervisorRepository.save(supervisor);
+		}
 
 	}
 //	@PostMapping("/saveSupervisor")

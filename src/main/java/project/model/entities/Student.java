@@ -14,11 +14,13 @@ public class Student {
 	private String id;
 	private String userId;
 	private String assignedSupervisorId;
+	private String pendingSupervisor;
 	
 	
-	public Student(String userId, String assignedSupervisorId) {
+	public Student(String userId, String assignedSupervisorId, String pendingSupervisor) {
 		this.userId = userId;
 		this.assignedSupervisorId = assignedSupervisorId;
+		this.pendingSupervisor = pendingSupervisor;
 
 		
 	}
