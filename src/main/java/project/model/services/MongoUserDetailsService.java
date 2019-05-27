@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import project.model.entities.Role;
+import project.model.enums.Role;
 import project.model.repositories.UserRepository;
 
 import java.util.ArrayList;

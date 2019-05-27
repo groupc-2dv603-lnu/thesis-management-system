@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Document(collection = "finalReports")
 public class FinalReport {
@@ -14,6 +16,8 @@ public class FinalReport {
 	private String submissionId;
 	private String grade;
 	private String deadLine;
+	private List<Opponent> opponents;
+	private List<Reader> readers;
 	
 	
 	

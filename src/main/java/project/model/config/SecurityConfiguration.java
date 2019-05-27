@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import project.model.entities.Role;
+import project.model.enums.Role;
 import project.model.services.MongoUserDetailsService;
 
 // WebSecurityConfigurerAdapter contains everything needed for authentication in spring
@@ -25,8 +24,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
           //  .antMatcher("/users")
             .authorizeRequests()
-                .anyRequest()
-                .hasAuthority(String.valueOf(Role.ADMIN))
+            .antMatchers("/admin/**").hasAuthority(String.valueOf(Role.ADMIN))
+//            .antMatchers("/student/**").hasAuthority(String.valueOf(Role.STUDENT))
+//            .antMatchers("/opponent/**").hasAuthority(String.valueOf(Role.OPPONENT))
+//            .antMatchers("/reader/**").hasAuthority(String.valueOf(Role.READER))
+//            .antMatchers("/supervisor/**").hasAuthority(String.valueOf(Role.SUPERVISOR))
+//            .antMatchers("/coordinator/**").hasAuthority(String.valueOf(Role.COORDINATOR))
+            
+               // .anyRequest()
+               // .hasAuthority(String.valueOf(Role.ADMIN))
             .and().httpBasic() // Specifies the authentication method spring will use
             .and().sessionManagement().disable() // Disables Session Management (unnecessary)
             .csrf().disable(); // Disables CSRF protection (unnecessary)

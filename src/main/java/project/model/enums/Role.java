@@ -1,4 +1,4 @@
-package project.model.entities;
+package project.model.enums;
 
 public enum Role {
     ADMIN,
@@ -6,5 +6,5 @@ public enum Role {
     READER,
     SUPERVISOR,
     OPPONENT,
-    Student
+    COORDINATOR
 }
