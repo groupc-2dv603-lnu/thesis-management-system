@@ -212,7 +212,7 @@ class StudentsTable extends Component {
           onFetchData={async (state, instance) => {
             console.log('tableState', state)
             this.setState({ loading: true });
-            const students = await func.getStudentsForTable();
+            const students = await func.getAllStudents();
 
             this.setState({
               students: students,

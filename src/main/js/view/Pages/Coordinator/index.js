@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from "react";
-import CorNav from "./CorNav";
+import CoordinatorHeader from './components/CoordinatorHeader'
 import Submissions from '../Coordinator/Submissions/Submissions'
 import Students from '../Coordinator/Students/Students'
 import Reports from '../Coordinator/Reports/Reports'
@@ -32,7 +32,7 @@ class Coordinator extends Component {
   render() {
     return (
       <div style={Style.body}>
-        <CorNav
+        <CoordinatorHeader
           handleChange={this.handleChange}
           key={this.state.page}
           page={this.state.page}
