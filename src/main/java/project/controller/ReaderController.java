@@ -38,7 +38,13 @@ public class ReaderController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
+		
 		InitialReport report = initialReportRepository.findFirstById(initialReportId);
+		for(int i=0; i < report.getBids().size(); i++) {
+			if(report.getBids().get(i).equals(user.getId())) {
+				return report;
+			}
+		}
 		report.getBids().add(user.getId());
 		return initialReportRepository.save(report);
 	}
