@@ -30,27 +30,16 @@ class StudentsTable extends Component {
       pTooltip: false,
       iTooltip: false,
       fTooltip: false,
-      selectedUser: null,
       showPopup: false,
       students: [],
       loading: true,
-      pages: -1
+      selectedStudent: null,
+      // pages: -1
     };
   }
 
-  async componentDidMount() {
-    /* fetch mock
-    const students = await mock.getStudents();
-    this.setState({ students: students.entity._embedded.students });
-    */
-    /* fetch from api
-    const students = await func.getStudents();
-    this.setState({ students: students });
-    */
-  }
-
-  togglePopup(user) {
-    this.setState({ selectedUser: user });
+  togglePopup(student) {
+    this.setState({ selectedStudent: student });
     this.setState({ showPopup: !this.state.showPopup });
   }
 
@@ -219,8 +208,9 @@ class StudentsTable extends Component {
           data={this.state.students}
           pages={this.state.pages}
           loading={this.state.loading}
-          manual
+          manual // ??
           onFetchData={async (state, instance) => {
+            console.log('tableState', state)
             this.setState({ loading: true });
             const students = await func.getStudentsForTable();
 
@@ -234,7 +224,7 @@ class StudentsTable extends Component {
         />
         {this.state.showPopup ? (
           <StudentPopup
-            user={this.state.selectedUser}
+            student={this.state.selectedStudent}
             closePopup={this.togglePopup.bind(this)}
           />
         ) : null}

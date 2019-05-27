@@ -3,9 +3,8 @@ import { getName, capitalizeFirstLetter } from "../functions";
 import * as Style from "../Styles/SubmissionBoxStyle";
 
 class Feedback extends Component {
-
   render() {
-    console.log('feedbackprops', this.props)
+    console.log("feedbackprops", this.props);
     return (
       <div>
         <div style={Style.submissionFeedbackRow}>
@@ -14,7 +13,7 @@ class Feedback extends Component {
             <textarea
               style={Style.textarea}
               onChange={() => this.props.onFeedbackChange(event)}
-              value={this.props.feedback.text}
+              value="hardcoded text"
             />
           </span>
         </div>
@@ -22,8 +21,7 @@ class Feedback extends Component {
           <div style={Style.submissionFeedbackFromRow}>
             <span style={Style.submissionLeftColumn}>From</span>
             <span style={Style.submissionRightColumn}>
-              {capitalizeFirstLetter(this.props.feedback.role)}:{" "}
-              {getName(this.props.feedback.userId)}
+              role: coordinator name: martin
             </span>
           </div>
         ) : null}

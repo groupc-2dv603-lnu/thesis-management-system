@@ -46,12 +46,10 @@ export function getbidderNames(bidders) {
   return bidderNames;
 }
 
-export function getInitialReports(users) {
-  let initialReports = [];
-  users.forEach(user => {
-    initialReports.push(new Mock.InitialReportMock().entity);
-  });
-  return initialReports;
+export function getInitialReports() {
+  let initialReport =  new Mock.InitialReportMock()
+  console.log('initialReport',initialReport)
+  return initialReport;
 }
 
 export function getOpponents() {
@@ -69,25 +67,6 @@ export function getOpponents() {
   });
   return opponent;
 }
-
-/* --- students page ---- */
-/*
-export function getStudents() {
-  const mock = new Mock.UsersMock();
-
-  let students = [];
-  mock.entity._embedded.users.forEach(user => {
-    if ("roles" in user) {
-      user.roles.forEach(role => {
-        if (role === "student") {
-          students.push(user);
-        }
-      });
-    }
-  });
-  return students;
-}
-*/
 
 
 export function supervisorAssigned() {

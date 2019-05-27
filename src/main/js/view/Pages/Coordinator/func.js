@@ -6,6 +6,7 @@ export function getFromAPI(getPath) {
   return client({ method: "GET", path: getPath });
 }
 
+// Gets all students and creates objects suited for studentstable
 export async function getStudentsForTable() {
   const studentList = []
 
@@ -14,7 +15,6 @@ export async function getStudentsForTable() {
   const students = await response.entity._embedded.students
 
   for (const student of students) {
-    console.log('student', student)
     let studentObject = {
       userId: student.userId,
       name: await capitalizeFirstLetter(await getName(student.userId)),
@@ -38,4 +38,8 @@ export function capitalizeFirstLetter(name){
 export async function getName(userId) {
   const response = await getFromAPI(`/users/${userId}`)
   return response.status.code !== 200 ? 'No name' : response.entity.name
+}
+
+export async function getInitialReports() {
+  let students = await getStudents
 }

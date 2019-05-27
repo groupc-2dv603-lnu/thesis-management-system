@@ -4,9 +4,8 @@ import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
 import * as Style from "../Styles/TableStyles";
 import ReportPopup from "./ReportPopup";
+import * as func from "../func"
 
-/* ---- mock imports ---- */
-import { getStudents, getInitialReports, getName } from "../functions";
 
 const client = require("../../../../client");
 
@@ -14,13 +13,13 @@ class ReportsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
+      students: [],
       initialReports: [],
       selectedReportId: null,
-      showPopup: false
+      showPopup: false,
+      loading: false,
+      // pages: -1,
     };
-    this.state.users = getStudents();
-    this.state.initialReports = getInitialReports(this.state.users);
   }
 
   togglePopup(reportId) {
@@ -49,7 +48,7 @@ class ReportsTable extends Component {
               this.togglePopup(props.original.id);
             }}
           >
-            {getName(props.original.userId)}
+            Name
           </span>
         )
       },
@@ -61,7 +60,7 @@ class ReportsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>{props.original.bids.length}</span>
+            <span>Antal</span>
           </Link>
         )
       },
@@ -73,7 +72,7 @@ class ReportsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>{props.original.assignedReaders.length}</span>
+            <span>Antal/namn?</span>
           </Link>
         )
       },
@@ -86,9 +85,7 @@ class ReportsTable extends Component {
         Cell: props => (
           <Link to="#">
             <span>
-              {props.original.assignedOpponent === null
-                ? "0"
-                : props.original.assignedOpponent.length}
+              antal/namn?
             </span>
           </Link>
         )
@@ -97,7 +94,24 @@ class ReportsTable extends Component {
 
     return (
       <div>
-        <ReactTable data={this.state.initialReports} columns={columns} />{" "}
+        <ReactTable 
+          data={this.state.initialReports} 
+          pages={this.state.pages}
+          loading={this.state.loading}
+          manual // ??
+          onFetchData={async (state, instance) => {
+            console.log('tableState', state)
+            this.setState({ loading: true });
+            const initialReports = await func.getInitialReports();
+
+            this.setState({
+              initialReports: initialReports,
+              pages: 1,
+              loading: false
+            });
+          }}
+          columns={columns}  
+           />{" "}
         {this.state.showPopup ? (
           <ReportPopup
             report={this.state.selectedReportId}

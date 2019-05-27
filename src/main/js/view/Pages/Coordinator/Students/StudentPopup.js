@@ -11,6 +11,7 @@ class StudentPopup extends React.Component {
     this.state = {
       page: "project description"
     };
+
   }
 
   setPage(page) {
@@ -20,16 +21,13 @@ class StudentPopup extends React.Component {
   }
 
   renderPage() {
-     // Breaks page, get list of students
-    /*
     return (
       <SubmissionBox
-        user={this.props.user}
+        student={this.props.student}
         type={this.state.page}
         key={this.state.page}
       />
     );
-    */
   }
 
   render() {
@@ -41,7 +39,7 @@ class StudentPopup extends React.Component {
             onClick={this.props.closePopup}
             style={PopupStyle.popupClose}
           />
-          <h3 style={PopupStyle.popupHeader}>{func.capitalizeFirstLetter(this.props.user.name)}</h3>
+          <h3 style={PopupStyle.popupHeader}>{this.props.student.name}</h3>
           <div style={PopupStyle.popupBody}>
             <div style={SubBox.submissionMenu}>
               <button

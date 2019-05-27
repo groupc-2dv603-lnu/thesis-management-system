@@ -115,7 +115,8 @@ class SubmissionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Status</span>
                 <span style={Style.submissionRightColumn}>
-                  {func.capitalizeFirstLetter(this.state.submission.status)}
+                  Hardcoded deadline
+                  {/*func.capitalizeFirstLetter(this.state.submission.status)*/}
                 </span>
                 <span style={Style.submissionEditColumn}>
                   <select
@@ -142,13 +143,14 @@ class SubmissionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Submitted</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.submission.submissionDate}
+                  Hardcoded submissiondate
+                  {/*this.state.submission.submissionDate*/}
                 </span>
               </div>
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Grade</span>
                 <span style={Style.submissionRightColumn}>
-                  {capitalizeFirstLetter(this.state.thesisPart.grade)}
+                  Hardcoded status
                 </span>
                 <span style={Style.submissionEditColumn}>
                   <select
