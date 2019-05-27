@@ -4,7 +4,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ import project.model.entities.Reader;
 
 //import project.model.entities.Student;
 
-import project.model.entities.Role;
+import project.model.enums.Role;
 import project.model.entities.Student;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
