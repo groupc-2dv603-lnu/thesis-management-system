@@ -30,7 +30,21 @@ public class ReaderController {
 	
 	@PostMapping("/reader/feedback")
 	Feedback newFeedback(@RequestBody Feedback feedback) {
-		return feedbackRepository.save(feedback);
+		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
+		Boolean doesFeedBackExist = false;
+
+		for(int i=0; i < report.getFeedBackIds().size(); i++) {
+			Feedback oldFeedback = feedbackRepository.findFirstById(report.getFeedBackIds().get(i));
+			if(oldFeedback != null) {
+				doesFeedBackExist = true;
+			}
+		}
+		if(doesFeedBackExist.equals(false)) {
+			feedbackRepository.save(feedback);
+			report.getFeedBackIds().add(feedback.getId());
+			initialReportRepository.save(report);
+		}
+		return feedback;
 	}
 	
 	@PutMapping("/reader/requestBidding")
