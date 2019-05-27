@@ -7,6 +7,7 @@ import project.model.DTOs.SubmissionsDTO;
 import project.model.enums.Grade;
 import project.model.repositories.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class CoordinatorController {
 
 
     @PutMapping(value = "/coordinator/updateProjectPlan", consumes = {"application/json"})
-    void updateProjectPlan(@RequestBody ProjectPlan projectPlan) {
+    void updateProjectPlan(@Valid @RequestBody ProjectPlan projectPlan) {
         if (projectPlanRepository.findById(projectPlan.getId()).isPresent()) {
             projectPlanRepository.save(projectPlan);
         }
