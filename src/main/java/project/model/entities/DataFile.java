@@ -12,15 +12,15 @@ import java.nio.file.Files;
 
 @Data
 @Document(collection = "dataFiles")
-public class DemoFile {
+public class DataFile {
 
     @Id
     private String id;
     private Binary binaryData;
 
-    public DemoFile () {}
+    public DataFile() {}
 
-    public DemoFile(String filePath) throws FileNotFoundException{
+    public DataFile(String filePath) throws FileNotFoundException{
 
         File newFile = new File(filePath);
         if(!newFile.exists()){

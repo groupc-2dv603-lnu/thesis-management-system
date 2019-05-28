@@ -2,21 +2,21 @@ package project.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.model.entities.DemoFile;
-import project.model.repositories.DemoFileRepository;
+import project.model.entities.DataFile;
+import project.model.repositories.DataFileRepository;
 
 @RestController
 public class DemoFileController {
 
-    private final DemoFileRepository demoFileRepository;
+    private final DataFileRepository dataFileRepository;
 
-    public DemoFileController(DemoFileRepository demoFileRepository) {
-        this.demoFileRepository = demoFileRepository;
+    public DemoFileController(DataFileRepository dataFileRepository) {
+        this.dataFileRepository = dataFileRepository;
     }
 
     @PostMapping("/dataFiles")
-    String uploadFile(DemoFile demoFile){
-        demoFileRepository.save(demoFile);
+    String uploadFile(DataFile dataFile){
+        dataFileRepository.save(dataFile);
 
         return "File uploaded";
     }

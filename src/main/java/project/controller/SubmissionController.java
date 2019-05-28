@@ -3,13 +3,8 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
-import project.model.entities.DemoFile;
+import project.model.entities.DataFile;
 import project.model.entities.Submission;
-import project.model.repositories.DemoFileRepository;
+import project.model.repositories.DataFileRepository;
 import project.model.repositories.SubmissionRepository;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,11 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 public class SubmissionController {
 
     private final SubmissionRepository subRepository;
-    private final DemoFileRepository demoFileRepository;
+    private final DataFileRepository dataFileRepository;
 
-    public SubmissionController(SubmissionRepository subRepository, DemoFileRepository demoFileRepository){
+    public SubmissionController(SubmissionRepository subRepository, DataFileRepository dataFileRepository){
         this.subRepository = subRepository;
-        this.demoFileRepository = demoFileRepository;
+        this.dataFileRepository = dataFileRepository;
     }
 
 
@@ -70,12 +65,12 @@ public class SubmissionController {
     }
 
     @GetMapping(value = "/submissions/datafiles/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    /*Resource<DemoFile>*/void downloadFile(@PathVariable String id, HttpServletResponse response){
-        DemoFile demoFile = demoFileRepository.findFirstById(id);
+    /*Resource<DataFile>*/void downloadFile(@PathVariable String id, HttpServletResponse response){
+        DataFile dataFile = dataFileRepository.findFirstById(id);
 
 //        try {
 //            //TODO: new File below should not be static
-//            FileCopyUtils.copy(demoFile.getBinaryData().getData(), new File("C:\\Users\\Timme\\Documents\\Skola\\2DV603 - Software Design\\Assignment4_Project\\test.pdf"));
+//            FileCopyUtils.copy(dataFile.getBinaryData().getData(), new File("C:\\Users\\Timme\\Documents\\Skola\\2DV603 - Software Design\\Assignment4_Project\\test.pdf"));
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
@@ -83,12 +78,12 @@ public class SubmissionController {
         response.setContentType("application/octet-stream");
         response.addHeader("Content-Disposition", "attachment; filename="+ "DownloadTest.pdf"); //TODO: maybe add filename to submissions
         try {
-            FileCopyUtils.copy(demoFile.getBinaryData().getData(), response.getOutputStream());
+            FileCopyUtils.copy(dataFile.getBinaryData().getData(), response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-//        return new Resource<>(demoFile,
+//        return new Resource<>(dataFile,
 //                linkTo(methodOn(SubmissionController.class).one(id)).withSelfRel(),
 //                linkTo(methodOn(SubmissionController.class).all()).withRel("dataFiles"));
     }
@@ -118,13 +113,13 @@ public class SubmissionController {
 //        } catch (FileNotFoundException e) {
 //            return e.getMessage();
 //        }
-        DemoFile df = null;
+        DataFile df = null;
         try {
-            df = new DemoFile(newSubmission.getFilePath());
+            df = new DataFile(newSubmission.getFilePath());
         } catch (FileNotFoundException e) {
             return e.getMessage();
         }
-        demoFileRepository.save(df);
+        dataFileRepository.save(df);
 //        newSubmission.setFile("C:\\Users\\Timme\\Downloads\\04 Re-engineering Legacy Software - Reading 1.pdf");  //TODO: hardcoded to test larger files. remove
         newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
         newSubmission.setFilePath(null);
@@ -177,7 +172,7 @@ public class SubmissionController {
         String[] parts = submission.getFileUrl().split("/");
         String fileId = parts[3];                                       //get id out of string "/submissions/datafiles/id"
 
-        demoFileRepository.delete(demoFileRepository.findFirstById(fileId));
+        dataFileRepository.delete(dataFileRepository.findFirstById(fileId));
         subRepository.delete(subRepository.findFirstById(id));
 
 //        return "File deleted: " + storedFile.delete();
@@ -194,7 +189,7 @@ public class SubmissionController {
     @DeleteMapping("/submissions")
     String deleteAllSubmissions() {
 
-        demoFileRepository.deleteAll();
+        dataFileRepository.deleteAll();
         subRepository.deleteAll();
 //        List<Submission> submissions = subRepository.findAll();
 //        for (Submission sub : submissions){
