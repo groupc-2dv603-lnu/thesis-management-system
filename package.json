@@ -19,6 +19,7 @@
   "homepage": "https://github.com/groupc-2dv603-lnu/thesis-management-system",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
+    "moment": "^2.24.0",
     "rc-tooltip": "^3.7.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -38,6 +39,8 @@
     "@babel/runtime": "^7.4.5",
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "css-loader": "^2.1.1",
+    "style-loader": "^0.23.1",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.2"
   }

@@ -7,7 +7,6 @@ import * as Style from './HeaderStyle'
 class CoordinatorHeader extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props)
       }
     
     render() {

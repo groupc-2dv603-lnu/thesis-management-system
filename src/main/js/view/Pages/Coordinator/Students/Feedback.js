@@ -4,7 +4,6 @@ import * as Style from "../Styles/SubmissionBoxStyle";
 
 class Feedback extends Component {
   render() {
-    console.log("feedbackprops", this.props);
     return (
       <div>
         <div style={Style.submissionFeedbackRow}>

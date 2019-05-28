@@ -12,14 +12,7 @@ import { ReactTableDefaults } from "react-table";
 import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
 import * as TableStyle from "../Styles/TableStyles";
-import {
-  submissionSubmitted,
-  supervisorAssigned,
-  submittedTrue,
-  submittedFalse
-} from "../functions";
 import * as func from "../func";
-import * as mock from "../functions";
 
 class StudentsTable extends Component {
   constructor(props) {
@@ -120,7 +113,7 @@ class StudentsTable extends Component {
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>y</span>
+        Cell: props => <span>Y</span>
       },
       {
         /* ----- PROJECT PLAN ----- */
@@ -136,7 +129,7 @@ class StudentsTable extends Component {
             placement="top"
             trigger={["hover"]}
             overlay={
-              <span Style={TableStyle.tooltip}>Submitted project plan</span>
+              <span style={TableStyle.tooltip}>Submitted project plan</span>
             }
           >
             <span>P</span>
@@ -210,7 +203,7 @@ class StudentsTable extends Component {
           loading={this.state.loading}
           manual // ??
           onFetchData={async (state, instance) => {
-            console.log('tableState', state)
+           // console.log('tableState', state)
             this.setState({ loading: true });
             const students = await func.getAllStudents();
 

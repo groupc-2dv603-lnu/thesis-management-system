@@ -76,3 +76,13 @@ export const submissionFeedbackFromRow = {
   height: rowHeight,
   width: '100%'
 }
+
+export const submissionInputColumn = {
+  width: '100%',
+  border: 'none',
+}
+
+export const select = {
+  background: 'white',
+  border: '1px solid black'
+}
