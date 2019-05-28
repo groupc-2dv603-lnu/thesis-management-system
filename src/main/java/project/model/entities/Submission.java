@@ -7,13 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Date;
 
-import org.bson.types.Binary;
+import project.model.enums.SubmissionStatus;
 
 
 @Data
@@ -26,7 +22,7 @@ public class Submission {
     private Date submissionDate;
     private String userId;
     private SubmissionStatus submissionStatus;
-    private String fileUrl;         //TODO: do something with this
+    private String fileUrl;         
 //    private String fileName;        //TODO: redundant?
 
 //    private Binary file;
@@ -36,7 +32,7 @@ public class Submission {
 
     public Submission() {}
 
-    public Submission(String filePath) {
+    public Submission(String filePath) { //TODO: remove constructor?
 //        this.fileName = fileName;
         this.filePath = filePath;
 
@@ -52,20 +48,5 @@ public class Submission {
         this.filePath = null;
     }
 
-    public void setFile(String filePath) throws FileNotFoundException {
-        System.out.println("YAO");
-        File newFile = new File(filePath);
-        if(!newFile.exists()){
-            throw new FileNotFoundException("File not found: " + filePath);
-        }
-
-
-//        try {
-//            byte[] bytes = Files.readAllBytes(newFile.toPath());
-//            this.file = new Binary(bytes);
 //
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-    }
 }
