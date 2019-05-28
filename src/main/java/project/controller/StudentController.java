@@ -91,6 +91,8 @@ public class StudentController {
 		} else {
 			supervisor.getAwaitingResponse().add(user.getId());
 			student.setPendingSupervisor("awaiting");
+			student.setAssignedSupervisorId(supervisor.getUserId());
+
 			
 			studentRepository.save(student);
 			return supervisorRepository.save(supervisor);
