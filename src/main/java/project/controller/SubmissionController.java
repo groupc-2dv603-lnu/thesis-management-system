@@ -33,7 +33,7 @@ public class SubmissionController {
     }
 
 
-
+    /* Get specific submission based on id */
     @GetMapping(value = "/submissions/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     Resource<Submission> getSubmission(@PathVariable String id) {
         Submission submission = subRepository.findFirstById(id);
@@ -44,7 +44,7 @@ public class SubmissionController {
 
     }
 
-
+    /* Download file stored in collection dataFiles based on DataFile id */
     @GetMapping(value = "/submissions/datafiles/{id}")
     void downloadFile(@PathVariable String id, HttpServletResponse response){
         DataFile dataFile = dataFileRepository.findFirstById(id);
@@ -59,7 +59,7 @@ public class SubmissionController {
         }
     }
 
-
+    /* Get all submissions */
     @GetMapping(value = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
     Resources<Resource<Submission>> getAllSubmissions() {
         List<Resource<Submission>> submissions = subRepository.findAll().stream()
