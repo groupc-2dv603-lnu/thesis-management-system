@@ -15,17 +15,17 @@ public class DemoFile {
 
     @Id
     private String id;
-    private String submissionId;
-    private Binary fileData;
+//    private String submissionId; //TODO:remove
+    private Binary binaryData; //TODO: bad name
 
     public DemoFile () {}
 
-    public DemoFile(String submissionId, String filePath) {
-        this.submissionId = submissionId;
+    public DemoFile(String filePath) {
+//        this.submissionId = submissionId;
 
         try {
             byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
-            this.fileData = new Binary(bytes);
+            this.binaryData = new Binary(bytes);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -6,7 +6,7 @@ import project.model.entities.DemoFile;
 public interface DemoFileRepository extends MongoRepository<DemoFile, String> {
 
     DemoFile findFirstById(String id);
-    DemoFile findFirstBySubmissionId(String studentId);
+//    DemoFile findFirstBySubmissionId(String studentId);
 }
 
 
