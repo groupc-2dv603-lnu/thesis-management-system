@@ -89,7 +89,7 @@ public class ReaderController {
 			    	    .collect(Collectors.toList());
 
 		return new Resources<>(initialReports,
-				linkTo(methodOn(UserController.class).all()).withSelfRel());
+				linkTo(methodOn(ReaderController.class).all()).withSelfRel());
 	}
 
 }
