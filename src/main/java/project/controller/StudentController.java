@@ -97,6 +97,7 @@ public class StudentController {
 		}
 
 	}
+	
 	@GetMapping(value = "/student/projectPlan", produces = "application/json; charset=UTF-8")
 	Resource<ProjectPlan> one1() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -153,6 +154,15 @@ public class StudentController {
 						
 		return new Resources<>(feedbacks,
 				linkTo(methodOn(StudentController.class).all2(documentId)).withSelfRel());
+	}
+	@GetMapping(value = "/student/studentInfo", produces = "application/json; charset=UTF-8")
+	Resource<Student> one6() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Student student = studentRepository.findFirstByuserId(user.getId());
+		return new Resource<>(student,
+				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
 	}
 
 }
