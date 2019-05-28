@@ -16,6 +16,12 @@ export function deleteToAPI(delPath) {
     client({ method: "DELETE", path: delPath });
 }
 
+//to download a submission
+//Gets blocked by cors
+export function downloadFromAPI(downloadPath) {
+    return client({ method: "GET", path: `localhost:8080${downloadPath}` });
+  }
+  
 export function capitalizeFirstLetter(string) {
     if(string == null)
         return "N/A";

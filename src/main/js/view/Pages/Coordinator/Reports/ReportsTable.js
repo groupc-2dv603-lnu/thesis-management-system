@@ -4,7 +4,6 @@ import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
 import * as Style from "../Styles/TableStyles";
 import ReportPopup from "./ReportPopup";
-import * as func from "../func"
 
 
 const client = require("../../../../client");
@@ -102,7 +101,7 @@ class ReportsTable extends Component {
           onFetchData={async (state, instance) => {
             console.log('tableState', state)
             this.setState({ loading: true });
-            const initialReports = await func.getAllStudents();
+            //const initialReports = await func.getAllStudents();
 
             this.setState({
               initialReports: initialReports,

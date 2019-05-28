@@ -13,6 +13,8 @@ export function getFromAPI(getPath) {
 
 
 /* --- "global" ---- */
+
+// remove and user from the general functions
 export function capitalizeFirstLetter(string) {
   if (string == null) return "N/A";
   return string.charAt(0).toUpperCase() + string.slice(1);

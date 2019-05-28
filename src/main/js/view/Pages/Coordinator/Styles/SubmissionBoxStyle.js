@@ -86,3 +86,24 @@ export const select = {
   background: 'white',
   border: '1px solid black'
 }
+
+export const noSubfound = {
+  margin: '0 auto',
+  border: standardBorder,
+  textAlign: 'center'
+}
+
+export const message = {
+  border: '1px solid red',
+  textAlign: 'center',
+  lineHeight: rowHeight,
+}
+
+export const submitRow = {
+  width: '100%',
+  textAlign: 'center',
+  height: rowHeight,
+  lineHeight: rowHeight,
+  background: lnuYellow,
+  fontWeight: 'bold'
+}

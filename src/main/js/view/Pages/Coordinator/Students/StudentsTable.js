@@ -12,7 +12,7 @@ import { ReactTableDefaults } from "react-table";
 import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
 import * as TableStyle from "../Styles/TableStyles";
-import * as func from "../func";
+import * as func from "./studentFunctions/studentFunctions";
 
 class StudentsTable extends Component {
   constructor(props) {
@@ -113,7 +113,7 @@ class StudentsTable extends Component {
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>Y</span>
+        Cell: props => <span>{func.booleanSymbol(props.original.projectDescriptionSubmitted)}</span>
       },
       {
         /* ----- PROJECT PLAN ----- */
@@ -139,7 +139,7 @@ class StudentsTable extends Component {
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>y</span>
+        Cell: props => <span>{func.booleanSymbol(props.original.projectPlanSubmitted)}</span>
       },
       {
         /* ----- INITIAL REPORT ----- */
@@ -165,7 +165,7 @@ class StudentsTable extends Component {
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>y</span>
+        Cell: props => <span>{func.booleanSymbol(props.original.initialReportSubmitted)}</span>
       },
       {
         /* ----- FINAL REPORT ----- */
@@ -191,7 +191,7 @@ class StudentsTable extends Component {
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>y</span>
+        Cell: props => <span>{func.booleanSymbol(props.original.finalReportSubmitted)}</span>
       }
     ];
 

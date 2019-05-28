@@ -7,7 +7,7 @@ import {
 } from "../functions";
 import * as Style from "../Styles/SubmissionBoxStyle";
 import * as PopupStyle from "../Styles/PopupStyles";
-import * as func from "../func";
+import * as func from "./studentFunctions/studentFunctions";
 
 import Feedback from "./Feedback";
 
@@ -46,14 +46,6 @@ class SubmissionBox extends Component {
     console.log("deadline changed to", this.state.thesisPart.deadline);
   }
 
-  statusOptions(option) {
-    let i = 0;
-    return option.map(value => (
-      <option value={value} key={i++}>
-        {capitalizeFirstLetter(value)}
-      </option>
-    ));
-  }
 
   setStatus(event) {
     this.state.submission.status = event.target.value;
@@ -120,7 +112,6 @@ class SubmissionBox extends Component {
                 <span style={Style.submissionLeftColumn}>Status</span>
                 <span style={Style.submissionRightColumn}>
                   Hardcoded deadline
-                  {/*func.capitalizeFirstLetter(this.state.submission.status)*/}
                 </span>
                 <span style={Style.submissionEditColumn}>
                   <select

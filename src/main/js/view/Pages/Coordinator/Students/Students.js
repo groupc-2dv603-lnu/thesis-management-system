@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import StudentsTable from "./StudentsTable";
-import * as func from "../func";
 
 class Students extends Component {
   constructor(props) {

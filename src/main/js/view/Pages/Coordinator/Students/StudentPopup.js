@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import * as Style from "../Styles/Styles";
 import * as PopupStyle from "../Styles/PopupStyles";
 import * as SubBox from "../Styles/SubmissionBoxStyle";
-import * as func from "../func";
+import * as func from "./studentFunctions/studentFunctions";
 import SubmissionBox from "./SubmissionBox";
 import ProjectDescriptionBox from "./ProjectDescriptionBox";
+import { getSubmission } from "../functions";
 
 class StudentPopup extends React.Component {
   constructor(props) {
@@ -12,16 +13,25 @@ class StudentPopup extends React.Component {
     this.state = {
       page: null,
       supervisorName: null,
+
+      //stored as eg. projectPlan collection in db
       projectDescription: null,
       projectPlan: null,
       initialReport: null,
-      finalReport: null
+      finalReport: null,
+
+      //Stored as submissionCollections in db
+      projectDescriptionSubmission: null,
+      projectPlanSubmission: null,
+      initialReportSubmission: null,
+      finalReportSubmission: null,
+
     };
   }
 
   async componentDidMount() {
     const submissions = await func.getAllSubmissions(this.props.student.userId);
-    console.log(submissions)
+
     this.setState({
       supervisorName: await func.getSupervisorName(
         this.props.student.supervisorId
@@ -29,8 +39,12 @@ class StudentPopup extends React.Component {
       projectDescription: submissions.projectDescriptions[0],
       projectPlan: submissions.projectPlans[0],
       initialReport: submissions.initialReports[0],
-      finalReport: submissions.finalReports[0]
+      finalReport: submissions.finalReports[0],
+
+      projectDescriptionSubmission: await func.getSubmission(submissions.projectDescriptions[0].submissionId),
+      
     });
+    // console.log('POPUPSTATE', this.state)
   }
 
   setPage(page) {
@@ -45,7 +59,8 @@ class StudentPopup extends React.Component {
       return (
         <ProjectDescriptionBox
           student={this.props.student}
-          submission={this.state.projectDescription}
+          projectDescription={this.state.projectDescription}
+          submission={this.state.projectDescriptionSubmission}
           type="projectDescription"
           key={this.state.page}
         />
