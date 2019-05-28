@@ -1,4 +1,4 @@
-package project.model.entities;
+package project.model.enums;
 
 public enum SubmissionStatus {
     DISABLED,
