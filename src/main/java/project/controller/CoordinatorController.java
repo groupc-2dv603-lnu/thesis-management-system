@@ -1,6 +1,9 @@
 package project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
 import project.model.DTOs.SubmissionsDTO;
@@ -9,6 +12,10 @@ import project.model.repositories.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class CoordinatorController {
@@ -32,6 +39,9 @@ public class CoordinatorController {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private SubmissionRepository submissionRepository;
 
 
     @PutMapping(value = "/coordinator/updateProjectPlan", consumes = {"application/json"})
@@ -91,4 +101,29 @@ public class CoordinatorController {
 
         return new SubmissionsDTO(plans, projectDescriptions, finalReports, initialReports);
     }
+
+    /* Get specific submission based on id */
+    @GetMapping(value = "/coordinator/submissions/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    Resource<Submission> getSubmission(@PathVariable String id) {
+        Submission submission = submissionRepository.findFirstById(id);
+
+        return new Resource<>(submission,
+                linkTo(methodOn(SubmissionController.class).getSubmission(id)).withSelfRel(),
+                linkTo(methodOn(SubmissionController.class).getAllSubmissions()).withRel("submissions"));
+
+    }
+
+    /* Get all submissions */
+    @GetMapping(value = "/coordinator/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
+    Resources<Resource<Submission>> getAllSubmissions() {
+        List<Resource<Submission>> submissions = submissionRepository.findAll().stream()
+                .map(submission -> new Resource<>(submission,
+                        linkTo(methodOn(SubmissionController.class).getSubmission(submission.getId())).withSelfRel(),
+                        linkTo(methodOn(SubmissionController.class).getAllSubmissions()).withRel("submissions")))
+                .collect(Collectors.toList());
+
+        return new Resources<>(submissions,
+                linkTo(methodOn(SubmissionController.class).getAllSubmissions()).withSelfRel());
+    }
+
 }
