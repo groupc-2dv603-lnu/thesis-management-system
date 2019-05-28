@@ -48,7 +48,7 @@ import project.model.services.EncryptionService;
 
 @RestController
 class UserController {
-	
+
 	@Autowired
 	private EncryptionService enrypt;
 
@@ -57,13 +57,13 @@ class UserController {
 	private final SupervisorRepository supervisorRepository;
 	private final OpponentRepository opponentRepository;
 	private final ReaderRepository readerRepository;
-	
+
 	private final ProjectDescriptionRepository projectDescriptionRepository;
 	private final ProjectPlanRepository projectPlanRepository;
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
-	
-	
+
+
 	UserController(UserRepository repository,StudentRepository studentRepository, SupervisorRepository supervisorRepository, OpponentRepository opponentRepository,
 			ReaderRepository readerRepository, ProjectDescriptionRepository projectDescriptionRepository, ProjectPlanRepository projectPlanRepository,InitialReportRepository initialReportRepository,
 			FinalReportRepository finalReportRepository) {
@@ -72,22 +72,22 @@ class UserController {
 		this.supervisorRepository = supervisorRepository;
 		this.opponentRepository = opponentRepository;
 		this.readerRepository = readerRepository;
-		
+
 		this.projectDescriptionRepository = projectDescriptionRepository;
 		this.projectPlanRepository = projectPlanRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
 	}
-	
+
 	@GetMapping(value = "/users/{id}", produces = "application/json; charset=UTF-8")
 	Resource<User> one(@PathVariable String id) {
 		User user = repository.findFirstById(id);
 		return new Resource<>(user,
 			    linkTo(methodOn(UserController.class).one(id)).withSelfRel(),
 			    linkTo(methodOn(UserController.class).all()).withRel("users"));
-		
+
 	}
-	
+
 	@GetMapping(value = "/users", produces = "application/json; charset=UTF-8")
 	Resources<Resource<User>> all() {
 		List<Resource<User>> users = repository.findAll().stream()
@@ -107,7 +107,7 @@ class UserController {
 		return new Resource<>(user,
 				linkTo(methodOn(UserController.class).one1()).withSelfRel());
 	}
-	
+
 	@PostMapping("/admin/createUser")
 	User newUser2(@RequestBody User user) {
 		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
@@ -121,7 +121,7 @@ class UserController {
 					projectPlanRepository.save(new ProjectPlan(user.getId(), "", "", Grade.NOGRADE, ""));
 					initialReportRepository.save(new InitialReport(user.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
 					finalReportRepository.save(new FinalReport(user.getId(), "", Grade.NOGRADE, ""));
-					
+
 				} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
 					supervisorRepository.save(new Supervisor(user.getId(), false, new ArrayList<String>(), new ArrayList<String>()));
 				} else if(user.getRoles()[i].equals(Role.OPPONENT)) {
@@ -136,7 +136,7 @@ class UserController {
 			return findUser;
 			//return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
 		}
-		
+
 	}
 	@PutMapping("/admin/assignRoles")
 	User updateUser(@RequestBody User updateUser) {
@@ -149,13 +149,13 @@ class UserController {
 					oldRoleStudent = true;
 				}
 			}
-			
+
 			for(int i=0; i < updateUser.getRoles().length; i++) {
 				if(updateUser.getRoles()[i].equals(Role.STUDENT)) {
 					newRoleStudent = true;
 				}
 			}
-			
+
 			if(oldRoleStudent.equals(false) && newRoleStudent.equals(true)) {
 				projectDescriptionRepository.save(new ProjectDescription(finduser.getId(), "", Grade.NOGRADE, ""));
 				projectPlanRepository.save(new ProjectPlan(finduser.getId(), "", "", Grade.NOGRADE, ""));
@@ -165,13 +165,13 @@ class UserController {
 			} else if(oldRoleStudent.equals(true) && newRoleStudent.equals(false)) {
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(finduser.getId());
 				projectDescriptionRepository.deleteById(projectDescription.getId());
-				
+
 				ProjectPlan projectPlan = projectPlanRepository.findFirstByuserId(finduser.getId());
 				projectPlanRepository.deleteById(projectPlan.getId());
-				
+
 				InitialReport initialReport = initialReportRepository.findFirstByuserId(finduser.getId());
 				initialReportRepository.deleteById(initialReport.getId());
-				
+
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(finduser.getId());
 				finalReportRepository.deleteById(finalReport.getId());
 			}
@@ -189,16 +189,16 @@ class UserController {
 			if(user.getRoles()[i].equals(Role.STUDENT)) {
 				Student student = studentRepository.findFirstByuserId(user.getId());
 				studentRepository.deleteById(student.getId());
-				
+
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(user.getId());
 				projectDescriptionRepository.deleteById(projectDescription.getId());
-				
+
 				ProjectPlan projectPlan = projectPlanRepository.findFirstByuserId(user.getId());
 				projectPlanRepository.deleteById(projectPlan.getId());
-				
+
 				InitialReport initialReport = initialReportRepository.findFirstByuserId(user.getId());
 				initialReportRepository.deleteById(initialReport.getId());
-				
+
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(user.getId());
 				finalReportRepository.deleteById(finalReport.getId());
 			} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
@@ -214,5 +214,5 @@ class UserController {
 		}
 		repository.deleteById(userId);
 	}
-	
+
 }

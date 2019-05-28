@@ -22,7 +22,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-          //  .antMatcher("/users")
+          	//.antMatcher("/users")
             .authorizeRequests()
             .antMatchers("/admin/**").hasAuthority(String.valueOf(Role.ADMIN))
 //            .antMatchers("/student/**").hasAuthority(String.valueOf(Role.STUDENT))
@@ -33,9 +33,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             
                // .anyRequest()
                // .hasAuthority(String.valueOf(Role.ADMIN))
+            .and().formLogin()
             .and().httpBasic() // Specifies the authentication method spring will use
             .and().sessionManagement().disable() // Disables Session Management (unnecessary)
             .csrf().disable(); // Disables CSRF protection (unnecessary)
+//        	.and()
+//        	.logout();
+//        	.logoutUrl("/perform_logout")
+//        	.invalidateHttpSession(true)
+//        	.deleteCookies("JSESSIONID");
 
     }
 
