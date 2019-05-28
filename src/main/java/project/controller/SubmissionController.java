@@ -40,7 +40,7 @@ public class SubmissionController {
 
 
     @GetMapping(value = "/submissions/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    Resource<Submission> one(@PathVariable String id) {
+    Resource<Submission> getSubmission(@PathVariable String id) {
         Submission submission = subRepository.findFirstById(id);
 
         //TODO: OLD CODE BELOW
@@ -64,13 +64,13 @@ public class SubmissionController {
 //        }
 
         return new Resource<>(submission,
-                linkTo(methodOn(SubmissionController.class).one(id)).withSelfRel(),
+                linkTo(methodOn(SubmissionController.class).getSubmission(id)).withSelfRel(),
                 linkTo(methodOn(SubmissionController.class).all()).withRel("submissions"));
 
     }
 
     @GetMapping(value = "/submissions/datafiles/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    /*Resource<DemoFile>*/void one2(@PathVariable String id, HttpServletResponse response){
+    /*Resource<DemoFile>*/void downloadFile(@PathVariable String id, HttpServletResponse response){
         DemoFile demoFile = demoFileRepository.findFirstById(id);
 
 //        try {
@@ -81,7 +81,7 @@ public class SubmissionController {
 //        }
 
         response.setContentType("application/octet-stream");
-        response.addHeader("Content-Disposition", "attachment; filename="+ "Download submission.pdf");
+        response.addHeader("Content-Disposition", "attachment; filename="+ "DownloadTest.pdf"); //TODO: maybe add filename to submissions
         try {
             FileCopyUtils.copy(demoFile.getBinaryData().getData(), response.getOutputStream());
         } catch (IOException e) {
@@ -97,7 +97,7 @@ public class SubmissionController {
     Resources<Resource<Submission>> all() {
         List<Resource<Submission>> submissions = subRepository.findAll().stream()
                 .map(submission -> new Resource<>(submission,
-                        linkTo(methodOn(SubmissionController.class).one(submission.getId())).withSelfRel(),
+                        linkTo(methodOn(SubmissionController.class).getSubmission(submission.getId())).withSelfRel(),
                         linkTo(methodOn(SubmissionController.class).all()).withRel("submissions")))
                 .collect(Collectors.toList());
 
@@ -113,12 +113,17 @@ public class SubmissionController {
     String newSubmission(@RequestBody Submission newSubmission) {
 
 //        System.out.println("FILEPATH: " + newSubmission.getFilePath());         //TODO:remove
+//        try {
+//            newSubmission.setFile(newSubmission.getFilePath());       //TODO: uncomment and remove line below
+//        } catch (FileNotFoundException e) {
+//            return e.getMessage();
+//        }
+        DemoFile df = null;
         try {
-            newSubmission.setFile(newSubmission.getFilePath());       //TODO: uncomment and remove line below
+            df = new DemoFile(newSubmission.getFilePath());
         } catch (FileNotFoundException e) {
             return e.getMessage();
         }
-        DemoFile df = new DemoFile(newSubmission.getFilePath());
         demoFileRepository.save(df);
 //        newSubmission.setFile("C:\\Users\\Timme\\Downloads\\04 Re-engineering Legacy Software - Reading 1.pdf");  //TODO: hardcoded to test larger files. remove
         newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
@@ -166,12 +171,20 @@ public class SubmissionController {
 
     @DeleteMapping("/submissions/{id}")
     String deleteSubmission(@PathVariable String id) {
-        File storedFile = new File(".\\src\\main\\resources\\uploads\\" + id + ".pdf");
+//        File storedFile = new File(".\\src\\main\\resources\\uploads\\" + id + ".pdf");
+//        subRepository.deleteById(id);
+        Submission submission = subRepository.findFirstById(id);
+        String[] parts = submission.getFileUrl().split("/");
+        String fileId = parts[3];                                       //get id out of string "/submissions/datafiles/id"
 
-        subRepository.deleteById(id);
+        demoFileRepository.delete(demoFileRepository.findFirstById(fileId));
+        subRepository.delete(subRepository.findFirstById(id));
 
-        return "File deleted: " + storedFile.delete();
+//        return "File deleted: " + storedFile.delete();
+        return "Submission deleted: " + submission.getId()
+                + "\nDatafile deleted: " + fileId;
     }
+
 
 
 
@@ -188,7 +201,7 @@ public class SubmissionController {
 //            deleteSubmissionById(sub.getId());
 //        }
 
-        return "All documents in collection \"submissions\" deleted.";
+        return "All documents in collection \"submissions\" and \"dataFiles\" deleted.";
     }
 
 //    void deleteSubmissionById(String id) {

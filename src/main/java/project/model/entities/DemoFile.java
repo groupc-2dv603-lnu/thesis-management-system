@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -15,13 +16,16 @@ public class DemoFile {
 
     @Id
     private String id;
-//    private String submissionId; //TODO:remove
-    private Binary binaryData; //TODO: bad name
+    private Binary binaryData;
 
     public DemoFile () {}
 
-    public DemoFile(String filePath) {
-//        this.submissionId = submissionId;
+    public DemoFile(String filePath) throws FileNotFoundException{
+
+        File newFile = new File(filePath);
+        if(!newFile.exists()){
+            throw new FileNotFoundException("File not found: " + filePath);         //TODO: maybe move to subController?
+        }
 
         try {
             byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
