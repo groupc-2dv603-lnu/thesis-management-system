@@ -10,6 +10,7 @@ import lombok.Data;
 import java.util.Date;
 
 import project.model.enums.SubmissionStatus;
+import project.model.enums.SubmissionType;
 
 
 @Data
@@ -20,14 +21,13 @@ public class Submission {
     private String id;
     @CreatedDate
     private Date submissionDate;
+
     private String userId;
     private SubmissionStatus submissionStatus;
-    private String fileUrl;         
-//    private String fileName;        //TODO: redundant?
-
-//    private Binary file;
+    private SubmissionType submissionType;
+    private String fileUrl;
     private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
-
+    //    private String fileName;        //TODO: redundant?
 
 
     public Submission() {}
