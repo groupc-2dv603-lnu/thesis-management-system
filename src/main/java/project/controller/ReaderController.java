@@ -1,7 +1,16 @@
 package project.controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -61,6 +70,26 @@ public class ReaderController {
 		}
 		report.getBids().add(user.getId());
 		return initialReportRepository.save(report);
+	}
+	
+	@GetMapping(value = "/reader/initialReport/{id}", produces = "application/json; charset=UTF-8")
+	Resource<InitialReport> one(@PathVariable String id) {
+		InitialReport initialReport = initialReportRepository.findFirstById(id);
+		return new Resource<>(initialReport,
+				linkTo(methodOn(ReaderController.class).one(id)).withSelfRel(),
+				linkTo(methodOn(ReaderController.class).all()).withRel("initialReport"));
+	}
+	
+	@GetMapping(value = "/reader/initialReport", produces = "application/json; charset=UTF-8")
+	Resources<Resource<InitialReport>> all() {
+		List<Resource<InitialReport>> initialReports = initialReportRepository.findAll().stream()
+			    .map(initialReport -> new Resource<>(initialReport,
+			    		linkTo(methodOn(ReaderController.class).one(initialReport.getId())).withSelfRel(),
+			    		linkTo(methodOn(ReaderController.class).all()).withRel("initialReports")))
+			    	    .collect(Collectors.toList());
+
+		return new Resources<>(initialReports,
+				linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
 
 }
