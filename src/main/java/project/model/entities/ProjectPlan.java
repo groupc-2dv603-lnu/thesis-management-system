@@ -24,13 +24,25 @@ public class ProjectPlan {
 	private Grade grade;
 	@NotNull
 	private String deadLine;
+	@NotNull
+	private Boolean approved;
 	
-	public ProjectPlan(String userId, String submissionId, String feedBackId, Grade grade, String deadLine) {
+	public ProjectPlan(String userId, String submissionId, String feedBackId, Grade grade, String deadLine, Boolean approved) {
 		this.userId = userId;
 		this.submissionId = submissionId;
 		this.feedBackId = feedBackId;
 		this.grade = grade;
 		this.deadLine = deadLine;
+		this.approved = approved;
+	}
+
+	public String getUserId()
+	{
+		return userId;
+	}
+	public void setApproved(Boolean state)
+	{
+		this.approved = state;
 	}
 }
 

@@ -25,4 +25,28 @@ public class Supervisor {
 		this.awaitingResponse = awaitingResponse;
 		
 	}
+
+	public Boolean isAvailable()
+	{
+		return this.availableForSupervisor;
+	}
+
+	public void assignStudent(String userId)
+	{
+		if(awaitingResponse.remove(userId))
+		{
+			assignedStudents.add(userId);
+		}
+	}
+
+	public void denyStudent(String userId)
+	{
+		awaitingResponse.remove(userId);
+	}
+
+	public Boolean isAssignedStudent(String userId)
+	{
+		return assignedStudents.contains(userId);
+
+	}
 }

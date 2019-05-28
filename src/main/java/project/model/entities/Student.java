@@ -15,13 +15,19 @@ public class Student {
 	private String userId;
 	private String assignedSupervisorId;
 	private String pendingSupervisor;
-	
-	
+
+
 	public Student(String userId, String assignedSupervisorId, String pendingSupervisor) {
 		this.userId = userId;
 		this.assignedSupervisorId = assignedSupervisorId;
 		this.pendingSupervisor = pendingSupervisor;
 
-		
+
+	}
+
+	public void setSupervisor(Boolean state)
+	{
+		if(state) {this.pendingSupervisor = "accepted";}
+		else{this.pendingSupervisor = "denied";}
 	}
 }
