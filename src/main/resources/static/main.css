@@ -82,8 +82,11 @@ button {
   position: absolute;
   right: 10px;
   top: 25px;
-  height: 30px;
   margin-right: 20px;
+}
+
+.role select {
+  height: 30px;
 }
 
 .menu > a:hover,
