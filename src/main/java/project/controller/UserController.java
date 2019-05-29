@@ -28,6 +28,7 @@ import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Reader;
 import project.model.enums.Grade;
+import project.model.enums.PendingSupervisor;
 
 //import project.model.entities.Student;
 
@@ -116,7 +117,7 @@ class UserController {
 			repository.save(user);
 			for(int i=0; i < user.getRoles().length; i++){
 				if(user.getRoles()[i].equals(Role.STUDENT)) {
-					studentRepository.save(new Student(user.getId(), "", ""));
+					studentRepository.save(new Student(user.getId(), "", PendingSupervisor.NONE));
 					projectDescriptionRepository.save(new ProjectDescription(user.getId(), "", Grade.NOGRADE, ""));
 					projectPlanRepository.save(new ProjectPlan(user.getId(), "", "", Grade.NOGRADE, "", false));
 					initialReportRepository.save(new InitialReport(user.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));

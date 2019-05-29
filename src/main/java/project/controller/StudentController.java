@@ -24,6 +24,7 @@ import project.model.entities.ProjectPlan;
 import project.model.entities.Student;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
+import project.model.enums.PendingSupervisor;
 import project.model.repositories.*;
 
 @RestController
@@ -62,17 +63,8 @@ public class StudentController {
 	Resources<Resource<Supervisor>> all() {
 		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
 			    .map(supervisor -> new Resource<>(supervisor,
-			    		
-//			    		linkTo(methodOn(StudentController.class).one(supervisor.getId())).withSelfRel(),
-//			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
-//		ArrayList<User> user = new ArrayList<User>();
-//		for(int i=0; i < supervisors.size(); i++){
-//			User findUser = repository.findFirstById(supervisors.get(i).getContent().getId());
-//			user.add(findUser);
-//			supervisors.get(i).getContent()
-//		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
@@ -86,11 +78,11 @@ public class StudentController {
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
 		
-		if("awaiting".equals(student.getPendingSupervisor()) || "accepted".equals(student.getPendingSupervisor())) {
+		if(PendingSupervisor.AWAITING.equals(student.getPendingSupervisor()) || PendingSupervisor.ACCEPTED.equals(student.getPendingSupervisor())) {
 			return supervisor;
 		} else {
 			supervisor.getAwaitingResponse().add(user.getId());
-			student.setPendingSupervisor("awaiting");
+			student.setPendingSupervisor(PendingSupervisor.AWAITING);
 			student.setAssignedSupervisorId(supervisor.getUserId());
 
 			
@@ -141,7 +133,6 @@ public class StudentController {
 	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
-		System.out.print(feedback);
 		return new Resource<>(feedback,
 				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
