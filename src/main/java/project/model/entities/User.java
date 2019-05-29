@@ -6,15 +6,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import project.model.enums.Role;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Document(collection = "users")
 public class User {
-
+	@NotNull
 	@Id
 	private String id;
+	@NotNull
 	private String name;
+	@NotNull
 	private String password;
+	@NotNull
 	private String emailAdress;
+	@NotNull
 	private Role[] roles;
 	
 	

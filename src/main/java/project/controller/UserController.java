@@ -45,6 +45,8 @@ import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 import project.model.services.EncryptionService;
 
+import javax.validation.Valid;
+
 @RestController
 class UserController {
 	
@@ -108,7 +110,7 @@ class UserController {
 	}
 	
 	@PostMapping("/admin/createUser")
-	User newUser2(@RequestBody User user) {
+	User newUser2(@Valid @RequestBody User user) {
 		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
 		if(findUser == null) {
 			user.setPassword(enrypt.hash(user.getPassword()));
@@ -138,7 +140,7 @@ class UserController {
 		
 	}
 	@PutMapping("/admin/assignRoles")
-	User updateUser(@RequestBody User updateUser) {
+	User updateUser(@Valid @RequestBody User updateUser) {
 		User finduser = repository.findFirstByEmailAdress(updateUser.getEmailAdress());
 		Boolean oldRoleStudent = false;
 		Boolean newRoleStudent = false;

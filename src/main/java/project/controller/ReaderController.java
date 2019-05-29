@@ -16,6 +16,8 @@ import project.model.repositories.FeedbackRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.UserRepository;
 
+import javax.validation.Valid;
+
 @RestController
 public class ReaderController {
 	private final FeedbackRepository feedbackRepository;
@@ -29,7 +31,7 @@ public class ReaderController {
 	}
 	
 	@PostMapping("/reader/feedback")
-	Feedback newFeedback(@RequestBody Feedback feedback) {
+	Feedback newFeedback(@Valid @RequestBody Feedback feedback) {
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
 
