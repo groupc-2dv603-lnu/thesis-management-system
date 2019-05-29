@@ -21,12 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import project.model.entities.FinalReport;
-import project.model.entities.InitialReport;
-import project.model.entities.Opponent;
-import project.model.entities.ProjectDescription;
-import project.model.entities.ProjectPlan;
-import project.model.entities.Reader;
+import project.model.entities.*;
 import project.model.enums.Grade;
 import project.model.enums.GradeAF;
 import project.model.enums.PendingSupervisor;
@@ -34,18 +29,7 @@ import project.model.enums.PendingSupervisor;
 //import project.model.entities.Student;
 
 import project.model.enums.Role;
-import project.model.entities.Student;
-import project.model.entities.Supervisor;
-import project.model.entities.User;
-import project.model.repositories.FinalReportRepository;
-import project.model.repositories.InitialReportRepository;
-import project.model.repositories.OpponentRepository;
-import project.model.repositories.ProjectDescriptionRepository;
-import project.model.repositories.ProjectPlanRepository;
-import project.model.repositories.ReaderRepository;
-import project.model.repositories.StudentRepository;
-import project.model.repositories.SupervisorRepository;
-import project.model.repositories.UserRepository;
+import project.model.repositories.*;
 import project.model.services.EncryptionService;
 
 @RestController
@@ -64,11 +48,13 @@ class UserController {
 	private final ProjectPlanRepository projectPlanRepository;
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
+	private final SubmissionRepository submissionRepository;
+	private final DataFileRepository dataFileRepository;
 
 
 	UserController(UserRepository repository,StudentRepository studentRepository, SupervisorRepository supervisorRepository, OpponentRepository opponentRepository,
 			ReaderRepository readerRepository, ProjectDescriptionRepository projectDescriptionRepository, ProjectPlanRepository projectPlanRepository,InitialReportRepository initialReportRepository,
-			FinalReportRepository finalReportRepository) {
+			FinalReportRepository finalReportRepository, SubmissionRepository submissionRepository, DataFileRepository dataFileRepository) {
 		this.repository = repository;
 		this.studentRepository = studentRepository;
 		this.supervisorRepository = supervisorRepository;
@@ -79,6 +65,8 @@ class UserController {
 		this.projectPlanRepository = projectPlanRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
+		this.submissionRepository = submissionRepository;
+		this.dataFileRepository = dataFileRepository;
 	}
 
 	@GetMapping(value = "/users/{id}", produces = "application/json; charset=UTF-8")
@@ -215,6 +203,20 @@ class UserController {
 			}
 		}
 		repository.deleteById(userId);
+	}
+
+	//TODO: gives error 401 unauthorized
+	@DeleteMapping("/admin/deleteSubmission/{id}")
+	String deleteSubmission(@PathVariable String id) {
+		Submission submission = submissionRepository.findFirstById(id);
+		String[] parts = submission.getFileUrl().split("/");
+		String fileId = parts[3];                                       //get id out of string "/submissions/datafiles/id"
+
+		dataFileRepository.delete(dataFileRepository.findFirstById(fileId));
+		submissionRepository.delete(submissionRepository.findFirstById(id));
+
+		return "\nSubmission deleted: " + submission.getId()
+				+ "\nDatafile deleted: " + fileId + "\n";
 	}
 
 }
