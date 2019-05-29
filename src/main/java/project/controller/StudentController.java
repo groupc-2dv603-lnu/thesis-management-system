@@ -141,19 +141,18 @@ public class StudentController {
 	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
+		System.out.print(feedback);
 		return new Resource<>(feedback,
 				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
 	}
-	
 	@GetMapping(value = "/student/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
 			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
 			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
-			    	    .collect(Collectors.toList());
-						
+			    	    .collect(Collectors.toList());				
 		return new Resources<>(feedbacks,
 				linkTo(methodOn(StudentController.class).all2(documentId)).withSelfRel());
 	}
