@@ -1,19 +1,51 @@
 const client = require("../client");
 
 export function getFromAPI(getPath) {
-    return client({ method: "GET", path: getPath });
+    // return fetch(getPath, {
+    //     method: "GET",
+    //     mode: 'CORS',
+    //     // headers: {
+    //     //     'Accept': 'application/json',
+    //     //     'Content-Type': 'application/json'
+    //     // }
+    // });
+
+    return client({ 
+        method: "GET", 
+        path: getPath,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    });
 }
 
 export function putToAPI(putPath) {
-    client({ method: "PUT", path: putPath });
+    return client({ 
+        method: "PUT", 
+        path: putPath,
+        // body: JSON.stringify(data),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    });
 }
 
-export function postToAPI(postPath) {
-    client({ method: "PUT", path: postPath });
+export function postToAPI(postPath, object) {
+    return client({ 
+        method: "POST",
+        path: postPath,
+        entity: object,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    });
 }
 
 export function deleteToAPI(delPath) {
-    client({ method: "DELETE", path: delPath });
+    return client({ method: "DELETE", path: delPath });
 }
 
 export function capitalizeFirstLetter(string) {

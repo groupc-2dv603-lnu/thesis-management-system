@@ -9,16 +9,9 @@ import Student from "./Pages/Student";
 import Coordinator from "./Pages/Coordinator";
 import Reader from "./Pages/Reader";
 import PrivateRoute from "./utils/PrivateRoute";
-const client = require("../client");
 import Opponent from "./Pages/Opponent";
 
 class App extends Component {
-  componentDidMount() {
-    client({ method: "GET", path: "/users" }).then(response => {
-      this.setState({ users: response.entity._embedded.users });
-    });
-  }
-
   render() {
     return (
       <div>
