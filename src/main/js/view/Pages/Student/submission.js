@@ -6,6 +6,7 @@ import { capitalizeFirstLetter } from './../../functions';
 
 // const submissionStatus = { ACTIVE: "ACTIVE", FINISHED: "FINISHED", DISABLED: "DISABLED" };
 const grades = { NOGRADE: "NOGRADE", PASS: "PASS", FAIL: "FAIL" };
+const dbType = new Map([ ["projectDescription", "PRJ_DESCRIPTION"], ["projectPlan", "PRJ_PLAN"], ["initialReport", "INITIAL_REPORT"], ["finalReport", "FINAL_REPORT"] ]); //hopefully temporary
 
 class Submission extends Component {
 
@@ -22,9 +23,15 @@ class Submission extends Component {
     }
 
     sendFile() {
-        func.uploadFile(document.getElementById("file").files[0])
-        // .then(() => this.updateSubmissionData())
-        .catch(() => this.updateSubmissionData());
+        
+        func.uploadFile(document.getElementById("file").files[0], this.props.reportData.userId, dbType.get(this.props.type))
+        // .then(() => {
+            // this.updateSubmissionData();
+            // document.getElementById("file").value = "";
+        // })
+        .catch(() => {
+            this.updateSubmissionData();
+        })      
     }
 
     updateSubmissionData() {
@@ -55,7 +62,6 @@ class Submission extends Component {
         }
         // deadline is set (but not graded) == submission counted as active
         else if(this.props.reportData.deadLine) {
-        // else if(this.props.submissionData && this.props.submissionData.submissionStatus == submissionStatus.ACTIVE) {
             line1 = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
             line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
             styleClass = "active";
