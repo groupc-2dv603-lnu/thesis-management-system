@@ -1,6 +1,10 @@
 package project.model.enums;
 
 public enum Grade {
-    PASS,
-    FAIL
+    A,
+    B,
+    C,
+    D,
+    E,
+    F
 }
