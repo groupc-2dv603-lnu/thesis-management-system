@@ -78,8 +78,8 @@ public class CoordinatorController {
     }
 
     @GetMapping("/coordinator/getAllReports")
-    List<FinalReport> getAllReports() {
-        return finalReportRepository.findAll();
+    List<InitialReport> getAllReports() {
+        return initialReportRepository.findAll();
     }
 
     @GetMapping("/coordinator/getAllReaders")
