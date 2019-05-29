@@ -121,7 +121,7 @@ class UserController {
 					projectDescriptionRepository.save(new ProjectDescription(user.getId(), "", Grade.NOGRADE, ""));
 					projectPlanRepository.save(new ProjectPlan(user.getId(), "", "", Grade.NOGRADE, "", false));
 					initialReportRepository.save(new InitialReport(user.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
-					finalReportRepository.save(new FinalReport(user.getId(), "", Grade.NOGRADE, ""));
+					finalReportRepository.save(new FinalReport(user.getId(), "", Grade.NOGRADE, "", new ArrayList<String>()));
 
 				} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
 					supervisorRepository.save(new Supervisor(user.getId(), false, new ArrayList<String>(), new ArrayList<String>()));
@@ -161,7 +161,7 @@ class UserController {
 				projectDescriptionRepository.save(new ProjectDescription(finduser.getId(), "", Grade.NOGRADE, ""));
 				projectPlanRepository.save(new ProjectPlan(finduser.getId(), "", "", Grade.NOGRADE, "", false));
 				initialReportRepository.save(new InitialReport(finduser.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
-				finalReportRepository.save(new FinalReport(finduser.getId(), "", Grade.NOGRADE, ""));
+				finalReportRepository.save(new FinalReport(finduser.getId(), "", Grade.NOGRADE, "", new ArrayList<String>()));
 
 			} else if(oldRoleStudent.equals(true) && newRoleStudent.equals(false)) {
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(finduser.getId());

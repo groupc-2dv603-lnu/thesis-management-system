@@ -8,6 +8,7 @@ import java.util.List;
 
 
 public interface FinalReportRepository extends MongoRepository<FinalReport, String> {
+	FinalReport findFirstById(String id);
 	List<FinalReport> findAllByuserId(String id);
 	FinalReport findFirstByuserId(String id);
 }
