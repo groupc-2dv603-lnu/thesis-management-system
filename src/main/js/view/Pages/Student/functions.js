@@ -11,31 +11,30 @@ export function capitalizeFirstLetter(string) {
 
 //TODO unfinished/mocks
 
-export function uploadFile(file) {
-    console.log("uploading file", file);
-    
+export function uploadFile(file, userId, dbType) {
+    // console.log("uploading file", file);
+
     // getLoggedInUser().then(user => {
         // console.log(user.entity)
-        const submission = { filePath: "c:\\" + file.name, submissionStatus: "ACTIVE", userId: "5cece73a6436231310ed8450", submissionType: "PRJ_DESCRIPTION" };
-        console.log(submission)
-        return postToAPI("/submissions", submission).then(() => console.log("file uploaded successfully"));
+        const submission = { filePath: "c:\\" + file.name, submissionType: dbType }; // submissionStatus: "ACTIVE", userId: userId,
+        // console.log(submission)
+        // return;
+        return postToAPI("/submissions", submission)
+        .then(() => console.log("file uploaded successfully"))
+        .catch(error => console.log(error));
     // });
 }
 
 export function requestSupervisor(supervisor) {
-    // if(getLoggedInUser().supervisorId) {
-    //     alert("You cannot request a new supervisor while a previous request is unanswered");
-    //     return;
-    // }
-
     return putToAPI("/student/requestSupervisor?supervisorUserId=" + supervisor.userId)
+    // temp
     .then(() => {
         getUser(supervisor.userId).then(user => {
             console.log("Requested supervisor " + user.entity.name + " (" + supervisor.userId + ") successfully");
         });
     })
     .catch((error) => {
-        console.log(error)
+        console.log("error", error)
     });
 }
 
