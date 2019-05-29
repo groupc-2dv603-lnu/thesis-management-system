@@ -18,7 +18,7 @@ export function uploadFile(file) {
         // console.log(user.entity)
         const submission = { filePath: "c:\\" + file.name, submissionStatus: "ACTIVE", userId: "5cece73a6436231310ed8450", submissionType: "PRJ_DESCRIPTION" };
         console.log(submission)
-        postToAPI("/submissions", submission).then(() => console.log("file uploaded successfully"));
+        return postToAPI("/submissions", submission).then(() => console.log("file uploaded successfully"));
     // });
 }
 
@@ -28,7 +28,7 @@ export function requestSupervisor(supervisor) {
     //     return;
     // }
 
-    putToAPI("/student/requestSupervisor?supervisorUserId", supervisor.userId)
+    return putToAPI("/student/requestSupervisor?supervisorUserId=" + supervisor.userId)
     .then(() => {
         getUser(supervisor.userId).then(user => {
             console.log("Requested supervisor " + user.entity.name + " (" + supervisor.userId + ") successfully");

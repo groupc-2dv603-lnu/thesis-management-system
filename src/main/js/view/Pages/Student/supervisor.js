@@ -3,6 +3,9 @@
 import React, { Component } from 'react';
 import * as func from './functions';
 
+
+const pendingSupervisor = { denied: "DENIED", none: "NONE", awaiting: "AWAITING", accepted: "ACCEPTED" } //enum
+
 class SupervisorBox extends Component {
     constructor(props) {
         super(props);
@@ -14,13 +17,21 @@ class SupervisorBox extends Component {
     }
     
     componentDidMount() {
+        this.updateStudentData();
+    }
+
+    updateStudentData() {
         func.getStudentData().then(studentResponse => {
             this.setState({ studentData: studentResponse.entity });
             func.getUser(studentResponse.entity.assignedSupervisorId).then(supervisorResponse => {
                 this.setState({ assignedSupervisor: supervisorResponse.entity })
             })
         });
+    }
 
+    requestSupervisor(supervisor) {
+        func.requestSupervisor(supervisor)
+        .then(() => this.updateStudentData());
     }
 
     openSupervisorPopup() {
@@ -45,7 +56,7 @@ class SupervisorBox extends Component {
                         </p>
                     : 
                         // Previous supervisor request denied
-                        this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == "denied" ?
+                        this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == pendingSupervisor.denied ?
                             <p>
                                 {this.state.assignedSupervisor.name} denied your request. You need to be assigned to a supervisor before your plan can be evaluated
                                 <br />
@@ -54,7 +65,7 @@ class SupervisorBox extends Component {
                             </p>
                         :
                             // Awaiting supervisor response
-                            this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == "awaiting" ?
+                            this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == pendingSupervisor.awaiting ?
                                 <p>
                                     Request for supervisor sent. Awaiting response from {this.state.assignedSupervisor.name}.
                                 </p>
@@ -71,10 +82,10 @@ class SupervisorBox extends Component {
                 {this.state.supervisorPopup ?
                     <div className="popup">
                         <i className="fas fa-window-close link right" onClick={() => this.closeSupervisorPopup()} />
-                        <SupervisorPopup studentData={this.state.studentData} />
+                        <SupervisorPopup studentData={this.state.studentData} reference={this}/>
                         <br/>
                         <div style={{"color": "red"}}>
-                            {this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor != "denied" ? "Cannot request new supervisor until previous request has been answered" : null}
+                            {this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor != pendingSupervisor.denied ? "Request sent. Cannot request a new supervisor until this request has been answered" : null}
                         </div>
                     </div>
                 : 
@@ -100,7 +111,7 @@ class SupervisorPopup extends Component {
 
     render() {
         const supervisors = this.state.availableSupervisors.map(sv =>
-            <Supervisor key={sv.userId} supervisor={sv} studentData={this.props.studentData} />
+            <Supervisor key={sv.userId} supervisor={sv} studentData={this.props.studentData} reference={this.props.reference}/>
         );
         
         return (
@@ -139,9 +150,9 @@ class Supervisor extends Component {
                     {this.state.user.name}
                 </td>
                 <td>
-                    <button disabled={this.props.studentData.assignedSupervisorId && this.props.studentData.pendingSupervisor != "denied"} onClick={() => func.requestSupervisor(this.props.supervisor)}>
+                    <button disabled={this.props.studentData.assignedSupervisorId && this.props.studentData.pendingSupervisor != pendingSupervisor.denied} onClick={() => this.props.reference.requestSupervisor(this.props.supervisor)}>
                     {/* <button disabled={this.props.studentData.assignedSupervisorId== this.props.supervisor.userId} onClick={() => func.requestSupervisor(this.props.supervisor)}>  */}
-                        {this.props.studentData.assignedSupervisorId == this.props.supervisor.userId && this.props.studentData.pendingSupervisor != "denied" ? 'Awaiting response...' : 'Request supervisor'}
+                        {this.props.studentData.assignedSupervisorId == this.props.supervisor.userId && this.props.studentData.pendingSupervisor != pendingSupervisor.denied ? 'Awaiting response...' : 'Request supervisor'}
                     </button>
                 </td>
             </tr>

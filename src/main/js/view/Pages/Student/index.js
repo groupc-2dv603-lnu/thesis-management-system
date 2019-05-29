@@ -1,8 +1,9 @@
 // TODO
 // separera css-fil - eller ha alla styles som konstanter i js-filerna
 // implementera db-hämtning
-// sidan renderas inte om efter supervisor request
+// ½ sidan renderas inte om efter supervisor request - fixat, men fullösning. passar referens till supervisorbox och kör en uppdateringsmetod på den
 // hur få hela addressen till filen vid uppladdning?
+// ½ sidan uppdateras inte efter filuppladdning
 
 'use strict';
 
@@ -10,8 +11,6 @@ import React, { Component } from 'react';
 import SupervisorBox from './supervisor';
 import Submission from './submission';
 import * as common from './../../functions'
-
-// import * as func from './functions'; // temp
 
 class Student extends Component {
     constructor(props) {
@@ -29,13 +28,7 @@ class Student extends Component {
 
         for(let i = 0; i < reportCalls.length; i ++) {
             common.getFromAPI("/student/" + reportCalls[i]).then(report => {
-                // console.log(report)
-                // func.getSubmissionData(report.entity.submissionId).then(submission => {
-                    // let submission = {} // temp testData
-                    // console.log(submission)
-                    reports[i] = <Submission key={reportCalls[i]} reportData={report.entity} type={reportCalls[i]} />
-                    // submissionData={submission.entity}/>
-                // })
+                reports[i] = <Submission key={reportCalls[i]} reportData={report.entity} type={reportCalls[i]} />
             })
             .then(() => {
                 count ++;
@@ -53,11 +46,6 @@ class Student extends Component {
 
                 <h2>Thesis Submissions</h2>
                 {this.state.submissions}
-
-                {/* file upload test */}
-                {/* <input type="file" id="file"/>
-                <button onClick={() => func.uploadFile(document.getElementById("file").files[0])}>Upload</button> */}
-                
             </div>
         )
     }

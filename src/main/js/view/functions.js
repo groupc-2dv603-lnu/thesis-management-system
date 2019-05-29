@@ -20,11 +20,11 @@ export function getFromAPI(getPath) {
     });
 }
 
-export function putToAPI(putPath, data) {
+export function putToAPI(putPath) {
     return client({ 
         method: "PUT", 
         path: putPath,
-        body: JSON.stringify(data),
+        // body: JSON.stringify(data),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

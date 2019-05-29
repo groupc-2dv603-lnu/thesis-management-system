@@ -17,11 +17,22 @@ class Submission extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.type, this.props.reportData.submissionId)
+        // console.log(this.props.type, this.props.reportData.submissionId)
+        this.updateSubmissionData();
+    }
+
+    sendFile() {
+        func.uploadFile(document.getElementById("file").files[0])
+        // .then(() => this.updateSubmissionData())
+        .catch(() => this.updateSubmissionData());
+    }
+
+    updateSubmissionData() {
         if(this.props.reportData.submissionId) { // the report will only have a submission tied to it if a file has been uploaded
+            console.log("updating submission data")
             func.getSubmissionData(this.props.reportData.submissionId).then(response => {
-                console.log(response.entity)
-                // this.setState({ submissin })
+                // console.log(response.entity)
+                this.setState({ submissionData: response.entity })
             })
         }
     }
@@ -45,9 +56,9 @@ class Submission extends Component {
         // deadline is set (but not graded) == submission counted as active
         else if(this.props.reportData.deadLine) {
         // else if(this.props.submissionData && this.props.submissionData.submissionStatus == submissionStatus.ACTIVE) {
-                line1 = "Status: " + (this.props.submissionData && this.props.submissionData.fileURL ? "Submitted" : "Not submitted");
-                line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
-                styleClass = "active";
+            line1 = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
+            line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
+            styleClass = "active";
         }
         else {
             line1 = "N/A"
@@ -59,6 +70,7 @@ class Submission extends Component {
                 <div className={"submission " + styleClass}>
                     <div className="header" onClick={() => this.toggleShowFeedback()}>{func.capitalizeFirstLetter(this.props.type)}</div>
                     <div className="content">
+
                         {/* finished or active submission */}
                         {this.props.reportData.deadLine != null ? (
                             <div>
@@ -68,10 +80,13 @@ class Submission extends Component {
                                 {/* show file upload for active submission */}
                                 {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE ? (
                                     <div>
+                                        <p style={{ fontSize: "12px" }}>
+                                            {this.state.submissionData.fileUrl ? "You have already submitted a document. Submitting a new document will overwrite the old one" : null }
+                                        </p>
                                         <br />
                                         <input type="file" id="file"/>
                                         <br/>
-                                        <button onClick={() => func.uploadFile(document.getElementById("file").files[0])}>Upload</button>
+                                        <button onClick={() => this.sendFile()}>Upload</button>
                                     </div>
                                 // deadline passed
                                 ) : (this.props.reportData.deadLine && !this.props.reportData.grade) ? (
@@ -111,7 +126,9 @@ class FeedbackList extends Component {
     componentDidMount() {
         if(this.props.documentId) { // because not getting id for all documents from the API (for some reason...)
             func.getFeedback(this.props.documentId).then(response => {
-                this.setState({ feedback: response }); //.entity._embedded.feedback
+                if(response._embedded) { // if not empty
+                    this.setState({ feedback: response._embedded.feedbacks });
+                }
             });
         }
     }
