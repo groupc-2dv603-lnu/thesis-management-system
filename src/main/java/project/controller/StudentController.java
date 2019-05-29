@@ -146,19 +146,9 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
 	}
-//	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
-//	Resources<Resource<Supervisor>> all() {
-//		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
-//			    .map(supervisor -> new Resource<>(supervisor,
-//			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
-//			    	    .collect(Collectors.toList());
-//		return new Resources<>(supervisors,
-//				linkTo(methodOn(StudentController.class).all()).withSelfRel());
-//	}
-	
 	@GetMapping(value = "/student/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
-		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId("5cece73b6436231310ed8454").stream()
+		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
 			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
 			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
