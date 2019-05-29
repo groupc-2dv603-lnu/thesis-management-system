@@ -28,7 +28,6 @@ class Header extends Component {
         window.location.href = '/#/' + url;
         this.setState({ currentRole: url });
     }
-
     render() {
         let roles;
 
@@ -53,10 +52,10 @@ class Header extends Component {
                 </div>
                 <div className="fluid-container">
                     <div className="logo">
-                        <Link to="/#">
+                        {/* <Link to="/#"> */}
                             <i className="fas fa-feather"></i>
                             thesis mgmt
-                        </Link>
+                        {/* </Link> */}
                     </div>
                     {/* default menu */}
                     <div className="menu">
