@@ -53,3 +53,7 @@ export function capitalizeFirstLetter(string) {
         return "N/A";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+export function getUser(userId) {
+    return getFromAPI("/users/" + userId)
+}

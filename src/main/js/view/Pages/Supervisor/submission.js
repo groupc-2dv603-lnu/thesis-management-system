@@ -10,17 +10,33 @@ export class Submission extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { submission: {}, user: {} };
+        this.state = { submissionData: {}, user: {}, reportData: {} };
     }
 
     componentDidMount() {
-        func.getSubmission(this.props.match.params.id).then(response => {
-            this.setState({ submission: response });
-            func.getUser(response.studentId).then(response2 => {
-                this.setState({ user: response2 })
+        func.getSubmission(this.props.match.params.id).then(submissionResponse => {
+            this.setState({ submissionData: submissionResponse });
+            func.getMockUser(response.studentId).then(userResponse => {
+                // TODO get report with userId
+                this.setState({ user: userResponse })
             })
         });
         
+    }
+
+    approveReport() {
+        func.approvePlan()
+        window.location.href = "/#/supervisor";
+    }
+    
+    rejectReport() {
+        console.log("SSsssssuckah!")
+        window.location.href = "/#/supervisor";
+    }
+
+    sendFeedback() {
+        func.sendFeedback(document.getElementById("feedbackBox").value);
+        document.getElementById("feedbackBox").value = "";
     }
 
     render() {
@@ -34,7 +50,7 @@ export class Submission extends Component {
                 <br/>
                 <br/>
 
-                {this.state.submission.type == "project plan" ?
+                {this.state.submissionData.type == "project plan" ?
                     <div>Give feedback on project plan</div>
                 :
                     <div>
@@ -44,14 +60,22 @@ export class Submission extends Component {
                 made by { this.state.user.name }
                 <br/>
                 <br/>
-                <a href={this.state.submission.fileURL} download>Download report</a>
+                <a href={this.state.submissionData.fileURL} download>Download report</a>
                 <br/>
                 <br/>
-                
-                Write feedback
-                <textarea style={styles.feedbackBox} id="feedbackBox"></textarea>
-                <br/>
-                <button type="submit" onClick={() => func.sendFeedback(document.getElementById("feedbackBox").value)}>Send</button>
+                {this.state.submissionData.type == "project plan" ?
+                    <div>
+                        <button onClick={() => this.approveReport()}>Approve</button>
+                        <button onClick={() => this.rejectReport()}>Reject</button>
+                    </div>
+                :
+                    <div>
+                        Assessment
+                        <textarea style={styles.feedbackBox} id="feedbackBox"></textarea>
+                        <br/>
+                        <button type="submit" onClick={() => this.sendFeedback()}>Send</button>
+                    </div>
+                }
 
             </div>
         )

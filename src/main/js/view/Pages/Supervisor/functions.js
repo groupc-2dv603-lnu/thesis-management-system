@@ -1,4 +1,5 @@
 import * as Mock from './mocks';
+import { getFromAPI, postToAPI, putToAPI } from './../../functions';
 
 export function getAppliedStudents() {
     let mock = new Mock.StudentRequestsMock();
@@ -10,26 +11,50 @@ export function getSupervisedStudents() {
     return new Promise(resolve => resolve(mock));
 }
 
-export function getUser(userId) {
+export function getMockUser(userId) {
     let mock = new Mock.UsersMock().entity._embedded.users.find(user => user.id == userId);
     return new Promise(resolve => resolve(mock));
 }
 
-// export function getUser(userId) {
-//     return client({ method: 'GET', path: '/users/' + userId });
-// }
-
-export function acceptRequest(user) {
-    console.log("accepting " + user.name + "'s request");
+function modifyRequest(student, state) { //supervisor,
+    // putToAPI("/supervisor/assignStudent/" + supervisor.userId + "/" + student.userId + "?state=" + state)
+    putToAPI("/supervisor/assignStudent/5ced49d61c9d44000010fbf3/5cece73a6436231310ed8450?state=" + state)
+    // putToAPI("/supervisor/assignStudent/" + student.userId + "?state=" + state)
+    // temp
+    .then(() => console.log((state == true ? "accepted" : "rejected") + " student ")) //+ student.userId + " "))
+    .catch((error) => console.log("error", error));
 }
 
-export function rejectRequest(user) {
-    console.log("rejecting " + user.name + "'s request");
+export function acceptRequest(student) { //supervisor, 
+    return modifyRequest(student, true); //supervisor, 
+}
+
+export function rejectRequest(student) { //supervisor, 
+    return modifyRequest(student, false); //supervisor, 
+}
+
+function modifyPlan(report, state) { //supervisor, 
+    // putToAPI("/supervisor/approvePlan/" + supervisor.userId + "/" + report.id + "?state=" + state)
+    putToAPI("/supervisor/approvePlan/5ced49d61c9d44000010fbf3/" + report.id + "?state=" + state)
+    // putToAPI("/supervisor/approvePlan/" + report.id + "?state=" + state)
+    //temp
+    .then(() => console.log((state == true ? "approving" : "rejecting") + " project plan"))
+    .catch((error) => console.log("error", error))
+}
+
+export function approvePlan(report) { //supervisor, 
+    modifyPlan(report, true); //supervisor, 
+}
+
+export function rejectPlan(report) { //supervisor, 
+    modifyPlan(report, false); //supervisor, 
+
 }
 
 export function getSubmission(submissionId) {
     let mock = new Mock.SubmissionsMock().entity._embedded.submissions.find(submission => submission.id == submissionId);
     return new Promise(resolve => resolve(mock));
+    // return getFromAPI("/submissions/" + submissionId);
 }
 
 // export function getSubmissionsByUser(userId) {
@@ -47,6 +72,12 @@ export function getUserInitialReport(userId) {
     return new Promise(resolve => resolve(mock));
 }
 
-export function sendFeedback(text) {
-    console.log("sending feedback", text)
+export function sendFeedback(text, reportId) { // TODO documentId vill inte komma med i databasdokumentet
+    const feedback = { documentId: reportId, text: text }; // userId: "something"
+
+    postToAPI("/supervisor/feedback?id=" + reportId, feedback)
+    //temp
+    .then(() => console.log("sent feedback", text))
+    .catch((error) => console.log("error", error))
 }
+

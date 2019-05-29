@@ -6,7 +6,8 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import * as func from './functions';
+import * as func from './functions'
+import { getUser } from './../../functions';
 import * as styles from './styles';
 
 export default class Supervisor extends Component {
@@ -29,11 +30,11 @@ export default class Supervisor extends Component {
 
     render() {
         const studentRequests = this.state.studentsApplied.map(student =>
-            <StudentRequest key={student.id} {...student}/>
+            <StudentRequest key={student.id} student={student}/>
         )
 
         const supervisedStudents = this.state.supervisedStudents.map(student =>
-            <SupervisedStudent key={student.id} {...student}/>
+            <SupervisedStudent key={student.id} student={student}/>
         )
     
         return (
@@ -80,8 +81,8 @@ class StudentRequest extends Component {
     }
 
     componentDidMount() {
-        func.getUser(this.props.userId).then(response => {
-            this.setState({ user: response }) //.entity
+        func.getMockUser(this.props.student.userId).then(response => {
+            this.setState({ user: response }) 
         });
     }
 
@@ -92,8 +93,8 @@ class StudentRequest extends Component {
                     {this.state.user.name} has applied to get you as supervisor
                 </td>
                 <td style={{'whiteSpace':'nowrap'}}>
-                    <button onClick={() => func.acceptRequest(this.state.user)}>Accept</button>
-                    <button onClick={() => func.rejectRequest(this.state.user)}>Decline</button>
+                    <button onClick={() => func.acceptRequest(this.props.student)}>Accept</button>
+                    <button onClick={() => func.rejectRequest(this.props.student)}>Decline</button>
                 </td>
             </tr>
         )
@@ -109,16 +110,16 @@ class SupervisedStudent extends Component {
     }
 
     componentDidMount() {
-        func.getUser(this.props.userId).then(response => {
-            this.setState({ user: response }) //.entity
+        func.getMockUser(this.props.student.userId).then(response => {
+            this.setState({ user: response })
         });
 
-        func.getUserProjectPlan(this.props.userId).then(response => {
+        func.getUserProjectPlan(this.props.student.userId).then(response => {
             if(response)
                 this.setState({ projectPlan: response }); //.entity._embedded.submissions
         })
         
-        func.getUserInitialReport(this.props.userId).then(response => {
+        func.getUserInitialReport(this.props.student.userId).then(response => {
             if(response)
                 this.setState({ initialReport: response }); //.entity._embedded.submissions
         })
