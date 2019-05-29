@@ -2,14 +2,28 @@
 
 import React, { Component } from 'react';
 import * as func from './functions';
+import { capitalizeFirstLetter } from './../../functions';
+
+// const submissionStatus = { ACTIVE: "ACTIVE", FINISHED: "FINISHED", DISABLED: "DISABLED" };
+const grades = { NOGRADE: "NOGRADE", PASS: "PASS", FAIL: "FAIL" };
 
 class Submission extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { showFeedback: false };
+        this.state = { showFeedback: false, submissionData: {} };
 
         this.toggleShowFeedback = this.toggleShowFeedback.bind(this);
+    }
+
+    componentDidMount() {
+        console.log(this.props.type, this.props.reportData.submissionId)
+        if(this.props.reportData.submissionId) { // the report will only have a submission tied to it if a file has been uploaded
+            func.getSubmissionData(this.props.reportData.submissionId).then(response => {
+                console.log(response.entity)
+                // this.setState({ submissin })
+            })
+        }
     }
 
     toggleShowFeedback() {
@@ -20,20 +34,20 @@ class Submission extends Component {
         let line1, line2, styleClass;
         
         let currentDate = new Date().toISOString(); // TODO get date from server
-
+      
         // submission graded
-        if(this.props.documentData.grade) {
-        // if(this.props.submissionData && this.props.submissionData.status == "finished") {
+        if(this.props.reportData.grade != grades.NOGRADE) {
+        // if(this.props.submissionData && this.props.submissionData.submissionStatus == submissionStatus.FINISHED) {
             line1 = "Status: Graded";
-            line2 = "Grade: " + func.capitalizeFirstLetter(this.props.documentData.grade);
-            styleClass = "finished"; // this.props.submissionData.status;
+            line2 = "Grade: " + func.capitalizeFirstLetter(this.props.reportData.grade);
+            styleClass = "finished";
         }
         // deadline is set (but not graded) == submission counted as active
-        else if(this.props.documentData.deadline) {
-            // else if(this.props.submissionData && this.props.submissionData.status == "active") {
-                line1 = "Status: " + (this.props.submissionData.fileURL ? "Submitted" : "Not submitted");
-                line2 = "Deadline: " + new Date(this.props.documentData.deadline).toUTCString();
-                styleClass = "active"; // this.props.submissionData.status;
+        else if(this.props.reportData.deadLine) {
+        // else if(this.props.submissionData && this.props.submissionData.submissionStatus == submissionStatus.ACTIVE) {
+                line1 = "Status: " + (this.props.submissionData && this.props.submissionData.fileURL ? "Submitted" : "Not submitted");
+                line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
+                styleClass = "active";
         }
         else {
             line1 = "N/A"
@@ -46,13 +60,13 @@ class Submission extends Component {
                     <div className="header" onClick={() => this.toggleShowFeedback()}>{func.capitalizeFirstLetter(this.props.type)}</div>
                     <div className="content">
                         {/* finished or active submission */}
-                        {this.props.documentData.deadline != null ? (
+                        {this.props.reportData.deadLine != null ? (
                             <div>
                                 {line1}
                                 <br />
                                 {line2}
                                 {/* show file upload for active submission */}
-                                {currentDate < this.props.documentData.deadline && !this.props.documentData.grade ? (
+                                {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE ? (
                                     <div>
                                         <br />
                                         <input type="file" id="file"/>
@@ -60,28 +74,27 @@ class Submission extends Component {
                                         <button onClick={() => func.uploadFile(document.getElementById("file").files[0])}>Upload</button>
                                     </div>
                                 // deadline passed
-                                ) : (this.props.documentData.deadline && !this.props.documentData.grade) ? (
+                                ) : (this.props.reportData.deadLine && !this.props.reportData.grade) ? (
                                         <div style={{"color":"red"}}>
                                             <br/>
                                             Submission deadline has passed. If you missed it, contact your coordinator to open up the submission again
                                         </div>
                                 ) : ''}
-                                {/* Feedback */}
-                                {/* {this.state.showFeedback && this.props.submissionData.status == "finished" ? */}
-                                 <FeedbackList documentId={this.props.documentData.id}/> 
-                                {/* : ''} */}
-                                
-                            </div>
+                              </div>
                         ) : (
                             // submission not started
                             <div>
                                 {line1}
                             </div>
                         )}
-                    </div>
-                </div>
 
-            
+                        {/* Feedback */}
+                        {/* {this.state.showFeedback && this.props.submissionData.submissionStatus == "finished" ? */}
+                        <FeedbackList documentId={this.props.reportData.id}/>
+                        {/* : ''} */}
+
+                    </div>
+                </div>            
             </div>
         )
 
@@ -96,9 +109,11 @@ class FeedbackList extends Component {
     }
 
     componentDidMount() {
-        getFeedback(this.props.id).then(response => {
-            this.setState({ feedback: response }); //.entity._embedded.feedback
-        });
+        if(this.props.documentId) { // because not getting id for all documents from the API (for some reason...)
+            func.getFeedback(this.props.documentId).then(response => {
+                this.setState({ feedback: response }); //.entity._embedded.feedback
+            });
+        }
     }
 
     render() {
