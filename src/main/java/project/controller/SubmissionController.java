@@ -11,13 +11,15 @@ import java.util.stream.Collectors;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
-import project.model.entities.DataFile;
-import project.model.entities.Submission;
-import project.model.repositories.DataFileRepository;
-import project.model.repositories.SubmissionRepository;
+import project.model.entities.*;
+import project.model.enums.SubmissionStatus;
+import project.model.enums.SubmissionType;
+import project.model.repositories.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,10 +28,22 @@ public class SubmissionController {
 
     private final SubmissionRepository subRepository;
     private final DataFileRepository dataFileRepository;
+    private final UserRepository userRepository;
+    private final ProjectDescriptionRepository projectDescriptionRepository;
+    private final ProjectPlanRepository projectPlanRepository;
+    private final InitialReportRepository initialReportRepository;
+    private final FinalReportRepository finalReportRepository;
 
-    public SubmissionController(SubmissionRepository subRepository, DataFileRepository dataFileRepository){
+    public SubmissionController(SubmissionRepository subRepository, DataFileRepository dataFileRepository, UserRepository userRepository
+            , ProjectDescriptionRepository projectDescriptionRepository, ProjectPlanRepository projectPlanRepository, InitialReportRepository initialReportRepository
+        , FinalReportRepository finalReportRepository){
         this.subRepository = subRepository;
         this.dataFileRepository = dataFileRepository;
+        this.userRepository = userRepository;
+        this.projectDescriptionRepository = projectDescriptionRepository;
+        this.projectPlanRepository = projectPlanRepository;
+        this.initialReportRepository = initialReportRepository;
+        this.finalReportRepository = finalReportRepository;
     }
 
 
@@ -62,6 +76,9 @@ public class SubmissionController {
     /* Get all submissions */
     @GetMapping(value = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
     Resources<Resource<Submission>> getAllSubmissions() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        System.out.println("name: " + name);
         List<Resource<Submission>> submissions = subRepository.findAll().stream()
                 .map(submission -> new Resource<>(submission,
                         linkTo(methodOn(SubmissionController.class).getSubmission(submission.getId())).withSelfRel(),
@@ -89,6 +106,37 @@ public class SubmissionController {
         newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
         newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
         subRepository.save(newSubmission);
+
+        //Get current user
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        System.out.println("name: " + name);
+
+        User user = userRepository.findFirstByEmailAdress(name);
+
+        //Update submissionId in corresponding type of submission (descrption, plan .. etc)
+        switch (newSubmission.getSubmissionType().toString()){
+            case "PRJ_DESCRIPTION":
+                ProjectDescription prjDesc = projectDescriptionRepository.findFirstByuserId(user.getId());
+                prjDesc.setSubmissionId(newSubmission.getId());
+                projectDescriptionRepository.save(prjDesc);
+                break;
+            case "PRJ_PLAN":
+                ProjectPlan prjPlan = projectPlanRepository.findFirstByuserId(user.getId());
+                prjPlan.setSubmissionId(newSubmission.getId());
+                projectPlanRepository.save(prjPlan);
+                break;
+            case "INITIAL_REPORT":
+                InitialReport iniRep = initialReportRepository.findFirstByuserId(user.getId());
+                iniRep.setSubmissionId(newSubmission.getId());
+                initialReportRepository.save(iniRep);
+                break;
+            case "FINAL_REPORT":
+                FinalReport finRep = finalReportRepository.findFirstByuserId(user.getId());
+                finRep.setSubmissionId(newSubmission.getId());
+                finalReportRepository.save(finRep);
+                break;
+        }
 
         return "\nSuccessfully uploaded submission with ID: " + newSubmission.getId() + " and datafile ID: " + df.getId() + "\n";
     }
