@@ -141,8 +141,8 @@ class UserController {
 
 	}
 	@PutMapping("/admin/assignRoles")
-	User updateUser(@RequestBody User updateUser) {
-		User finduser = repository.findFirstByEmailAdress(updateUser.getEmailAdress());
+	User updateUser(@RequestParam String email, @RequestBody Role[] roles) {
+		User finduser = repository.findFirstByEmailAdress(email);
 		Boolean oldRoleStudent = false;
 		Boolean newRoleStudent = false;
 		if(finduser != null) {
@@ -152,8 +152,8 @@ class UserController {
 				}
 			}
 
-			for(int i=0; i < updateUser.getRoles().length; i++) {
-				if(updateUser.getRoles()[i].equals(Role.STUDENT)) {
+			for(int i=0; i < roles.length; i++) {
+				if(roles[i].equals(Role.STUDENT)) {
 					newRoleStudent = true;
 				}
 			}
@@ -177,7 +177,7 @@ class UserController {
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(finduser.getId());
 				finalReportRepository.deleteById(finalReport.getId());
 			}
-			finduser.setRoles(updateUser.getRoles());
+			finduser.setRoles(roles);
 			return repository.save(finduser);
 		} else {
 			return finduser;
