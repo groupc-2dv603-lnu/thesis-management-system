@@ -15,6 +15,8 @@ export const menuButtons = {
   border: standardBorder,
   width: "80px",
   textAlign: "center",
+  background: lnuYellow,
+  fontWeight: 'bold'
 };
 
 /* ---  SubmissionBox  --- */

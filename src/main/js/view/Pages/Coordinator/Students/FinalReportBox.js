@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import * as Style from "../Styles/SubmissionBoxStyle";
 import * as func from "./studentFunctions/SubmissionBoxFunctions";
 
-
 /**
  * TODO:
  *  - handleSubmit() update submissions - Need from backend
+ *  - add Feedback ?
  */
 
-class ProjectDescriptionBox extends Component {
+class FinalReportBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,11 +16,13 @@ class ProjectDescriptionBox extends Component {
       deadLine: "",
       newDeadlineDate: "",
       newDeadlineTime: "",
-      projectDescription: this.props.projectDescription,
+      finalReport: this.props.finalReport,
       submission: this.props.submission,
       showMessage: false,
       message: ""
+      //feedback: null
     };
+
     this.getMessage = this.getMessage.bind(this);
   }
 
@@ -60,24 +62,27 @@ class ProjectDescriptionBox extends Component {
       this.state.newDeadlineTime
     }:00`;
 
-    this.state.projectDescription.deadLine = deadline;
-    this.setState({ projectDescription: this.state.projectDescription });
-    console.log(`Deadline set to ${this.state.projectDescription.deadLine}`);
+    this.state.finalReport.deadLine = deadline;
+    this.setState({ finalReport: this.state.finalReport });
+    console.log(`Deadline set to ${this.state.finalReport.deadLine}`);
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
-    this.state.projectDescription.grade = event.target.value;
-    this.setState({ projectDescription: this.state.projectDescription });
-    console.log(`grade set to ${this.state.projectDescription.grade}`);
+    this.state.finalReport.grade = event.target.value;
+    this.setState({ finalReport: this.state.finalReport });
+    console.log(`grade set to ${this.state.finalReport.grade}`);
   }
 
   async handleSubmit() {
-    const updateProjectDescriptionUrl =  "http://localhost:8080/coordinator/updateProjectDescription"
-    const projectDescription = await JSON.stringify(this.state.projectDescription)
+    const updatefinalReportUrl = "http://localhost:8080/coordinator/updateFinalReport";
+    const finalReport = await JSON.stringify(this.state.finalReport);
 
-    const request = await func.updateSubmission(updateProjectDescriptionUrl, projectDescription)
-    console.log('REQUEST', request)
+    const request = await func.updateSubmission(
+      updatefinalReportUrl,
+      finalReport
+    );
+    console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
@@ -107,8 +112,7 @@ class ProjectDescriptionBox extends Component {
               }
             >
               <span style={Style.submissionHeaderName}>
-                Project Description
-                <i className="fas fa-download" />
+                Final Report <i className="fas fa-download" />
               </span>
             </div>
 
@@ -137,8 +141,8 @@ class ProjectDescriptionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Deadline</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getDeadline(this.state.projectDescription.deadLine)
+                  {this.state.finalReport !== null
+                    ? func.getDeadline(this.state.finalReport.deadLine)
                     : "not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
@@ -183,17 +187,17 @@ class ProjectDescriptionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Grade</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getGrade(this.state.projectDescription.grade)
+                  {this.state.finalReport !== null
+                    ? func.getGrade(this.state.finalReport.grade)
                     : "Not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
                   <select
                     style={Style.select}
-                    placeholder="set status"
+                    placeholder="set grade"
                     onChange={() => this.setGrade(event)}
                   >
-                    {func.getGrades(1)}
+                    {func.getGrades(2)}
                   </select>
                 </span>
               </div>
@@ -209,4 +213,4 @@ class ProjectDescriptionBox extends Component {
   }
 }
 
-export default ProjectDescriptionBox;
+export default FinalReportBox;

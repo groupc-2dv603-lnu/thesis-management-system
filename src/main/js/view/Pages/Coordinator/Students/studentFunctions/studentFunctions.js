@@ -50,7 +50,7 @@ export async function checkIfSubmitted(submissionId) {
     const response = await generalFunctions.getFromAPI(
       `/submissions/${submissionId}`
     );
-    return response.entity.submissionDate ? true : false;
+    return response.entity.fileUrl !== "" ? true : false;
   } catch (e) {
     console.log(e);
   }
@@ -97,9 +97,7 @@ export function booleanSymbol(bool) {
 export async function getName(userId) {
   try {
     const response = await generalFunctions.getFromAPI(`/users/${userId}`);
-    return !response.entity.name ? (
-      <span>'Student not found'</span>
-    ) : (
+    return !response.entity.name ? 'User not found' : (
       await generalFunctions.capitalizeFirstLetter(response.entity.name)
     );
   } catch (e) {
@@ -109,9 +107,9 @@ export async function getName(userId) {
 
 export async function getSupervisorName(userId) {
   if (userId === "") {
-    return "Not assigned";
+    return "No supervisor assigned";
   } else {
     const response = await generalFunctions.getFromAPI(`/users/${userId}`);
-    return generalFunctions.capitalizeFirstLetter(response.entity.name);
+    return 'Supervisor: ' + generalFunctions.capitalizeFirstLetter(response.entity.name);
   }
 }

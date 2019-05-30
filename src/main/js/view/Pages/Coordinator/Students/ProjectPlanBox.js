@@ -6,9 +6,10 @@ import * as func from "./studentFunctions/SubmissionBoxFunctions";
 /**
  * TODO:
  *  - handleSubmit() update submissions - Need from backend
+ *  - add Feedback ?
  */
 
-class ProjectDescriptionBox extends Component {
+class ProjectPlanBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,11 +17,13 @@ class ProjectDescriptionBox extends Component {
       deadLine: "",
       newDeadlineDate: "",
       newDeadlineTime: "",
-      projectDescription: this.props.projectDescription,
+      projectPlan: this.props.projectPlan,
       submission: this.props.submission,
       showMessage: false,
-      message: ""
+      message: "",
+     //feedback: null
     };
+
     this.getMessage = this.getMessage.bind(this);
   }
 
@@ -60,23 +63,23 @@ class ProjectDescriptionBox extends Component {
       this.state.newDeadlineTime
     }:00`;
 
-    this.state.projectDescription.deadLine = deadline;
-    this.setState({ projectDescription: this.state.projectDescription });
-    console.log(`Deadline set to ${this.state.projectDescription.deadLine}`);
+    this.state.projectPlan.deadLine = deadline;
+    this.setState({ projectPlan: this.state.projectPlan });
+    console.log(`Deadline set to ${this.state.projectPlan.deadLine}`);
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
-    this.state.projectDescription.grade = event.target.value;
-    this.setState({ projectDescription: this.state.projectDescription });
-    console.log(`grade set to ${this.state.projectDescription.grade}`);
+    this.state.projectPlan.grade = event.target.value;
+    this.setState({ projectPlan: this.state.projectPlan });
+    console.log(`grade set to ${this.state.projectPlan.grade}`);
   }
 
   async handleSubmit() {
-    const updateProjectDescriptionUrl =  "http://localhost:8080/coordinator/updateProjectDescription"
-    const projectDescription = await JSON.stringify(this.state.projectDescription)
+    const updateprojectPlanUrl =  "http://localhost:8080/coordinator/updateProjectPlan"
+    const projectPlan = await JSON.stringify(this.state.projectPlan)
 
-    const request = await func.updateSubmission(updateProjectDescriptionUrl, projectDescription)
+    const request = await func.updateSubmission(updateprojectPlanUrl, projectPlan)
     console.log('REQUEST', request)
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
@@ -107,7 +110,7 @@ class ProjectDescriptionBox extends Component {
               }
             >
               <span style={Style.submissionHeaderName}>
-                Project Description
+                Project Plan
                 <i className="fas fa-download" />
               </span>
             </div>
@@ -137,8 +140,8 @@ class ProjectDescriptionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Deadline</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getDeadline(this.state.projectDescription.deadLine)
+                  {this.state.projectPlan !== null
+                    ? func.getDeadline(this.state.projectPlan.deadLine)
                     : "not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
@@ -183,8 +186,8 @@ class ProjectDescriptionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Grade</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getGrade(this.state.projectDescription.grade)
+                  {this.state.projectPlan !== null
+                    ? func.getGrade(this.state.projectPlan.grade)
                     : "Not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
@@ -209,4 +212,4 @@ class ProjectDescriptionBox extends Component {
   }
 }
 
-export default ProjectDescriptionBox;
+export default ProjectPlanBox;
