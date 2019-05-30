@@ -6,6 +6,7 @@ import { capitalizeFirstLetter } from './../../functions';
 
 // const submissionStatus = { ACTIVE: "ACTIVE", FINISHED: "FINISHED", DISABLED: "DISABLED" };
 const grades = { NOGRADE: "NOGRADE", PASS: "PASS", FAIL: "FAIL" };
+const dbType = new Map([ ["projectDescription", "PRJ_DESCRIPTION"], ["projectPlan", "PRJ_PLAN"], ["initialReport", "INITIAL_REPORT"], ["finalReport", "FINAL_REPORT"] ]); //hopefully temporary
 
 class Submission extends Component {
 
@@ -22,9 +23,14 @@ class Submission extends Component {
     }
 
     sendFile() {
-        func.uploadFile(document.getElementById("file").files[0])
-        // .then(() => this.updateSubmissionData())
-        .catch(() => this.updateSubmissionData());
+        func.uploadFile(document.getElementById("file").files[0], this.props.reportData.userId, dbType.get(this.props.type))
+        // .then(() => {
+            // this.updateSubmissionData();
+            // document.getElementById("file").value = "";
+        // })
+        .catch(() => {
+            this.updateSubmissionData();
+        })      
     }
 
     updateSubmissionData() {
@@ -55,7 +61,6 @@ class Submission extends Component {
         }
         // deadline is set (but not graded) == submission counted as active
         else if(this.props.reportData.deadLine) {
-        // else if(this.props.submissionData && this.props.submissionData.submissionStatus == submissionStatus.ACTIVE) {
             line1 = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
             line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
             styleClass = "active";
@@ -75,7 +80,7 @@ class Submission extends Component {
                         {this.props.reportData.deadLine != null ? (
                             <div>
                                 {line1}
-                                <br />
+                                <br/>
                                 {line2}
                                 {/* show file upload for active submission */}
                                 {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE ? (
@@ -83,7 +88,7 @@ class Submission extends Component {
                                         <p style={{ fontSize: "12px" }}>
                                             {this.state.submissionData.fileUrl ? "You have already submitted a document. Submitting a new document will overwrite the old one" : null }
                                         </p>
-                                        <br />
+                                        <br/>
                                         <input type="file" id="file"/>
                                         <br/>
                                         <button onClick={() => this.sendFile()}>Upload</button>
