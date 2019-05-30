@@ -47,17 +47,20 @@ export class StudentRequestsMock {
             _embedded: {
                 students: [
                     {
-                        id: 99,
                         userId: 1,
                         supervisorId: 10,
                         supervisorAssigned: false,
                     },
                     {
-                        id: 100,
                         userId: 12,
                         supervisorId: 10,
                         supervisorAssigned: false,
-                    }
+                    },
+                    {
+                        userId: 13,
+                        supervisorId: 10,
+                        supervisorAssigned: false,
+                    },
                 ]
             }
         }

@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as func from './functions';
-import * as styles from './styles';
 import { dbTypes } from './../../enums';
 
 export class Submission extends Component {
