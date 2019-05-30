@@ -106,6 +106,7 @@ export class SubmissionsMock {
                         type: "PRJ_PLAN",
                         submissionStatus: "FINISHED",
                         fileUrl: 'some_url',
+                        submissionDate: "2019-04-30T14:53"
                     },
                     {
                         id: 21,
@@ -113,6 +114,7 @@ export class SubmissionsMock {
                         type: "INITIAL_REPORT",
                         submissionStatus: "FINISHED",
                         fileUrl: 'some_url',
+                        submissionDate: "2019-05-30T23:12"
                     },
                     {
                         id: 30,
@@ -120,6 +122,7 @@ export class SubmissionsMock {
                         type: "PRJ_PLAN",
                         submissionStatus: "ACTIVE",
                         fileUrl: '',
+                        submissionDate: "2019-04-31T12:05"
                     },
                     {
                         id: 31,
@@ -127,6 +130,7 @@ export class SubmissionsMock {
                         type: "INITIAL_REPORT",
                         submissionStatus: "ACTIVE",
                         fileUrl: '',
+                        submissionDate: "2019-05-22T16:35"
                     },
                 ]
             }

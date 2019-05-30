@@ -8,8 +8,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as func from './functions'
 import { getUser } from './../../functions';
-import * as styles from './styles';
-import './style.css';
+// import './styles.css';
+
+const dataStyle = {
+    padding: "5px",
+    verticalAlign: "top"
+}
+
+
 
 export default class Supervisor extends Component {
     
@@ -30,45 +36,46 @@ export default class Supervisor extends Component {
     }
 
     render() {
+        let order = 0;
         const studentRequests = this.state.studentsApplied.map(student =>
-            <StudentRequest key={student.userId} student={student}/>
+            <StudentRequest order={order ++} key={student.userId} student={student}/>
         )
         
-        let order = 0;
+        order = 0;
         const supervisedStudents = this.state.supervisedStudents.map(student =>
             <SupervisedStudent order={order ++} key={student.userId} student={student}/>
         )
     
         return (
             <div>
-                <table className="supervisor-box">
+                {/* List of student requests */}
+                <table cellSpacing="1" style={{backgroundColor: "#eaeaea"}}>{/*className="supervisor-box"*/}
                     <tbody>
                         {studentRequests}
                     </tbody>
                 </table>
 
-                <br/>
-
-                Student you supervise
-                <div style={styles.studentList}>
-                    <table width="100%" cellSpacing="0">
+                {/* List of assigned student */}
+                <h2>Student you supervise</h2>
+                {/* <div style={styles.studentList}> */}
+                    <table width="100%" cellSpacing="0" style={{verticalAlign: "top"}}>
                         <tbody>
-                            <tr style={{textAlign: "left"}}>
-                                <th style={{verticalAlign: "top"}}>
+                            <tr style={{textAlign: "left", backgroundColor: "#ffe000"}}>
+                                <th style={{verticalAlign: "top", padding: "10px 15px"}}>
                                     Student
                                 </th>
                                 <th>
                                     Submissions available for review
                                 </th>
                                 <th>
-                                    e-mail
+                                    Submission date
                                 </th>
                             </tr>
                             {supervisedStudents}
                         </tbody>
                     </table>
                 </div>
-            </div>
+            // </div>
         )
     }
 }
@@ -89,12 +96,18 @@ class StudentRequest extends Component {
     }
 
     render() {
+        // let rowColour;
+        // if(this.props.order % 2 == 0)
+        //     rowColour = "#f0f0f0";
+        // else
+        //     rowColour = "#fff";
+
         return (
             <tr>
-                <td style={{width:'100%'}}>
+                <td style={{padding: "10px 15px"}}>
                     {this.state.user.name} wants you as supervisor
                 </td>
-                <td style={{'whiteSpace':'nowrap'}}>
+                <td style={{whiteSpace: "nowrap"}}>
                     <button onClick={() => func.acceptRequest(this.props.student)}>Accept</button>
                     <button onClick={() => func.rejectRequest(this.props.student)}>Decline</button>
                 </td>
@@ -103,12 +116,13 @@ class StudentRequest extends Component {
     }
 }
 
+
 class SupervisedStudent extends Component {
 
     constructor(props) {
         super(props);
 
-        this.state = { user: {}, projectPlan: {}, initialReport: {} };
+        this.state = { user: {}, projectPlan: {}, projectPlanSubmission: {}, initialReport: {}, initialReportSubmission: {} };
     }
 
     componentDidMount() {
@@ -116,15 +130,23 @@ class SupervisedStudent extends Component {
             this.setState({ user: response })
         });
 
-        func.getUserProjectPlan(this.props.student.userId).then(response => {
-            if(response)
-                this.setState({ projectPlan: response }); //.entity._embedded.submissions
-        })
+        func.getUserProjectPlan(this.props.student.userId).then(planResponse => {
+            if(planResponse) {
+                this.setState({ projectPlan: planResponse }); //.entity._embedded.submissions
+                func.getSubmission(planResponse.submissionId).then(submissionResponse => {
+                    this.setState({ projectPlanSubmission: submissionResponse });
+                });
+            }
+        });
         
-        func.getUserInitialReport(this.props.student.userId).then(response => {
-            if(response)
-                this.setState({ initialReport: response }); //.entity._embedded.submissions
-        })
+        func.getUserInitialReport(this.props.student.userId).then(reportResponse => {
+            if(reportResponse) {
+                this.setState({ initialReport: reportResponse }); //.entity._embedded.submissions
+                func.getSubmission(reportResponse.submissionId).then(submissionResponse => {
+                    this.setState({ projectPlanSubmission: submissionResponse });
+                });
+            }
+        });
         
     }
 
@@ -139,28 +161,37 @@ class SupervisedStudent extends Component {
         
         return (
             <tr style={{backgroundColor: rowColour}}>
-                <td style={{padding: "5px"}}>
+                <td style={dataStyle}>
                     {this.state.user.name}
                 </td>
-                <td>
-                    {(this.state.projectPlan.submissionId && currentDate > this.state.projectPlan.deadline) ?
-                        <div>
-                            <Link to={"/supervisor/submission/" + this.state.projectPlan.submissionId}>
+                <td style={dataStyle}>
+                    {this.state.projectPlan.submissionId && currentDate > this.state.projectPlan.deadline
+                    ? // Student has a Project Plan available for review
+                    <div>
+                            <Link style={{textDecoration: "underline"}} to={"/supervisor/submission/" + this.state.projectPlan.submissionId}>
                                 Project Plan
                             </Link>
                             <br/>
                         </div>
-                    : null }
-                    {(this.state.initialReport.submissionId && currentDate > this.state.initialReport.deadline) ?
+                    :
+                        null
+                    }
+                    {this.state.initialReport.submissionId && currentDate > this.state.initialReport.deadline
+                    ? // Student has an Initial Report available for review
                         <div>
                             <Link to={"/supervisor/submission/" + this.state.initialReport.submissionId}>
                                 Initial Report
                             </Link>
                         </div>
-                    : null }
+                    :
+                        null
+                    }
                 </td>
-                <td>
-                    {this.state.user.emailAdress}
+                <td style={dataStyle}>
+                    {this.state.projectPlanSubmission.submissionDate}
+                </td>
+                <td style={dataStyle}>
+                    {this.state.initialReportSubmission.submissionDate}
                 </td>
             </tr>
         )

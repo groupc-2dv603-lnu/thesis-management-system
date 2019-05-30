@@ -41,7 +41,7 @@ export class Submission extends Component {
         }
     }
 
-    sendFeedback() {
+    sendAssessment() {
         func.sendFeedback(document.getElementById("feedbackBox").value);
         document.getElementById("feedbackBox").value = "";
     }
@@ -50,34 +50,64 @@ export class Submission extends Component {
         return (
             <div>
                 {/* TEMP */}
-                <Link to="/supervisor">
+                {/* <Link to="/supervisor">
                     <button>Back</button>
                 </Link>
                 <br/>
-                <br/>
+                <br/> */}
 
-                {this.state.submissionData.type == dbTypes.projectPlan ?
-                    <div>Approve/Reject project plan</div>
-                :
-                    <div>Assess report</div>
-                }
-                made by { this.state.user.name }
+                <h2>
+                    {this.state.submissionData.type == dbTypes.projectPlan 
+                    ?
+                        <span >Approve/Reject Project Plan</span>
+                    :
+                        <span>Assess report</span>
+                    }
+                </h2>
+
+                <table width="100%" cellSpacing="0" cellPadding="5">
+                    <tbody>
+                        <tr>
+                            <td>Submittee</td>
+                            <td>{this.state.user.name}</td>
+                        </tr>
+                        <tr style={{backgroundColor: "#f0f0f0"}}>
+                            <td>Submission Date</td>
+                            <td>{this.state.submissionData.submissionDate}</td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">
+                                <a href={this.state.submissionData.fileUrl} download>
+                                    <button>Download plan</button>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {/* <div style={rowStyle1}>
+                    made by { this.state.user.name }
+                </div>
+                <div style={rowStyle2}>
+                    <a href={this.state.submissionData.fileUrl} download>Download report</a>
+                </div>
+                <div style={rowStyle1}>
+                    {this.state.submissionData.submissionDate}
+                </div> */}
+
                 <br/>
-                <br/>
-                <a href={this.state.submissionData.fileUrl} download>Download report</a>
-                <br/>
-                <br/>
-                {this.state.submissionData.type == dbTypes.projectPlan ?
+                {this.state.submissionData.type == dbTypes.projectPlan
+                ? // Submission is a Project plan
                     <div>
                         <button onClick={() => this.approveReport()}>Approve</button>
                         <button onClick={() => this.rejectReport()}>Reject</button>
                     </div>
-                :
+                : // else (submissions is an Initial Report)
                     <div>
-                        Assessment
+                        Write Assessment
                         <textarea style={styles.feedbackBox} id="feedbackBox"></textarea>
                         <br/>
-                        <button type="submit" onClick={() => this.sendFeedback()}>Send</button>
+                        <button type="submit" onClick={() => this.sendAssessment()}>Send</button>
                     </div>
                 }
 
