@@ -10,6 +10,7 @@ import Coordinator from "./Pages/Coordinator";
 import Reader from "./Pages/Reader";
 import PrivateRoute from "./utils/PrivateRoute";
 import Opponent from "./Pages/Opponent";
+import Admin from "./Pages/Admin";
 
 class App extends Component {
   render() {
@@ -22,6 +23,7 @@ class App extends Component {
             <Route exact path="/" component={FrontPage} />
             <Route exact path="/student" component={Student} />
             <Route exact path="/coordinator" component={Coordinator} />
+            <Route exact path="/admin" component={Admin} />
             <PrivateRoute
               authenticated={true}
               exact
