@@ -36,4 +36,8 @@ public class DataFile {
         }
     }
 
+    public DataFile(byte[] bytes){
+        this.binaryData = new Binary(bytes);
+    }
+
 }
