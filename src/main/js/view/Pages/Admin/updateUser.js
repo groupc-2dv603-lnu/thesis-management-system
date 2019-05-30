@@ -3,16 +3,13 @@
 import React, { Component } from "react";
 import RolesCheckbox from "./rolesCheckbox";
 import { consolePrint } from "./functions";
-import { postToAPI } from "../../functions";
+import { putToAPI } from "../../functions";
 
-class CreateUser extends Component {
+class UpdateUser extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      name: "",
-      password: "",
-      confirmPassword: "",
       email: "",
       roles: []
     };
@@ -41,70 +38,20 @@ class CreateUser extends Component {
 
     this.setState({ roles: roles });
   }
-  /*
-    TODO: make handleClick do something useful instead
-     */
+
   handleClick() {
-    const { password, confirmPassword, roles } = this.state;
-    if (password !== confirmPassword) {
-      alert("Passwords dont match");
-      return;
-    }
-    if (roles.length === 0) {
-      alert("You must choose at least 1 role for the user");
-    } else {
-      postToAPI("/admin/createUser", {
-        name: this.state.name,
-        password: this.state.password,
-        emailAdress: this.state.email,
-        roles: this.state.roles
-      });
-    }
+    putToAPI("/admin/assignRoles", {
+      emailAdress: this.state.email,
+      roles: this.state.roles
+    });
   }
 
   render() {
-    const { name, password, confirmPassword, email } = this.state;
+    const { email } = this.state;
     return (
       <div style={styles.container}>
-        <h1 style={{ margin: 0, marginBottom: 20 }}>Welcome admin</h1>
         <form style={styles.form}>
-          <h3 style={{ margin: 0, marginBottom: 20 }}>Create new user</h3>
-
-          <label htmlFor="name" style={styles.label}>
-            Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            style={styles.input}
-            placeholder="Create new name"
-            value={name}
-            onChange={this.handleChange}
-          />
-
-          <label htmlFor="email" style={styles.label}>
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            style={styles.input}
-            placeholder="Create new password"
-            value={password}
-            onChange={this.handleChange}
-          />
-
-          <label htmlFor="email" style={styles.label}>
-            Confirm password
-          </label>
-          <input
-            type="password"
-            name="confirmPassword"
-            style={styles.input}
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChange={this.handleChange}
-          />
+          <h3 style={{ margin: 0, marginBottom: 20 }}>Update user</h3>
 
           <label htmlFor="email" style={styles.label}>
             Email
@@ -113,7 +60,7 @@ class CreateUser extends Component {
             type="email"
             name="email"
             style={styles.input}
-            placeholder="Create new email"
+            placeholder="Enter email"
             value={email}
             onChange={this.handleChange}
           />
@@ -124,7 +71,7 @@ class CreateUser extends Component {
           <div className="checkBoxes">
             <input
               type="checkbox"
-              value="COORDINATOR"
+              value="Coordinator"
               name="coordinator"
               onChange={this.onCheckboxChange}
             />
@@ -132,7 +79,7 @@ class CreateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="STUDENT"
+              value="Student"
               name="student"
               onChange={this.onCheckboxChange}
             />
@@ -140,7 +87,7 @@ class CreateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="READER"
+              value="Reader"
               name="reader"
               onChange={this.onCheckboxChange}
             />
@@ -148,7 +95,7 @@ class CreateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="SUPERVISOR"
+              value="Supervisor"
               name="supervisor"
               onChange={this.onCheckboxChange}
             />
@@ -156,7 +103,7 @@ class CreateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="OPPONENT"
+              value="Opponent"
               name="opponent"
               onChange={this.onCheckboxChange}
             />
@@ -169,7 +116,7 @@ class CreateUser extends Component {
             type="submit"
             onClick={this.handleClick}
           >
-            Create
+            Update
           </button>
         </form>
       </div>
@@ -207,20 +154,6 @@ const styles = {
     padding: 10,
     borderRadius: 3
   }
-
-  /*
-    This styling is currently inside found inside main.css because button:hover not working from here
-    button: {
-        color: "black",
-        backgroundColor: "#ffe000",
-        border: "1px solid #ffe000",
-        padding: "10px 15px",
-        fontWeight: "bold"
-
-
-    }
-
-     */
 };
 
-export default CreateUser;
+export default UpdateUser;
