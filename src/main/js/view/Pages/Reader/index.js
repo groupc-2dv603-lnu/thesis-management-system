@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from "react";
-const client = require("../../../client");
+import { postToAPI, getFromAPI } from "../../functions";
 
 const mockState = {
   reports: [
@@ -59,8 +59,10 @@ class Reader extends Component {
   }
 
   componentDidMount() {
-    client({ method: "GET", path: "/users" }).then(response => {
-      this.setState({ users: response.entity._embedded.users });
+    getFromAPI("/reader/initialReport").then(result => {
+      this.setState({
+        reportss: result.entity._embedded.initialReports
+      });
     });
   }
 
@@ -97,32 +99,48 @@ class Reader extends Component {
   }
 
   sendInitialReport() {
-    console.log(document.getElementById("initialreport").value);
+    postToAPI(
+      `/reader/feedbackInitialReport?text=${
+        document.getElementById("initialreport").value
+      }`
+    );
   }
 
   sendFinalReport() {
-    console.log(document.getElementById("finalreport").value);
+    postToAPI(
+      `/reader/feedbackFinalReport?text=${
+        document.getElementById("finalreport").value
+      }`
+    );
   }
 
   render() {
+    console.log(this.state.reports);
     return (
       <div>
         {this.state.reports.length && (
           <div>
             <p>Välj rapporter</p>
-            <table className="tableReports">
+            <table>
               <tbody>
                 <tr>
-                  <th>Namn</th>
-                  <th>Författare</th>
-                  <th>ladda ner</th>
+                  <th style={styles.th}>Namn</th>
+                  <th style={styles.th}>Författare</th>
+                  <th style={styles.th}>ladda ner</th>
+                  <th style={styles.th}>välj</th>
                 </tr>
                 {this.state.reports.map((report, index) => (
                   <tr key={index}>
-                    <td key={report.name}>{report.name}</td>
-                    <td key={report.author}>{report.author}</td>
-                    <td key={report.downloadUrl}>ladda ner</td>
-                    <td key={report.id}>
+                    <td key={report.name} style={styles.td}>
+                      {report.name}
+                    </td>
+                    <td key={report.author} style={styles.td}>
+                      {report.author}
+                    </td>
+                    <td key={report.downloadUrl} style={styles.td}>
+                      ladda ner
+                    </td>
+                    <td key={report.id} style={styles.td}>
                       <input
                         type="checkbox"
                         name="selected"
@@ -134,13 +152,14 @@ class Reader extends Component {
                 ))}
               </tbody>
             </table>
+
             <p>Valda rapporter</p>
             <table>
               <tbody>
                 <tr>
-                  <th>#</th>
-                  <th>Namn</th>
-                  <th>Författare</th>
+                  <th style={styles.th}>#</th>
+                  <th style={styles.th}>Namn</th>
+                  <th style={styles.th}>Författare</th>
                 </tr>
                 {this.state.selectedReports.map((reportId, index) => {
                   const report = this.state.reports.filter(
@@ -148,9 +167,15 @@ class Reader extends Component {
                   )[0];
                   return (
                     <tr key={index}>
-                      <td key={index}>{index + 1}</td>
-                      <td key={report.name}>{report.name}</td>
-                      <td key={report.author}>{report.author}</td>
+                      <td style={styles.td} key={index}>
+                        {index + 1}
+                      </td>
+                      <td style={styles.td} key={report.name}>
+                        {report.name}
+                      </td>
+                      <td style={styles.td} key={report.author}>
+                        {report.author}
+                      </td>
                     </tr>
                   );
                 })}
@@ -198,4 +223,17 @@ class Reader extends Component {
   }
 }
 
+const styles = {
+  th: {
+    backgroundColor: "#ffe000",
+    padding: "5px",
+    margin: "0pxs",
+    border: "1px solid black"
+  },
+  td: {
+    border: "1px solid black",
+    margin: "0px",
+    padding: "5px"
+  }
+};
 export default Reader;
