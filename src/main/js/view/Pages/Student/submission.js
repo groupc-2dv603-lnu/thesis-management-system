@@ -23,7 +23,6 @@ class Submission extends Component {
     }
 
     sendFile() {
-        
         func.uploadFile(document.getElementById("file").files[0], this.props.reportData.userId, dbType.get(this.props.type))
         // .then(() => {
             // this.updateSubmissionData();
@@ -81,7 +80,7 @@ class Submission extends Component {
                         {this.props.reportData.deadLine != null ? (
                             <div>
                                 {line1}
-                                <br />
+                                <br/>
                                 {line2}
                                 {/* show file upload for active submission */}
                                 {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE ? (
@@ -89,7 +88,7 @@ class Submission extends Component {
                                         <p style={{ fontSize: "12px" }}>
                                             {this.state.submissionData.fileUrl ? "You have already submitted a document. Submitting a new document will overwrite the old one" : null }
                                         </p>
-                                        <br />
+                                        <br/>
                                         <input type="file" id="file"/>
                                         <br/>
                                         <button onClick={() => this.sendFile()}>Upload</button>
