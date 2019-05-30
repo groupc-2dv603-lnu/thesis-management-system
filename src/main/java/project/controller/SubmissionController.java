@@ -110,20 +110,15 @@ public class SubmissionController {
 
         Submission newSubmission = new Submission();
         dataFileRepository.save(df);
-//        dataFileRepository.deleteById(df.getId());
         newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
 //        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
         newSubmission.setFilePath("TESTUPLOAD");
         newSubmission.setSubmissionType(type);
         subRepository.save(newSubmission);
 
-//        String fileName = fileStorageService.storeFile(file);
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
+        String fileDownloadUri = newSubmission.getFileUrl();
 
         return new UploadFileResponse(fileName, fileDownloadUri,
                 file.getContentType(), file.getSize());
