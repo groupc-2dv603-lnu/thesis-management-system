@@ -19,29 +19,43 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.model.entities.Feedback;
+import project.model.entities.FinalReport;
 import project.model.entities.InitialReport;
+import project.model.entities.Reader;
 import project.model.entities.User;
 import project.model.repositories.FeedbackRepository;
+import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
+import project.model.repositories.ReaderRepository;
 import project.model.repositories.UserRepository;
 
 @RestController
 public class ReaderController {
 	private final FeedbackRepository feedbackRepository;
 	private final InitialReportRepository initialReportRepository;
+	private final FinalReportRepository finalReportRepository;
 	private final UserRepository repository;
+	private final ReaderRepository readerRepository;
 	
-	ReaderController(UserRepository repository, FeedbackRepository feedbackRepository, InitialReportRepository initialReportRepository) {
+	ReaderController(UserRepository repository, FeedbackRepository feedbackRepository, InitialReportRepository initialReportRepository,FinalReportRepository finalReportRepository,
+			ReaderRepository readerRepository) {
 		this.repository = repository;
 		this.feedbackRepository = feedbackRepository;
 		this.initialReportRepository = initialReportRepository;
+		this.finalReportRepository = finalReportRepository;
+		this.readerRepository = readerRepository;
 	}
 	
-	@PostMapping("/reader/feedback")
-	Feedback newFeedback(@RequestBody Feedback feedback) {
+	@PostMapping("/reader/feedbackInitialReport")
+	Feedback newFeedback(@RequestParam String text) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Reader reader = readerRepository.findFirstByuserId(user.getId());
+		
+		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text);
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
-
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
 			Feedback oldFeedback = feedbackRepository.findFirstById(report.getFeedBackIds().get(i));
 			if(oldFeedback != null) {
@@ -55,7 +69,30 @@ public class ReaderController {
 		}
 		return feedback;
 	}
-	
+	@PostMapping("/reader/feedbackFinalReport")
+	Feedback newFeedback2(@RequestParam String text) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Reader reader = readerRepository.findFirstByuserId(user.getId());
+		
+		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text);
+		FinalReport report = finalReportRepository.findFirstById(feedback.getDocumentId());
+		System.out.println(report);
+		Boolean doesFeedBackExist = false;
+		for(int i=0; i < report.getFeedBackIds().size(); i++) {
+			Feedback oldFeedback = feedbackRepository.findFirstById(report.getFeedBackIds().get(i));
+			if(oldFeedback != null) {
+				doesFeedBackExist = true;
+			}
+		}
+		if(doesFeedBackExist.equals(false)) {
+			feedbackRepository.save(feedback);
+			report.getFeedBackIds().add(feedback.getId());
+			finalReportRepository.save(report);
+		}
+		return feedback;
+	}
 	@PutMapping("/reader/requestBidding")
 	InitialReport replaceEmployee(@RequestParam String initialReportId) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

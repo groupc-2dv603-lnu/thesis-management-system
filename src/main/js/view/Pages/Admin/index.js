@@ -1,10 +1,10 @@
 'use strict';
 
 import React, { Component } from 'react'
+import CreateUser from "./createUser";
 // const client = require('../../../client');
-import Login from './login';
 
-class FrontPage extends Component {
+class Admin extends Component {
     constructor(props) {
         super(props);
         // this.state = { users: [] };
@@ -19,11 +19,11 @@ class FrontPage extends Component {
     render() {
         return (
             <div>
-                <Login></Login>
+                <CreateUser/>
 
             </div>
         )
     }
 }
 
-export default FrontPage
+export default Admin

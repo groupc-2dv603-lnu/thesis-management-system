@@ -2,9 +2,8 @@
 
 import React, { Component } from 'react'
 // const client = require('../../../client');
-import Login from './login';
 
-class FrontPage extends Component {
+class RolesCheckbox extends Component {
     constructor(props) {
         super(props);
         // this.state = { users: [] };
@@ -19,11 +18,16 @@ class FrontPage extends Component {
     render() {
         return (
             <div>
-                <Login></Login>
-
+                <input type="checkbox" value="Coordinator"/>Coordinator<br/>
+                <input type="checkbox" value="Student"/>Student<br/>
+                <input type="checkbox" value="Supervisor"/>Supervisor<br/>
+                <input type="checkbox" value="Reader"/>Reader<br/>
+                <input type="checkbox" value="Opponent"/>Opponent<br/>
             </div>
+
+
         )
     }
 }
 
-export default FrontPage
+export default RolesCheckbox

@@ -28,6 +28,8 @@ import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Reader;
 import project.model.enums.Grade;
+import project.model.enums.GradeAF;
+import project.model.enums.PendingSupervisor;
 
 //import project.model.entities.Student;
 
@@ -116,11 +118,11 @@ class UserController {
 			repository.save(user);
 			for(int i=0; i < user.getRoles().length; i++){
 				if(user.getRoles()[i].equals(Role.STUDENT)) {
-					studentRepository.save(new Student(user.getId(), "", ""));
+					studentRepository.save(new Student(user.getId(), "", PendingSupervisor.NONE));
 					projectDescriptionRepository.save(new ProjectDescription(user.getId(), "", Grade.NOGRADE, ""));
-					projectPlanRepository.save(new ProjectPlan(user.getId(), "", "", Grade.NOGRADE, ""));
+					projectPlanRepository.save(new ProjectPlan(user.getId(), "", "", Grade.NOGRADE, "", false));
 					initialReportRepository.save(new InitialReport(user.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
-					finalReportRepository.save(new FinalReport(user.getId(), "", Grade.NOGRADE, ""));
+					finalReportRepository.save(new FinalReport(user.getId(), "", GradeAF.NOGRADE, "", new ArrayList<String>()));
 
 				} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
 					supervisorRepository.save(new Supervisor(user.getId(), false, new ArrayList<String>(), new ArrayList<String>()));
@@ -139,8 +141,8 @@ class UserController {
 
 	}
 	@PutMapping("/admin/assignRoles")
-	User updateUser(@RequestBody User updateUser) {
-		User finduser = repository.findFirstByEmailAdress(updateUser.getEmailAdress());
+	User updateUser(@RequestParam String email, @RequestBody Role[] roles) {
+		User finduser = repository.findFirstByEmailAdress(email);
 		Boolean oldRoleStudent = false;
 		Boolean newRoleStudent = false;
 		if(finduser != null) {
@@ -150,17 +152,17 @@ class UserController {
 				}
 			}
 
-			for(int i=0; i < updateUser.getRoles().length; i++) {
-				if(updateUser.getRoles()[i].equals(Role.STUDENT)) {
+			for(int i=0; i < roles.length; i++) {
+				if(roles[i].equals(Role.STUDENT)) {
 					newRoleStudent = true;
 				}
 			}
 
 			if(oldRoleStudent.equals(false) && newRoleStudent.equals(true)) {
 				projectDescriptionRepository.save(new ProjectDescription(finduser.getId(), "", Grade.NOGRADE, ""));
-				projectPlanRepository.save(new ProjectPlan(finduser.getId(), "", "", Grade.NOGRADE, ""));
+				projectPlanRepository.save(new ProjectPlan(finduser.getId(), "", "", Grade.NOGRADE, "", false));
 				initialReportRepository.save(new InitialReport(finduser.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
-				finalReportRepository.save(new FinalReport(finduser.getId(), "", Grade.NOGRADE, ""));
+				finalReportRepository.save(new FinalReport(finduser.getId(), "", GradeAF.NOGRADE, "", new ArrayList<String>()));
 
 			} else if(oldRoleStudent.equals(true) && newRoleStudent.equals(false)) {
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(finduser.getId());
@@ -175,7 +177,7 @@ class UserController {
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(finduser.getId());
 				finalReportRepository.deleteById(finalReport.getId());
 			}
-			finduser.setRoles(updateUser.getRoles());
+			finduser.setRoles(roles);
 			return repository.save(finduser);
 		} else {
 			return finduser;
