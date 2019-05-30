@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as func from './functions';
 import * as styles from './styles';
+import { dbTypes } from './../../enums';
 
 export class Submission extends Component {
     
@@ -16,8 +17,8 @@ export class Submission extends Component {
     componentDidMount() {
         func.getSubmission(this.props.match.params.id).then(submissionResponse => {
             this.setState({ submissionData: submissionResponse });
-            func.getMockUser(response.studentId).then(userResponse => {
-                // TODO get report with userId
+            func.getMockUser(submissionResponse.userId).then(userResponse => {
+                // TODO get reportData with userId. need to pass it to approve/rejectPlan and for sendFeedback
                 this.setState({ user: userResponse })
             })
         });
@@ -25,13 +26,19 @@ export class Submission extends Component {
     }
 
     approveReport() {
-        func.approvePlan()
-        window.location.href = "/#/supervisor";
+        if(confirm("Are you sure you want to approve this plan?")) {
+            console.log("accepting plan")
+            func.approvePlan(this.state.reportData);
+            location.href = "/#/supervisor";
+        }
     }
     
     rejectReport() {
-        console.log("SSsssssuckah!")
-        window.location.href = "/#/supervisor";
+        if(confirm("Are you sure you want to reject this plan?")) {
+            console.log("rejecting plan")
+            func.rejectPlan(this.state.reportData);
+            location.href = "/#/supervisor";
+        }
     }
 
     sendFeedback() {
@@ -40,7 +47,6 @@ export class Submission extends Component {
     }
 
     render() {
-    
         return (
             <div>
                 {/* TEMP */}
@@ -50,20 +56,18 @@ export class Submission extends Component {
                 <br/>
                 <br/>
 
-                {this.state.submissionData.type == "project plan" ?
-                    <div>Give feedback on project plan</div>
+                {this.state.submissionData.type == dbTypes.projectPlan ?
+                    <div>Approve/Reject project plan</div>
                 :
-                    <div>
-                        Assess report
-                    </div>
+                    <div>Assess report</div>
                 }
                 made by { this.state.user.name }
                 <br/>
                 <br/>
-                <a href={this.state.submissionData.fileURL} download>Download report</a>
+                <a href={this.state.submissionData.fileUrl} download>Download report</a>
                 <br/>
                 <br/>
-                {this.state.submissionData.type == "project plan" ?
+                {this.state.submissionData.type == dbTypes.projectPlan ?
                     <div>
                         <button onClick={() => this.approveReport()}>Approve</button>
                         <button onClick={() => this.rejectReport()}>Reject</button>

@@ -1,6 +1,6 @@
-//TODO dela upp i fler filer
 //TODO design
 //TODO använd inte lokal tid
+//TODO (allmän) använd globala enums
 
 'use strict';
 
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import * as func from './functions'
 import { getUser } from './../../functions';
 import * as styles from './styles';
+import './style.css';
 
 export default class Supervisor extends Component {
     
@@ -30,11 +31,12 @@ export default class Supervisor extends Component {
 
     render() {
         const studentRequests = this.state.studentsApplied.map(student =>
-            <StudentRequest key={student.id} student={student}/>
+            <StudentRequest key={student.userId} student={student}/>
         )
-
+        
+        let order = 0;
         const supervisedStudents = this.state.supervisedStudents.map(student =>
-            <SupervisedStudent key={student.id} student={student}/>
+            <SupervisedStudent order={order ++} key={student.userId} student={student}/>
         )
     
         return (
@@ -49,7 +51,7 @@ export default class Supervisor extends Component {
 
                 Student you supervise
                 <div style={styles.studentList}>
-                    <table width="100%">
+                    <table width="100%" cellSpacing="0">
                         <tbody>
                             <tr style={{textAlign: "left"}}>
                                 <th style={{verticalAlign: "top"}}>
@@ -90,7 +92,7 @@ class StudentRequest extends Component {
         return (
             <tr>
                 <td style={{width:'100%'}}>
-                    {this.state.user.name} has applied to get you as supervisor
+                    {this.state.user.name} wants you as supervisor
                 </td>
                 <td style={{'whiteSpace':'nowrap'}}>
                     <button onClick={() => func.acceptRequest(this.props.student)}>Accept</button>
@@ -125,14 +127,19 @@ class SupervisedStudent extends Component {
         })
         
     }
-    
 
     render()  {
         let currentDate = new Date().toISOString();
- 
+
+        let rowColour;
+        if(this.props.order % 2 == 0)
+            rowColour = "#f0f0f0";
+        else
+            rowColour = "#fff";
+        
         return (
-            <tr>
-                <td>
+            <tr style={{backgroundColor: rowColour}}>
+                <td style={{padding: "5px"}}>
                     {this.state.user.name}
                 </td>
                 <td>

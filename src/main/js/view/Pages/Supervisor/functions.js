@@ -72,7 +72,7 @@ export function getUserInitialReport(userId) {
     return new Promise(resolve => resolve(mock));
 }
 
-export function sendFeedback(text, reportId) { // TODO documentId vill inte komma med i databasdokumentet
+export function sendFeedback(text, reportId) {
     const feedback = { documentId: reportId, text: text }; // userId: "something"
 
     postToAPI("/supervisor/feedback?id=" + reportId, feedback)

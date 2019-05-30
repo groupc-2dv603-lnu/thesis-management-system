@@ -5,7 +5,7 @@ export const studentList = {
     border: '1px solid black',
     padding: "20px",
     lineHeight: "25px",
-
+    
 }
 
 export const feedbackBox = {

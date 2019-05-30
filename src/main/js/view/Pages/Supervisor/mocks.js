@@ -74,20 +74,25 @@ export class SupervisedStudentsMock {
                         id: 101,
                         userId: 11,
                         supervisorId: 10,
-                        supervisorAssigned: false,
+                        // supervisorAssigned: false,
                     },
                     {
                         id: 102,
                         userId: 13,
                         supervisorId: 10,
-                        supervisorAssigned: false,
+                        // supervisorAssigned: false,
+                    },
+                    {
+                        id: 103,
+                        userId: 12,
+                        supervisorId: 10,
+                        // supervisorAssigned: true,
                     }
                 ]
             }
         }
     }
 }
-
 
 export class SubmissionsMock {
 
@@ -97,31 +102,31 @@ export class SubmissionsMock {
                 submissions: [
                     {
                         id: 20,
-                        studentId: 11,
-                        type: "project plan",
-                        status: "finished",
-                        fileURL: 'some_url',
+                        userId: 11,
+                        type: "PRJ_PLAN",
+                        submissionStatus: "FINISHED",
+                        fileUrl: 'some_url',
                     },
                     {
                         id: 21,
-                        studentId: 11,
-                        type: "initial report",
-                        status: "finished",
-                        fileURL: 'some_url',
+                        userId: 11,
+                        type: "INITIAL_REPORT",
+                        submissionStatus: "FINISHED",
+                        fileUrl: 'some_url',
                     },
                     {
                         id: 30,
-                        studentId: 13,
-                        type: "project plan",
-                        status: "active",
-                        fileURL: '',
+                        userId: 13,
+                        type: "PRJ_PLAN",
+                        submissionStatus: "ACTIVE",
+                        fileUrl: '',
                     },
                     {
                         id: 31,
-                        studentId: 13,
-                        type: "intial report",
-                        status: "active",
-                        fileURL: '',
+                        userId: 13,
+                        type: "INITIAL_REPORT",
+                        submissionStatus: "ACTIVE",
+                        fileUrl: '',
                     },
                 ]
             }
@@ -146,6 +151,14 @@ export class ProjectPlanMock {
                         id: 103,
                         submissionId: 30,
                         userId: 13,
+                        grade: "pass",
+                        deadline: "2019-05-20T23:55",
+                        submissionDate: "2019-05-20T20:15",
+                    },
+                    {
+                        id: 104,
+                        submissionId: 21,
+                        userId: 12,
                         grade: "pass",
                         deadline: "2019-05-20T23:55",
                         submissionDate: "2019-05-20T20:15",
