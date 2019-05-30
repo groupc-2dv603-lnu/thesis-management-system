@@ -1,6 +1,7 @@
 import * as generalFunctions from "../../../../functions";
+import React, { Component } from 'react';
 
-/* NEED GET ALL INITIAL REPORTS 
+
 export const getInitialReports = async () => {
   try {
     let reports = [];
@@ -8,27 +9,21 @@ export const getInitialReports = async () => {
     const response = await generalFunctions.getFromAPI(
       `/coordinator/getAllReports`
     );
-    console.log(response)
     for (const report of response.entity) {
       if (report.submissionId !== "") {
         const submission = await getSubmission(report.submissionId)
         if (submission.fileUrl !== "") {
-          console.log('REPORT', report)
-          let reportObject = {
-            name: getName(report.userId),
-            bids: report.bids.length,
-           // assignedReaders: report.assignedReaders.length,
-           //opponent: report.assignedOpponents.length 
-          }
-          console.log('reportOBJECT', reportObject)
+          report.name = await getName(report.userId)
+          reports.push(report)
         }
       }
     }
+    return reports
+    
   } catch (e) {
     console.log(e);
   }
 };
-*/
 
 const getSubmission = async (submissionId) => {
   try {
@@ -50,3 +45,34 @@ export async function getName(userId) {
     console.log(e);
   }
 }
+
+export const getUsers = async (userIds) => {
+  let users = []
+
+  for (const id of userIds) {
+    let name = await getName(id)
+    let obj = {
+      name: generalFunctions.capitalizeFirstLetter(name),
+      userId: id
+    }
+    users.push(obj)
+  }
+  return users
+}
+
+export const getAvailableOpponents = async () => {
+  let availableOpponents = []
+
+  let response = await generalFunctions.getFromAPI(`/coordinator/getAllOpponents`)
+  let opponents = response.entity
+  for(const opponent of opponents) {
+    let obj = {
+      name: await getName(opponent.userId),
+      userId: opponent.userId
+    }
+    availableOpponents.push(obj)
+  }
+
+  return availableOpponents
+}
+

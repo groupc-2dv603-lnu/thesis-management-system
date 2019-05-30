@@ -22,6 +22,8 @@ class ProjectDescriptionBox extends Component {
       message: ""
     };
     this.getMessage = this.getMessage.bind(this);
+    console.log(this.state.submission)
+
   }
 
   setStatus(event) {
@@ -117,7 +119,7 @@ class ProjectDescriptionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Status</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.submission !== null
+                  {this.state.submission
                     ? this.state.submission.submissionStatus
                     : "not set"}
                 </span>

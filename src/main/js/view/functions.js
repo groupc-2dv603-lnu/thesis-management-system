@@ -59,3 +59,25 @@ export function capitalizeFirstLetter(string) {
         return "N/A";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+
+/**
+ * 
+ * @param {String} url - Where to send the request 
+ * @param {Object} object - Submission object to update -> JSON
+ */
+export const updateSubmission = async (url, object) =>  {
+    const request = await fetch(
+      url,
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: object
+      }
+    );
+    return request
+  
+  }

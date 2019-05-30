@@ -11,7 +11,7 @@ class Coordinator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: "students" //sets 'first' page
+      page: "reports" //sets coordinator start page
     };
     this.handleChange = this.handleChange.bind(this)
   }

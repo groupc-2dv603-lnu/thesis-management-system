@@ -14,16 +14,16 @@ class ReportsTable extends Component {
     this.state = {
       students: [],
       initialReports: [],
-      selectedReportId: null,
+      selectedReport: null,
       showPopup: false,
       loading: false,
       // pages: -1,
     };
   }
 
-  togglePopup(reportId) {
+  async togglePopup(report) {
     this.setState({
-      selectedReportId: reportId
+      selectedReport: report
     });
     this.setState({
       showPopup: !this.state.showPopup
@@ -35,7 +35,7 @@ class ReportsTable extends Component {
     const columnMaxWidth = 120;
     const columns = [
       {
-        Header: "Submitter",
+        Header: "Name",
         headerStyle: Style.headerNameCellStyle,
         style: Style.nameColumnStyle,
         accessor: "submitter",
@@ -44,10 +44,10 @@ class ReportsTable extends Component {
         Cell: props => (
           <span
             onClick={() => {
-              this.togglePopup(props.original.id);
+              this.togglePopup(props.original);
             }}
           >
-            Name
+            {props.original.name}
           </span>
         )
       },
@@ -59,7 +59,7 @@ class ReportsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>Antal</span>
+            <span>{props.original.bids.length}</span>
           </Link>
         )
       },
@@ -71,7 +71,7 @@ class ReportsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <Link to="#">
-            <span>Antal/namn?</span>
+            <span>{props.original.assignedReaders.length}</span>
           </Link>
         )
       },
@@ -84,7 +84,7 @@ class ReportsTable extends Component {
         Cell: props => (
           <Link to="#">
             <span>
-              antal/namn?
+            {props.original.assignedOpponents.length}
             </span>
           </Link>
         )
@@ -99,7 +99,6 @@ class ReportsTable extends Component {
           loading={this.state.loading}
           manual // ??
           onFetchData={async (state, instance) => {
-            console.log('tableState', state)
             this.setState({ loading: true });
             const initialReports = await func.getInitialReports();
 
@@ -113,7 +112,7 @@ class ReportsTable extends Component {
            />{" "}
         {this.state.showPopup ? (
           <ReportPopup
-            report={this.state.selectedReportId}
+            report={this.state.selectedReport}
             closePopup={this.togglePopup.bind(this)}
           />
         ) : null}
