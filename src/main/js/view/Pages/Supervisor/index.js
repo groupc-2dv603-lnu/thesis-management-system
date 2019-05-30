@@ -1,24 +1,21 @@
-//TODO design
 //TODO använd inte lokal tid
-//TODO (allmän) använd globala enums
 
 'use strict';
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Submission } from './submission'
 import * as func from './functions'
+import * as enums from './../../enums';
 import { getUser } from './../../functions';
 import './style.css';
 
-const dataStyle = {
-    padding: "5px",
-    verticalAlign: "top"
-}
+// static class Popup {
 
-
+// }
 
 export default class Supervisor extends Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -35,7 +32,7 @@ export default class Supervisor extends Component {
             this.setState({ studentsApplied: response.entity._embedded.students })
         });
     }
-    
+
     updateSupervisedStudents() {
         func.getSupervisedStudents().then(response => {
             this.setState({ supervisedStudents: response.entity._embedded.students })
@@ -44,13 +41,13 @@ export default class Supervisor extends Component {
 
     render() {
         const studentRequests = this.state.studentsApplied.map(student =>
-            <StudentRequest reference={this} key={student.userId} student={student}/>
+            <StudentRequest reference={this} key={student.userId} student={student} />
         )
-        
+
         const supervisedStudents = this.state.supervisedStudents.map(student =>
-            <SupervisedStudent key={student.userId} student={student}/>
+            <SupervisedStudent key={student.userId} student={student} />
         )
-    
+
         return (
             <div>
                 {/* List of student requests */}
@@ -69,8 +66,11 @@ export default class Supervisor extends Component {
                                 Student
                             </th>
                             <th>
-                                Submissions available for review
+                                Submissions
                             </th>
+                            {/* <th width="10px">
+                                Status
+                            </th> */}
                             <th>
                                 Submission date
                             </th>
@@ -93,7 +93,7 @@ class StudentRequest extends Component {
     }
 
     answerRequest(answer) {
-        if(answer) {
+        if (answer) {
             func.acceptRequest(this.props.student);
         }
         else {
@@ -104,7 +104,7 @@ class StudentRequest extends Component {
 
     componentDidMount() {
         func.getMockUser(this.props.student.userId).then(response => {
-            this.setState({ user: response }) 
+            this.setState({ user: response })
         });
     }
 
@@ -129,7 +129,7 @@ class SupervisedStudent extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { user: {}, projectPlan: {}, projectPlanSubmission: {}, initialReport: {}, initialReportSubmission: {} };
+        this.state = { user: {}, projectPlan: {}, projectPlanSubmission: {}, initialReport: {}, initialReportSubmission: {}, projectPlanPopup: false, initialReportPopup: false };
     }
 
     componentDidMount() {
@@ -138,60 +138,115 @@ class SupervisedStudent extends Component {
         });
 
         func.getUserProjectPlan(this.props.student.userId).then(planResponse => {
-            if(planResponse) {
+            if (planResponse) {
                 this.setState({ projectPlan: planResponse }); //.entity._embedded.submissions
                 func.getSubmission(planResponse.submissionId).then(submissionResponse => {
                     this.setState({ projectPlanSubmission: submissionResponse });
                 });
             }
         });
-        
+
         func.getUserInitialReport(this.props.student.userId).then(reportResponse => {
-            if(reportResponse) {
+            if (reportResponse) {
                 this.setState({ initialReport: reportResponse }); //.entity._embedded.submissions
                 func.getSubmission(reportResponse.submissionId).then(submissionResponse => {
                     this.setState({ projectPlanSubmission: submissionResponse });
                 });
             }
         });
-        
+
     }
 
-    render()  {
+    setProjectPlanPopup(state) {
+        this.setState({ projectPlanPopup: state });
+    }
+
+    setInitialReportPopup(state) {
+        this.setState({ initialReportPopup: state });
+    }
+
+    render() {
         let currentDate = new Date().toISOString();
 
         return (
             <tr>
-                <td style={dataStyle}>
+                <td>
                     {this.state.user.name}
                 </td>
-                <td style={dataStyle}>
-                    {this.state.projectPlan.submissionId && currentDate > this.state.projectPlan.deadline
-                    ? // Student has a Project Plan available for review
-                    <div>
-                            <Link className="link" to={"/supervisor/submission/" + this.state.projectPlan.submissionId}>
+                <td>
+                    {/*this.state.projectPlan.submissionId && currentDate > this.state.projectPlan.deadline && */ this.state.projectPlan.grade != enums.grades.NOGRADE // TODO check if supervisor already answered
+                        ? // Student has a Project Plan available for review
+                        <div className="link" onClick={() => this.setProjectPlanPopup(true)}>
+                            Project Plan
+                            {/* <Link className="link" to={"/supervisor/submission/" + this.state.projectPlan.submissionId}>
                                 Project Plan
-                            </Link>
-                            <br/>
+                            </Link> */}
                         </div>
-                    :
+                        :
+                        <div>Project Plan</div>
+                        // null
+                    }
+                    {/* Popup Project Plan (test) */}
+                    {this.state.projectPlanPopup
+                        ?
+                        <div className="reportPopup">
+                            <div className="inner">
+                                <i className="fas fa-window-close link right" onClick={() => this.setProjectPlanPopup(false)} title="Close"/>
+                                <Submission id={this.state.projectPlan.submissionId} />
+                            </div>
+                        </div>
+                        :
                         null
                     }
-                    {this.state.initialReport.submissionId && currentDate > this.state.initialReport.deadline
-                    ? // Student has an Initial Report available for review
-                        <div>
-                            <Link className="link" to={"/supervisor/submission/" + this.state.initialReport.submissionId}>
+                    {this.state.initialReport.submissionId && currentDate > this.state.initialReport.deadline // TODO check if supervisor has left feedback
+                        ? // Student has an Initial Report available for review
+                        <div className="link" onClick={() => this.setInitialReportPopup(true)}>
+                            Initial Report
+                            {/* <Link className="link" to={"/supervisor/submission/" + this.state.initialReport.submissionId}>
                                 Initial Report
-                            </Link>
+                            </Link> */}
                         </div>
-                    :
+
+                        :
+                        <div className="unavailable">Initial Report</div>
+                        // null
+                    }
+                    {/* Popup Initial Report (test) */}
+                    {this.state.initialReportPopup
+                        ?
+                        <div className="reportPopup">
+                            <div className="inner">
+                                <i className="fas fa-window-close link right" onClick={() => this.setInitialReportPopup(false)} title="Close"/>
+                                <Submission id={this.state.initialReport.submissionId} />
+                            </div>
+                        </div>
+                        :
                         null
                     }
                 </td>
-                <td style={dataStyle}>
-                    {this.state.projectPlanSubmission.submissionDate}
-                    <br />
-                    {this.state.initialReportSubmission.submissionDate}
+                {/* <td className="center">
+                    {this.state.projectPlan.submissionId && currentDate > this.state.projectPlan.deadline && this.state.projectPlan.grade == enums.grades.PASS
+                    ?
+                        <div>
+                            {this.state.
+                            ?
+                                <i className="fa fa-check" title="You have given an answer on this report"/>
+                            :
+                                <i className="fa fa-exclamation"/>
+                            }
+                        </div>
+                    :
+                    <div>
+                    </div>
+                }
+                </td> */}
+                <td>
+                    <div>
+                        {this.state.projectPlanSubmission.submissionDate}
+                    </div>
+                    <div>
+                        {this.state.initialReportSubmission.submissionDate}
+                    </div>
                 </td>
             </tr>
         )

@@ -135,6 +135,14 @@ export class SubmissionsMock {
                         fileUrl: '',
                         submissionDate: "2019-05-22T16:35"
                     },
+                    {
+                        id: 40,
+                        userId: 12,
+                        type: "PRJ_PLAN",
+                        submissionStatus: "ACTIVE",
+                        fileUrl: '',
+                        submissionDate: "2019-05-22T16:35"
+                    },
                 ]
             }
         }
@@ -153,6 +161,7 @@ export class ProjectPlanMock {
                         grade: "pass",
                         deadline: "2019-05-20T23:55",
                         submissionDate: "2019-05-20T20:15",
+                        approved: true,
                     },
                     {
                         id: 103,
@@ -161,10 +170,11 @@ export class ProjectPlanMock {
                         grade: "pass",
                         deadline: "2019-05-20T23:55",
                         submissionDate: "2019-05-20T20:15",
+                        approved: true,
                     },
                     {
                         id: 104,
-                        submissionId: 21,
+                        submissionId: 40,
                         userId: 12,
                         grade: "pass",
                         deadline: "2019-05-20T23:55",
