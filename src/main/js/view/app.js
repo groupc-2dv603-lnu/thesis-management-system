@@ -11,6 +11,7 @@ import Reader from "./Pages/Reader";
 import PrivateRoute from "./utils/PrivateRoute";
 import Opponent from "./Pages/Opponent";
 import Supervisor from "./Pages/Supervisor";
+import Admin from "./Pages/Admin";
 
 class App extends Component {
   render() {
@@ -24,6 +25,7 @@ class App extends Component {
             <Route exact path="/student" component={Student} />
             <Route exact path="/coordinator" component={Coordinator} />
             <Route exact path="/supervisor" component={Supervisor} />
+            <Route exact path="/admin" component={Admin} />
             <PrivateRoute
               authenticated={true}
               exact

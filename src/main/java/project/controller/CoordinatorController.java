@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
 import project.model.DTOs.SubmissionsDTO;
 import project.model.enums.Grade;
+import project.model.enums.SubmissionStatus;
 import project.model.repositories.*;
 
 import javax.validation.Valid;
@@ -108,8 +109,8 @@ public class CoordinatorController {
         Submission submission = submissionRepository.findFirstById(id);
 
         return new Resource<>(submission,
-                linkTo(methodOn(SubmissionController.class).getSubmission(id)).withSelfRel(),
-                linkTo(methodOn(SubmissionController.class).getAllSubmissions()).withRel("submissions"));
+                linkTo(methodOn(CoordinatorController.class).getSubmission(id)).withSelfRel(),
+                linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withRel("submissions"));
 
     }
 
@@ -118,12 +119,22 @@ public class CoordinatorController {
     Resources<Resource<Submission>> getAllSubmissions() {
         List<Resource<Submission>> submissions = submissionRepository.findAll().stream()
                 .map(submission -> new Resource<>(submission,
-                        linkTo(methodOn(SubmissionController.class).getSubmission(submission.getId())).withSelfRel(),
-                        linkTo(methodOn(SubmissionController.class).getAllSubmissions()).withRel("submissions")))
+                        linkTo(methodOn(CoordinatorController.class).getSubmission(submission.getId())).withSelfRel(),
+                        linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withRel("submissions")))
                 .collect(Collectors.toList());
 
         return new Resources<>(submissions,
-                linkTo(methodOn(SubmissionController.class).getAllSubmissions()).withSelfRel());
+                linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withSelfRel());
     }
 
+    /* Update the status of a submission */
+    @PutMapping("/coordinator/submissions/{id}/updateStatus")
+    Submission updateSubmissionStatus(@PathVariable String id, @RequestParam SubmissionStatus newStatus){
+        Submission updatedSubmission = submissionRepository.findFirstById(id);
+        updatedSubmission.setSubmissionStatus(newStatus);
+        submissionRepository.save(updatedSubmission);
+
+        return updatedSubmission;
+
+    }
 }
