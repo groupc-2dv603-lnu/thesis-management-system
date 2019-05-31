@@ -1,5 +1,3 @@
-import { standardBorder } from "./TableStyles";
-
 //popup surrounding area
 const innerWidth = "20%"; 
 const innerHeight = "15%";
@@ -31,7 +29,9 @@ export const popupInner = {
   minWidth: '500px',
   heigth: '80%',
   border: '2px solid black',
-  borderRadius: '5px'
+  borderRadius: '5px',
+  overflow: 'auto',
+
 };
 
 export const closeButtonDiv = {
@@ -57,11 +57,13 @@ export const popupSupervisor = {
   width: '100%',
   textAlign: 'center',
   marginTop: '-5px',
+  borderBottom: '1px solid black'
+
 }
 
 export const popupBody = {
-  width: '90%',
-  margin: '0 auto'
+  width: '100%',
+  margin: '0 auto',
 }
 
 export const loading = {
@@ -70,3 +72,17 @@ export const loading = {
   textAlign: 'center',
   marginTop: '200px'
 }
+
+export const message = {
+  textAlign: 'center',
+  height: '30px',
+  lineHeight: '30px',
+  fontWeight: 'bold'
+}
+
+export const submitDiv = {
+  marginTop: '20px',
+  width: '100%',
+  textAlign: 'center'
+}
+

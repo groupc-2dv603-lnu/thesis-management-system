@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as Style from "../Styles/ReportStyles";
-import * as func from "./reportFunctions/reportFunctions";
+import * as PopupStyle from "../Styles/PopupStyles";
 import * as generalFunctions from "../../../functions";
 
 class ReportPopupBody extends Component {
@@ -44,6 +44,10 @@ class ReportPopupBody extends Component {
   }
 
   assignOpponent(user) {
+    if (this.state.assignedOpponents.length === 1) {
+      this.toggleMessage("Max one opponent can be assigned");
+      return;
+    }
     for (const opponent of this.state.assignedOpponents) {
       if (opponent.userId === user.userId) {
         this.toggleMessage(`${user.name} is already assigned as opponent`);
@@ -168,9 +172,9 @@ class ReportPopupBody extends Component {
     this.props.report.assignedOpponents = this.removeNames(
       this.state.assignedOpponents
     );
-    let initialReport = Object.assign({}, this.props.report)
-    console.log('IR' ,initialReport)
-    console.log('PROPSREP', this.props.report)
+    let initialReport = Object.assign({}, this.props.report);
+    console.log("IR", initialReport);
+    console.log("PROPSREP", this.props.report);
     delete initialReport.name;
 
     const updateinitialReportUrl =
@@ -205,7 +209,7 @@ class ReportPopupBody extends Component {
   }
 
   getMessage() {
-    return <div style={Style.message}>{this.state.message}</div>;
+    return <div style={PopupStyle.message}>{this.state.message}</div>;
   }
 
   render() {
@@ -238,9 +242,9 @@ class ReportPopupBody extends Component {
 
         {/* ---- SUBMIT ---- */}
 
-        <div style={Style.submitDiv}>
+        <div style={PopupStyle.submitDiv}>
           <button
-            style={Style.submitButton}
+            style={PopupStyle.submitButton}
             onClick={() => this.handleSubmit()}
           >
             Submit

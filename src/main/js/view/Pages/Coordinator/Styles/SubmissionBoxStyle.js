@@ -8,29 +8,36 @@ export const submissionMenu = {
   width: "100%",
   display: "flex",
   justifyContent: "center",
-  marginBottom: "20px"
+  marginBottom: "20px",
 };
 
 export const menuButtons = {
   border: standardBorder,
-  width: "80px",
+  width: "25%",
   textAlign: "center",
   background: lnuYellow,
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  marginLeft: '3px'
 };
 
 /* ---  SubmissionBox  --- */
-
+export const subBoxDiv = {
+  margin: '0 auto',
+  width: '80%',
+  border: standardBorder,
+}
 export const subBoxHeader = {
   border: standardBorder,
   textAlign: "center",
   fontWeight: "bold",
   height: "40px",
-  lineHeight: "40px"
+  lineHeight: "40px",
+  background: lnuYellow
 };
 
 export const submissionRow = {
-  border: standardBorder,
+  borderTop: standardBorder,
+  borderBottom: standardBorder,
   height: rowHeight,
   width: "100%"
 };
@@ -41,8 +48,8 @@ export const submissionLeftColumn = {
   height: "100%",
   float: "left",
   lineHeight: rowHeight,
-  marginLeft: "3px",
-  fontWeight: "bold"
+  fontWeight: "bold",
+  background: 'lightgrey'
 };
 export const submissionRightColumn = {
   height: "100%",
@@ -56,28 +63,6 @@ export const submissionEditColumn = {
   lineHeight: rowHeight,
   marginRight: "5px"
 };
-
-/* ---- feedback ---- */
-export const submissionFeedbackRow = {
-  height: '120px',
-  borderTop: standardBorder,
-  borderLeft: standardBorder
-}
-export const textarea = {
-  height: "90%",
-  width: "180%",
-  border: 'none',
-  resize: 'none',
-  padding: '2px'
-};
-
-export const submissionFeedbackFromRow = {
-  borderLeft: standardBorder,
-  borderRight: standardBorder,
-  borderBottom: standardBorder,
-  height: rowHeight,
-  width: '100%'
-}
 
 export const submissionInputColumn = {
   width: '100%',
@@ -95,17 +80,45 @@ export const noSubfound = {
   textAlign: 'center'
 }
 
-export const message = {
-  border: '1px solid red',
-  textAlign: 'center',
-  lineHeight: rowHeight,
-}
-
 export const submitRow = {
   width: '100%',
   textAlign: 'center',
   height: rowHeight,
   lineHeight: rowHeight,
   background: lnuYellow,
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  borderTop: standardBorder
 }
+
+export const downloadSpan = {
+  float: 'right',
+  marginRight: '15px'
+}
+
+/* ---- feedback ---- */
+export const feedbackBox = {
+  border: standardBorder,
+  margin: '0 auto',
+  width: '80%',
+  marginTop: '10px',
+}
+
+export const feedbackHeader = {
+  height: '20px',
+  lineHeight: '20px',
+  textAlign: 'center',
+  borderBottom: standardBorder,
+  background: lnuYellow
+}
+
+export const feedbackText = {
+  margin: '5px'
+}
+export const textarea = {
+  height: "90%",
+  width: "180%",
+  border: 'none',
+  resize: 'none',
+  padding: '2px'
+};
+

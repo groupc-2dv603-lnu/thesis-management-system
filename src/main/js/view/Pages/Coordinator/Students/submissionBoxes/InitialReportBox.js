@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import * as Style from "../Styles/SubmissionBoxStyle";
-import * as func from "./studentFunctions/SubmissionBoxFunctions";
-
-
+import * as Style from "../../Styles/SubmissionBoxStyle";
+import * as PopupStyle from "../../Styles/PopupStyles";
+import * as func from "../studentFunctions/SubmissionBoxFunctions";
+import Feedback from "./Feedback";
 /**
  * TODO:
  *  - handleSubmit() update submissions - Need from backend
+ *  - add Feedback
  */
 
-class ProjectDescriptionBox extends Component {
+class InitialReportBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,14 +17,14 @@ class ProjectDescriptionBox extends Component {
       deadLine: "",
       newDeadlineDate: "",
       newDeadlineTime: "",
-      projectDescription: this.props.projectDescription,
+      initialReport: this.props.initialReport,
       submission: this.props.submission,
       showMessage: false,
-      message: ""
+      message: "",
+      feedbacks: this.props.feedbacks
     };
+    console.log("feedbacks", this.state.feedbacks);
     this.getMessage = this.getMessage.bind(this);
-    console.log(this.state.submission)
-
   }
 
   setStatus(event) {
@@ -42,7 +43,7 @@ class ProjectDescriptionBox extends Component {
   }
 
   getMessage() {
-    return <div style={Style.message}>{this.state.message}</div>;
+    return <div style={PopupStyle.message}>{this.state.message}</div>;
   }
 
   toggleDeadlineChange() {
@@ -62,24 +63,28 @@ class ProjectDescriptionBox extends Component {
       this.state.newDeadlineTime
     }:00`;
 
-    this.state.projectDescription.deadLine = deadline;
-    this.setState({ projectDescription: this.state.projectDescription });
-    console.log(`Deadline set to ${this.state.projectDescription.deadLine}`);
+    this.state.initialReport.deadLine = deadline;
+    this.setState({ initialReport: this.state.initialReport });
+    console.log(`Deadline set to ${this.state.initialReport.deadLine}`);
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
-    this.state.projectDescription.grade = event.target.value;
-    this.setState({ projectDescription: this.state.projectDescription });
-    console.log(`grade set to ${this.state.projectDescription.grade}`);
+    this.state.initialReport.grade = event.target.value;
+    this.setState({ initialReport: this.state.initialReport });
+    console.log(`grade set to ${this.state.initialReport.grade}`);
   }
 
   async handleSubmit() {
-    const updateProjectDescriptionUrl =  "http://localhost:8080/coordinator/updateProjectDescription"
-    const projectDescription = await JSON.stringify(this.state.projectDescription)
+    const updateinitialReportUrl =
+      "http://localhost:8080/coordinator/updateInitialReport";
+    const initialReport = await JSON.stringify(this.state.initialReport);
 
-    const request = await func.updateSubmission(updateProjectDescriptionUrl, projectDescription)
-    console.log('REQUEST', request)
+    const request = await func.updateSubmission(
+      updateinitialReportUrl,
+      initialReport
+    );
+    console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
@@ -102,16 +107,18 @@ class ProjectDescriptionBox extends Component {
               {this.state.showMessage === true ? this.getMessage() : null}
             </div>
             {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
-            <div
-              style={Style.subBoxHeader}
-              onClick={() =>
-                func.downloadSubmission(this.state.submission.fileUrl)
-              }
-            >
-              <span style={Style.submissionHeaderName}>
-                Project Description
-                <i className="fas fa-download" />
-              </span>
+            <div style={Style.subBoxHeader}>
+              Initial Report
+              {this.state.submission.fileUrl !== "" ? (
+                <span style={Style.downloadSpan}>
+                  <a
+                    href={`localhost:8080${this.state.submission.fileUrl}`}
+                    target="_blank"
+                  >
+                    <i className="fas fa-download" />
+                  </a>
+                </span>
+              ) : null}
             </div>
 
             {/* ----- STATUS ----- */}
@@ -119,12 +126,10 @@ class ProjectDescriptionBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Status</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.submission
-                    ? this.state.submission.submissionStatus
-                    : "not set"}
+                  {func.getStatus(this.state.initialReport.deadLine)}
                 </span>
 
-                {/* ----- CHANGE STATUS ----- */}
+                {/* ----- CHANGE STATUS -----
                 <span style={Style.submissionEditColumn}>
                   <select
                     placeholder="set status"
@@ -134,13 +139,14 @@ class ProjectDescriptionBox extends Component {
                     {func.statusOptions(status)}
                   </select>
                 </span>
+                 */}
               </div>
               {/* ----- DEADLINE ----- */}
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Deadline</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getDeadline(this.state.projectDescription.deadLine)
+                  {this.state.initialReport !== null
+                    ? func.getDeadline(this.state.initialReport.deadLine)
                     : "not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
@@ -181,12 +187,12 @@ class ProjectDescriptionBox extends Component {
                     : "No file uploaded"}
                 </span>
               </div>
-              {/* ----- GRADE ----- */}
+              {/* ----- GRADE ----- 
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Grade</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getGrade(this.state.projectDescription.grade)
+                  {this.state.initialReport !== null
+                    ? func.getGrade(this.state.initialReport.grade)
                     : "Not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
@@ -199,6 +205,28 @@ class ProjectDescriptionBox extends Component {
                   </select>
                 </span>
               </div>
+              */}
+              {/* ----- BIDS ----- */}
+              <div style={Style.submissionRow}>
+                <span style={Style.submissionLeftColumn}>Bids</span>
+                <span style={Style.submissionRightColumn}>
+                  {this.state.initialReport.bids.length}
+                </span>
+              </div>
+              {/* ----- ASSIGNED READERS ----- */}
+              <div style={Style.submissionRow}>
+                <span style={Style.submissionLeftColumn}>Readers</span>
+                <span style={Style.submissionRightColumn}>
+                  {this.state.initialReport.assignedReaders.length}
+                </span>
+              </div>
+              {/* ----- ASSIGNED OPPONENT ----- */}
+              <div style={Style.submissionRow}>
+                <span style={Style.submissionLeftColumn}>Opponent</span>
+                <span style={Style.submissionRightColumn}>
+                  Fixa OpponentName
+                </span>
+              </div>
               {/* ----- SUBMIT ----- */}
               <div onClick={() => this.handleSubmit()} style={Style.submitRow}>
                 Submit changes
@@ -206,9 +234,12 @@ class ProjectDescriptionBox extends Component {
             </div>
           </div>
         )}
+        {this.props.feedbacks.map(feedback => {
+          return <Feedback feedback={feedback} />;
+        })}
       </div>
     );
   }
 }
 
-export default ProjectDescriptionBox;
+export default InitialReportBox;

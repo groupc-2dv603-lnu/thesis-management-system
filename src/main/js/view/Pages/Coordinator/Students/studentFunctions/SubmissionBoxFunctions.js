@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import moment from "moment";
 
-import * as generalFunctions from '../../../../functions'
-
 export function statusOptions() {
   //Shall match enums for submissionStatus -> backend
   const status = ["DISABLED", "ACTIVE", "FINISHED"];
@@ -23,7 +21,7 @@ export function getGrades(type) {
   let grades = [];
   let i = 0;
   if (type === 1) {
-    grades = ["PASS", "FAIL", "NOGRADE"];
+    grades = ["NOGRADE", "PASS", "FAIL" ];
   } else if (type === 2) {
     grades = ["A", "B", "C", "D", "E", "F"];
   }
@@ -35,23 +33,9 @@ export function getGrades(type) {
   ));
 }
 
-// Fix toLowerCase except first ? 
+// Fix toLowerCase except first ?
 export function getGrade(grade) {
-  return grade === "NOGRADE" ? 'Not graded' : grade
-}
-
-
-export const downloadSubmission = async (fileUrl) => {  
-  try {
-    console.log('FILEURL', fileUrl)
-    const response = {
-      file: await generalFunctions.downloadFromAPI(fileUrl)
-    }
-    console.log(response)
-    window.open(response.file)
-  } catch(e) {
-    console.log(e)
-  }
+  return grade === "NOGRADE" ? "Not graded" : grade;
 }
 
 export function getDeadline(date) {
@@ -60,25 +44,40 @@ export function getDeadline(date) {
     : moment(date).format("MMMM Do YYYY, hh:mm:ss a");
 }
 
-export const getDate = (date) => {
+export const getDate = date => {
   return moment(date).format("MMMM Do YYYY, hh:mm:ss a");
-}
+};
 
-export const updateSubmission = async (url, object) =>  {
-  console.log('url', url)
-  console.log('object', object)
+export const updateSubmission = async (url, object) => {
+  console.log("url", url);
+  console.log("object", object);
 
-  const request = await fetch(
-    url,
-    {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: object
-    }
-  );
-  return request
+  const request = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: object
+  });
+  return request;
+};
 
-}
+/**
+ * compares deadline to current time
+ * returns open or closed
+ */
+export const getStatus = deadline => {
+  if (deadline === "") {
+    return "Closed";
+  }
+  const deadLine = moment(deadline);
+  const now = moment();
+
+  if (now > deadLine) {
+    return "Closed";
+  } else {
+    return "Open";
+  }
+};
+

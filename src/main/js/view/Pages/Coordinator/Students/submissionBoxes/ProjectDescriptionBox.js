@@ -1,15 +1,10 @@
 import React, { Component } from "react";
-import * as Style from "../Styles/SubmissionBoxStyle";
-import * as func from "./studentFunctions/SubmissionBoxFunctions";
+import * as Style from "../../Styles/SubmissionBoxStyle";
+import * as func from "../studentFunctions/SubmissionBoxFunctions";
+import * as PopupStyle from "../../Styles/PopupStyles";
+import Feedback from "./Feedback";
 
-
-/**
- * TODO:
- *  - handleSubmit() update submissions - Need from backend
- *  - add Feedback ?
- */
-
-class ProjectPlanBox extends Component {
+class ProjectDescriptionBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,14 +12,13 @@ class ProjectPlanBox extends Component {
       deadLine: "",
       newDeadlineDate: "",
       newDeadlineTime: "",
-      projectPlan: this.props.projectPlan,
+      projectDescription: this.props.projectDescription,
       submission: this.props.submission,
       showMessage: false,
-      message: "",
-     //feedback: null
+      message: ""
     };
-
     this.getMessage = this.getMessage.bind(this);
+    console.log(this.state.submission);
   }
 
   setStatus(event) {
@@ -43,7 +37,7 @@ class ProjectPlanBox extends Component {
   }
 
   getMessage() {
-    return <div style={Style.message}>{this.state.message}</div>;
+    return <div style={PopupStyle.message}>{this.state.message}</div>;
   }
 
   toggleDeadlineChange() {
@@ -63,24 +57,30 @@ class ProjectPlanBox extends Component {
       this.state.newDeadlineTime
     }:00`;
 
-    this.state.projectPlan.deadLine = deadline;
-    this.setState({ projectPlan: this.state.projectPlan });
-    console.log(`Deadline set to ${this.state.projectPlan.deadLine}`);
+    this.state.projectDescription.deadLine = deadline;
+    this.setState({ projectDescription: this.state.projectDescription });
+    console.log(`Deadline set to ${this.state.projectDescription.deadLine}`);
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
-    this.state.projectPlan.grade = event.target.value;
-    this.setState({ projectPlan: this.state.projectPlan });
-    console.log(`grade set to ${this.state.projectPlan.grade}`);
+    this.state.projectDescription.grade = event.target.value;
+    this.setState({ projectDescription: this.state.projectDescription });
+    console.log(`grade set to ${this.state.projectDescription.grade}`);
   }
 
   async handleSubmit() {
-    const updateprojectPlanUrl =  "http://localhost:8080/coordinator/updateProjectPlan"
-    const projectPlan = await JSON.stringify(this.state.projectPlan)
+    const updateProjectDescriptionUrl =
+      "http://localhost:8080/coordinator/updateProjectDescription";
+    const projectDescription = await JSON.stringify(
+      this.state.projectDescription
+    );
 
-    const request = await func.updateSubmission(updateprojectPlanUrl, projectPlan)
-    console.log('REQUEST', request)
+    const request = await func.updateSubmission(
+      updateProjectDescriptionUrl,
+      projectDescription
+    );
+    console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
@@ -103,16 +103,18 @@ class ProjectPlanBox extends Component {
               {this.state.showMessage === true ? this.getMessage() : null}
             </div>
             {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
-            <div
-              style={Style.subBoxHeader}
-              onClick={() =>
-                func.downloadSubmission(this.state.submission.fileUrl)
-              }
-            >
-              <span style={Style.submissionHeaderName}>
-                Project Plan
-                <i className="fas fa-download" />
-              </span>
+            <div style={Style.subBoxHeader}>
+              Project Description
+              {this.state.submission.fileUrl !== "" ? (
+                <span style={Style.downloadSpan}>
+                  <a
+                    href={`localhost:8080${this.state.submission.fileUrl}`}
+                    target="_blank"
+                  >
+                    <i className="fas fa-download" />
+                  </a>
+                </span>
+              ) : null}
             </div>
 
             {/* ----- STATUS ----- */}
@@ -120,12 +122,10 @@ class ProjectPlanBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Status</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.submission !== null
-                    ? this.state.submission.submissionStatus
-                    : "not set"}
+                  {func.getStatus(this.state.projectDescription.deadLine)}
                 </span>
 
-                {/* ----- CHANGE STATUS ----- */}
+                {/* ----- CHANGE STATUS ----- 
                 <span style={Style.submissionEditColumn}>
                   <select
                     placeholder="set status"
@@ -135,13 +135,14 @@ class ProjectPlanBox extends Component {
                     {func.statusOptions(status)}
                   </select>
                 </span>
+                */}
               </div>
               {/* ----- DEADLINE ----- */}
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Deadline</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectPlan !== null
-                    ? func.getDeadline(this.state.projectPlan.deadLine)
+                  {this.state.projectDescription !== null
+                    ? func.getDeadline(this.state.projectDescription.deadLine)
                     : "not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
@@ -186,8 +187,8 @@ class ProjectPlanBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Grade</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.projectPlan !== null
-                    ? func.getGrade(this.state.projectPlan.grade)
+                  {this.state.projectDescription !== null
+                    ? func.getGrade(this.state.projectDescription.grade)
                     : "Not set"}
                 </span>
                 <span style={Style.submissionEditColumn}>
@@ -212,4 +213,4 @@ class ProjectPlanBox extends Component {
   }
 }
 
-export default ProjectPlanBox;
+export default ProjectDescriptionBox;

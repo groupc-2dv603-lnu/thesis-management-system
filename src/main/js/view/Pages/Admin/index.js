@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import CreateUser from "./createUser";
 import UpdateUser from "./updateUser";
-import DeleteUser from "./DeleteUser";
+//import DeleteUser from "./DeleteUser";
 
 class Admin extends Component {
   render() {
@@ -11,7 +11,7 @@ class Admin extends Component {
       <div>
         <CreateUser />
         <UpdateUser />
-        <DeleteUser />
+        {/*<DeleteUser />*/}
       </div>
     );
   }

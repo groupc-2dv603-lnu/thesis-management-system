@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import * as Style from "../Styles/SubmissionBoxStyle";
-import * as func from "./studentFunctions/SubmissionBoxFunctions";
-
+import * as Style from "../../Styles/SubmissionBoxStyle";
+import * as func from "../studentFunctions/SubmissionBoxFunctions";
+import * as PopupStyle from "../../Styles/PopupStyles";
+import Feedback from './Feedback'
 /**
  * TODO:
  *  - handleSubmit() update submissions - Need from backend
@@ -19,8 +20,8 @@ class FinalReportBox extends Component {
       finalReport: this.props.finalReport,
       submission: this.props.submission,
       showMessage: false,
-      message: ""
-      //feedback: null
+      message: "",
+      feedbacks: this.props.feedbacks
     };
 
     this.getMessage = this.getMessage.bind(this);
@@ -42,7 +43,7 @@ class FinalReportBox extends Component {
   }
 
   getMessage() {
-    return <div style={Style.message}>{this.state.message}</div>;
+    return <div style={PopupStyle.message}>{this.state.message}</div>;
   }
 
   toggleDeadlineChange() {
@@ -75,7 +76,8 @@ class FinalReportBox extends Component {
   }
 
   async handleSubmit() {
-    const updatefinalReportUrl = "http://localhost:8080/coordinator/updateFinalReport";
+    const updatefinalReportUrl =
+      "http://localhost:8080/coordinator/updateFinalReport";
     const finalReport = await JSON.stringify(this.state.finalReport);
 
     const request = await func.updateSubmission(
@@ -105,15 +107,18 @@ class FinalReportBox extends Component {
               {this.state.showMessage === true ? this.getMessage() : null}
             </div>
             {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
-            <div
-              style={Style.subBoxHeader}
-              onClick={() =>
-                func.downloadSubmission(this.state.submission.fileUrl)
-              }
-            >
-              <span style={Style.submissionHeaderName}>
-                Final Report <i className="fas fa-download" />
-              </span>
+            <div style={Style.subBoxHeader}>
+              Final Report
+              {this.state.submission.fileUrl !== "" ? (
+                <span style={Style.downloadSpan}>
+                  <a
+                    href={`localhost:8080${this.state.submission.fileUrl}`}
+                    target="_blank"
+                  >
+                    <i className="fas fa-download" />
+                  </a>
+                </span>
+              ) : null}
             </div>
 
             {/* ----- STATUS ----- */}
@@ -121,12 +126,10 @@ class FinalReportBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Status</span>
                 <span style={Style.submissionRightColumn}>
-                  {this.state.submission !== null
-                    ? this.state.submission.submissionStatus
-                    : "not set"}
+                  {func.getStatus(this.state.finalReport.deadLine)}
                 </span>
 
-                {/* ----- CHANGE STATUS ----- */}
+                {/* ----- CHANGE STATUS -----
                 <span style={Style.submissionEditColumn}>
                   <select
                     placeholder="set status"
@@ -136,6 +139,7 @@ class FinalReportBox extends Component {
                     {func.statusOptions(status)}
                   </select>
                 </span>
+                 */}
               </div>
               {/* ----- DEADLINE ----- */}
               <div style={Style.submissionRow}>
@@ -208,6 +212,9 @@ class FinalReportBox extends Component {
             </div>
           </div>
         )}
+        {this.props.feedbacks.map(feedback => {
+          return <Feedback feedback={feedback} />;
+        })}
       </div>
     );
   }

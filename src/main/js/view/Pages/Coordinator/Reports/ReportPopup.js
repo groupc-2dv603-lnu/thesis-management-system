@@ -45,7 +45,7 @@ class ReportPopup extends Component {
             <div style={PopupStyle.loading}>Loading...</div>
           ) : (
             <div>
-              <h3 style={PopupStyle.popupHeader}>{this.props.report.name}</h3>
+              <h3 style={PopupStyle.popupHeader}>Initial Report of {this.props.report.name}</h3>
 
               <div style={PopupStyle.popupBody}>
                 <ReportPopupBody

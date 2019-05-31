@@ -1,4 +1,3 @@
-import client from "../../../../../client";
 import React, { Component } from "react";
 
 import * as generalFunctions from "../../../../functions";
@@ -16,7 +15,6 @@ export async function getAllStudents() {
   const students = response.entity;
   for (const student of students) {
     let submissions = await getAllSubmissions(student.userId);
-
     let studentObject = {
       userId: student.userId,
       name: await getName(student.userId),
@@ -73,8 +71,10 @@ export async function getAllSubmissions(userId) {
 
 export async function getSubmission(submissionId) {
   try {
-    const response = await generalFunctions.getFromAPI(`/submissions/${submissionId}`);
-    return response.entity
+    const response = await generalFunctions.getFromAPI(
+      `/submissions/${submissionId}`
+    );
+    return response.entity;
   } catch (e) {
     console.log(e);
   }
@@ -97,9 +97,9 @@ export function booleanSymbol(bool) {
 export async function getName(userId) {
   try {
     const response = await generalFunctions.getFromAPI(`/users/${userId}`);
-    return !response.entity.name ? 'User not found' : (
-      await generalFunctions.capitalizeFirstLetter(response.entity.name)
-    );
+    return !response.entity.name
+      ? "User not found"
+      : await generalFunctions.capitalizeFirstLetter(response.entity.name);
   } catch (e) {
     console.log(e);
   }
@@ -110,6 +110,38 @@ export async function getSupervisorName(userId) {
     return "No supervisor assigned";
   } else {
     const response = await generalFunctions.getFromAPI(`/users/${userId}`);
-    return 'Supervisor: ' + generalFunctions.capitalizeFirstLetter(response.entity.name);
+    return (
+      "Supervisor: " +
+      generalFunctions.capitalizeFirstLetter(response.entity.name)
+    );
+  }
+}
+
+export async function getFeedbacks(feedbackIds) {
+  let feedbacks = [];
+
+  try {
+    for (const feedbackId of feedbackIds) {
+      let feedback = await getFeedback(feedbackId);
+      feedbacks.push(feedback);
+    }
+    return feedbacks;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function getFeedback(feedbackId) {
+  try {
+    const response = await generalFunctions.getFromAPI(
+      `/student/feedback/${feedbackId}`
+    );
+    let feedback = {
+      name: await getName(response.entity.userId),
+      text: response.entity.text
+    };
+    return feedback;
+  } catch (e) {
+    console.log(e);
   }
 }

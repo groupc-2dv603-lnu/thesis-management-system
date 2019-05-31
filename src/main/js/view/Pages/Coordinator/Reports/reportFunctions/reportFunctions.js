@@ -1,5 +1,4 @@
 import * as generalFunctions from "../../../../functions";
-import React, { Component } from 'react';
 
 
 export const getInitialReports = async () => {
@@ -38,7 +37,8 @@ const getSubmission = async (submissionId) => {
 export async function getName(userId) {
   try {
     const response = await generalFunctions.getFromAPI(`/users/${userId}`);
-    return !response.entity.name ? 'User not found' : (
+    console.log('RESPONSE', response)
+    return response.entity.name === undefined ? 'User not found' : (
       await generalFunctions.capitalizeFirstLetter(response.entity.name)
     );
   } catch (e) {
@@ -66,8 +66,9 @@ export const getAvailableOpponents = async () => {
   let response = await generalFunctions.getFromAPI(`/coordinator/getAllOpponents`)
   let opponents = response.entity
   for(const opponent of opponents) {
+    let name = await getName(opponent.userId)
     let obj = {
-      name: await getName(opponent.userId),
+      name: !name ? 'User not found': name,
       userId: opponent.userId
     }
     availableOpponents.push(obj)

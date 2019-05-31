@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import * as PopupStyle from "../Styles/PopupStyles";
 import * as SubBox from "../Styles/SubmissionBoxStyle";
 import * as func from "./studentFunctions/studentFunctions";
-import ProjectDescriptionBox from "./ProjectDescriptionBox";
-import ProjectPlanBox from "./ProjectPlanBox";
-import InitialReportBox from "./InitialReportBox";
-import FinalReportBox from "./FinalReportBox";
+import ProjectDescriptionBox from "./submissionBoxes/ProjectDescriptionBox";
+import ProjectPlanBox from "./submissionBoxes/ProjectPlanBox";
+import InitialReportBox from "./submissionBoxes/InitialReportBox";
+import FinalReportBox from "./submissionBoxes/FinalReportBox";
 
 class StudentPopup extends React.Component {
   constructor(props) {
@@ -25,13 +25,18 @@ class StudentPopup extends React.Component {
       projectPlanSubmission: null,
       initialReportSubmission: null,
       finalReportSubmission: null,
+
+      //feedbacks
+      initialReportFeedbacks: null,
+      finalReportFeedbacks: null,
+
       loading: true
     };
   }
 
   async componentDidMount() {
     const submissions = await func.getAllSubmissions(this.props.student.userId);
-
+    console.log(submissions);
     this.setState({
       supervisorName: await func.getSupervisorName(
         this.props.student.supervisorId
@@ -47,12 +52,24 @@ class StudentPopup extends React.Component {
       projectPlanSubmission: await func.getSubmission(
         submissions.projectPlans[0].submissionId
       ),
+
       initialReportSubmission: await func.getSubmission(
         submissions.initialReports[0].submissionId
       ),
+  
       finalReportSubmission: await func.getSubmission(
         submissions.finalReports[0].submissionId
       ),
+
+      // FEEDBACKS
+      initialReportFeedbacks: await func.getFeedbacks(
+        submissions.initialReports[0].feedBackIds
+      ),
+      
+      finalReportFeedbacks: await func.getFeedbacks(
+        submissions.finalReports[0].feedBackIds
+      ),
+
       loading: false
     });
   }
@@ -78,6 +95,7 @@ class StudentPopup extends React.Component {
         <ProjectPlanBox
           projectPlan={this.state.projectPlan}
           submission={this.state.projectPlanSubmission}
+          feedback={this.state.planFeedback}
           type="projectPlan"
           key={this.state.page}
         />
@@ -86,6 +104,7 @@ class StudentPopup extends React.Component {
       return (
         <InitialReportBox
           initialReport={this.state.initialReport}
+          feedbacks={this.state.initialReportFeedbacks}
           submission={this.state.initialReportSubmission}
           type="initialReport"
           key={this.state.page}
@@ -96,6 +115,7 @@ class StudentPopup extends React.Component {
         <FinalReportBox
           finalReport={this.state.finalReport}
           submission={this.state.finalReportSubmission}
+          feedbacks={this.state.finalReportFeedbacks}
           type="finalReport"
           key={this.state.page}
         />
