@@ -185,12 +185,16 @@ public class StudentController {
 			e.printStackTrace();
 		}
 
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
+
 		Submission newSubmission = new Submission();
 		dataFileRepository.save(df);
 		newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
 //        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
-		newSubmission.setFilePath("TESTUPLOAD");
+		newSubmission.setFilePath("TESTUPLOADZWEI");
 		newSubmission.setSubmissionType(type);
+		newSubmission.setUserId(userId);
 		submissionRepository.save(newSubmission);
 
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
