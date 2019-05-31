@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
-import Feedback from "./Feedback";
+import * as corFunc from '../../coordinatorFunctions'
 
 /**
  * TODO:
@@ -24,23 +24,28 @@ class ProjectPlanBox extends Component {
       message: "",
     };
     this.getMessage = this.getMessage.bind(this);
-    console.log('PFEEDBACK', this.props.feedback)
   }
 
+  /*
   setStatus(event) {
     this.state.submission.submissionStatus = event.target.value;
     this.setState({ submission: this.state.submission });
-    console.log(
-      `submissionStatus set to ${this.state.submission.submissionStatus}`
-    );
   }
+  */
 
   toggleMessage(message) {
     this.setState({
       message: message,
       showMessage: !this.state.showMessage
     });
+    setTimeout(() => {
+      this.setState({
+        message: '',
+        showMessage: !this.state.showMessage
+      })
+    }, 2000)
   }
+
 
   getMessage() {
     return <div style={PopupStyle.message}>{this.state.message}</div>;
@@ -65,30 +70,26 @@ class ProjectPlanBox extends Component {
 
     this.state.projectPlan.deadLine = deadline;
     this.setState({ projectPlan: this.state.projectPlan });
-    console.log(`Deadline set to ${this.state.projectPlan.deadLine}`);
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
     this.state.projectPlan.grade = event.target.value;
     this.setState({ projectPlan: this.state.projectPlan });
-    console.log(`grade set to ${this.state.projectPlan.grade}`);
   }
 
   async handleSubmit() {
-    const updateprojectPlanUrl =
-      "http://localhost:8080/coordinator/updateProjectPlan";
-    const projectPlan = await JSON.stringify(this.state.projectPlan);
-
-    const request = await func.updateSubmission(
-      updateprojectPlanUrl,
-      projectPlan
-    );
+    const validDeadline = corFunc.validDeadline(this.state.projectPlan.deadLine)
+    if (validDeadline !== true) {
+      this.toggleMessage('Deadline is not valid')
+      return
+    }
+    const request = await corFunc.updateSubmission('pp', this.state.projectDescription)
     console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
-      this.toggleMessage("Something went wrong");
+      this.toggleMessage("Update failed");
     }
   }
 
@@ -128,18 +129,6 @@ class ProjectPlanBox extends Component {
                 <span style={Style.submissionRightColumn}>
                   {func.getStatus(this.state.projectPlan.deadLine)}
                 </span>
-
-                {/* ----- CHANGE STATUS ----- 
-                <span style={Style.submissionEditColumn}>
-                  <select
-                    placeholder="set status"
-                    style={Style.select}
-                    onChange={() => this.setStatus(event)}
-                  >
-                    {func.statusOptions(status)}
-                  </select>
-                </span>
-                */}
               </div>
               {/* ----- DEADLINE ----- */}
               <div style={Style.submissionRow}>

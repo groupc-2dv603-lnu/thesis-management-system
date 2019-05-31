@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import * as generalFunctions from "../../../functions";
 import * as Style from '../Styles/Styles'
-import * as coordintorFunc from '../coordinatorFunctions'
+import * as corFunc from '../coordinatorFunctions'
 
 class SubmissionDeadlines extends Component {
   constructor(props) {
@@ -58,7 +58,7 @@ class SubmissionDeadlines extends Component {
     console.log('DEADLINE', deadline)
     console.log('LENGTh', deadline.length)
 
-    if (coordintorFunc.validDeadline(deadline) === false) {
+    if (corFunc.validDeadline(deadline) === false) {
       this.toggleMessage('Date is not valid')
       this.resetMessage()
       return
@@ -77,28 +77,28 @@ class SubmissionDeadlines extends Component {
       if (this.state.submission === "pd") {
         let submission = submissions.entity.projectDescriptions[0];
         submission.deadLine = deadline;
-        const request = await generalFunctions.updateSubmission2(
+        const request = await corFunc.updateSubmission(
           "pd",
           submission
         );
       } else if (this.state.submission === "pp") {
         let submission = submissions.entity.projectPlans[0];
         submission.deadLine = deadline;
-        const request = await generalFunctions.updateSubmission2(
+        const request = await corFunc.updateSubmission(
           "pp",
           submission
         );
       } else if (this.state.submission === "ir") {
         let submission = submissions.entity.initialReports[0];
         submission.deadLine = deadline;
-        const request = await generalFunctions.updateSubmission2(
+        const request = await corFunc.updateSubmission(
           "ir",
           submission
         );
       } else if (this.state.submission === "fr") {
         let submission = submissions.entity.finalReports[0];
         submission.deadLine = deadline;
-        const request = await generalFunctions.updateSubmission2(
+        const request = await corFunc.updateSubmission(
           "fr",
           submission
         );

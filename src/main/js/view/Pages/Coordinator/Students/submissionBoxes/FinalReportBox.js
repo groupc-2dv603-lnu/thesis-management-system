@@ -3,6 +3,8 @@ import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import Feedback from './Feedback'
+import * as corFunc from '../../coordinatorFunctions'
+
 /**
  * TODO:
  *  - handleSubmit() update submissions - Need from backend
@@ -27,19 +29,18 @@ class FinalReportBox extends Component {
     this.getMessage = this.getMessage.bind(this);
   }
 
-  setStatus(event) {
-    this.state.submission.submissionStatus = event.target.value;
-    this.setState({ submission: this.state.submission });
-    console.log(
-      `submissionStatus set to ${this.state.submission.submissionStatus}`
-    );
-  }
 
   toggleMessage(message) {
     this.setState({
       message: message,
       showMessage: !this.state.showMessage
     });
+    setTimeout(() => {
+      this.setState({
+        message: '',
+        showMessage: !this.state.showMessage
+      })
+    }, 2000)
   }
 
   getMessage() {
@@ -76,19 +77,17 @@ class FinalReportBox extends Component {
   }
 
   async handleSubmit() {
-    const updatefinalReportUrl =
-      "http://localhost:8080/coordinator/updateFinalReport";
-    const finalReport = await JSON.stringify(this.state.finalReport);
-
-    const request = await func.updateSubmission(
-      updatefinalReportUrl,
-      finalReport
-    );
+    const validDeadline = corFunc.validDeadline(this.state.finalReport.deadLine)
+    if (validDeadline !== true) {
+      this.toggleMessage('Deadline is not valid')
+      return
+    }
+    const request = await corFunc.updateSubmission('fr', this.state.finalReport)
     console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
-      this.toggleMessage("Something went wrong");
+      this.toggleMessage("Update failed");
     }
   }
 
@@ -128,18 +127,6 @@ class FinalReportBox extends Component {
                 <span style={Style.submissionRightColumn}>
                   {func.getStatus(this.state.finalReport.deadLine)}
                 </span>
-
-                {/* ----- CHANGE STATUS -----
-                <span style={Style.submissionEditColumn}>
-                  <select
-                    placeholder="set status"
-                    style={Style.select}
-                    onChange={() => this.setStatus(event)}
-                  >
-                    {func.statusOptions(status)}
-                  </select>
-                </span>
-                 */}
               </div>
               {/* ----- DEADLINE ----- */}
               <div style={Style.submissionRow}>

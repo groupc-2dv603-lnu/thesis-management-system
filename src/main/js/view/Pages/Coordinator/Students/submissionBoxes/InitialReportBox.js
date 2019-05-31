@@ -3,6 +3,8 @@ import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import Feedback from "./Feedback";
+import * as corFunc from '../../coordinatorFunctions'
+
 /**
  * TODO:
  *  - handleSubmit() update submissions - Need from backend
@@ -23,10 +25,10 @@ class InitialReportBox extends Component {
       message: "",
       feedbacks: this.props.feedbacks
     };
-    console.log("feedbacks", this.state.feedbacks);
     this.getMessage = this.getMessage.bind(this);
   }
 
+  /*
   setStatus(event) {
     this.state.submission.submissionStatus = event.target.value;
     this.setState({ submission: this.state.submission });
@@ -34,12 +36,20 @@ class InitialReportBox extends Component {
       `submissionStatus set to ${this.state.submission.submissionStatus}`
     );
   }
+  */
+
 
   toggleMessage(message) {
     this.setState({
       message: message,
       showMessage: !this.state.showMessage
     });
+    setTimeout(() => {
+      this.setState({
+        message: '',
+        showMessage: !this.state.showMessage
+      })
+    }, 2000)
   }
 
   getMessage() {
@@ -65,7 +75,6 @@ class InitialReportBox extends Component {
 
     this.state.initialReport.deadLine = deadline;
     this.setState({ initialReport: this.state.initialReport });
-    console.log(`Deadline set to ${this.state.initialReport.deadLine}`);
     this.toggleDeadlineChange();
   }
 
@@ -76,19 +85,17 @@ class InitialReportBox extends Component {
   }
 
   async handleSubmit() {
-    const updateinitialReportUrl =
-      "http://localhost:8080/coordinator/updateInitialReport";
-    const initialReport = await JSON.stringify(this.state.initialReport);
-
-    const request = await func.updateSubmission(
-      updateinitialReportUrl,
-      initialReport
-    );
+    const validDeadline = corFunc.validDeadline(this.state.initialReport.deadLine)
+    if (validDeadline !== true) {
+      this.toggleMessage('Deadline is not valid')
+      return
+    }
+    const request = await corFunc.updateSubmission('ir', this.state.initialReport)
     console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
-      this.toggleMessage("Something went wrong");
+      this.toggleMessage("Update failed");
     }
   }
 
@@ -128,18 +135,6 @@ class InitialReportBox extends Component {
                 <span style={Style.submissionRightColumn}>
                   {func.getStatus(this.state.initialReport.deadLine)}
                 </span>
-
-                {/* ----- CHANGE STATUS -----
-                <span style={Style.submissionEditColumn}>
-                  <select
-                    placeholder="set status"
-                    style={Style.select}
-                    onChange={() => this.setStatus(event)}
-                  >
-                    {func.statusOptions(status)}
-                  </select>
-                </span>
-                 */}
               </div>
               {/* ----- DEADLINE ----- */}
               <div style={Style.submissionRow}>
