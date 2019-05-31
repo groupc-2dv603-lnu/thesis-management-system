@@ -21,8 +21,10 @@ class TemporaryFileUpload extends React.Component {
     onChange(e) {
         this.setState({file:e.target.files[0]})
     }
+    //TODO
+    //sätt url till /student/newSubmission sen append subtype
     fileUpload(file){
-        const url = '/submissions?subType=PRJ_PLAN';
+        const url = '/student/newSubmission?subType=PRJ_PLAN';
         const formData = new FormData();
         formData.append('file',file);
         const config = {
