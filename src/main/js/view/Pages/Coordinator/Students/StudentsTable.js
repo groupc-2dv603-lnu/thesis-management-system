@@ -11,6 +11,7 @@ import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
+import * as Style from "../Styles/Styles"
 import * as TableStyle from "../Styles/TableStyles";
 import * as func from "./studentFunctions/studentFunctions";
 
@@ -196,7 +197,7 @@ class StudentsTable extends Component {
     ];
 
     return (
-      <div>
+      <div style={Style.dropDownBody}>
         <ReactTable
           data={this.state.students}
           pages={this.state.pages}

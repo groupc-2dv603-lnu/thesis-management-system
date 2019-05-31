@@ -4,21 +4,53 @@ const standardBorder = "1px solid black";
 export const body = {
   width: "600px",
 }
-/* ---- coordinator nav ---- */
-export const navButtonsDiv = {
-  width: "100%",
-  height: '50px',
-  textAlign: 'center',
-  marginTop: '20px',
-  marginBottom: '40px'
-};
 
-export const btnStyle = {
-  height: '40px',
-  width: '120px',
-  background: lnuYellow,
-  display: 'inline-block',
+export const dropDownBody = {
   border: standardBorder,
+  marginBottom: '40px',
 }
 
+export const dropDown = {
+  width: "100%",
+  background: "#ffee00",
+  textAlign: "center",
+  height: "30px",
+  lineHeight: "30px",
+  border: "1px solid black",
+  fontWeight: "bold",
+  marginBottom: "20px"
+};
 
+/* ---- SET DEADLINE STYLES ---- */
+
+export const deadlineRow = {
+  height: "30px",
+  lineHeight: "30px",
+  width: "100%",
+  borderBottom: standardBorder,
+
+};
+
+export const deadlineRowLeft = {
+  width: "30%",
+  background: "#eff0f2",
+  borderRight: standardBorder,
+  borderTop: standardBorder,
+  float: "left",
+};
+
+export const deadlineRowRight = {
+  float: "left",
+  width: "60%",
+  marginLeft: "5px",
+};
+
+export const submitRow = {
+  width: "100%",
+  textAlign: "center",
+  height: "30px",
+  lineHeight: "30px",
+  fontWeight: "bold",
+  background: "lightgrey",
+  borderTop: standardBorder,
+};

@@ -1,16 +1,20 @@
 import React, { Component } from "react";
 import * as generalFunctions from "../../../functions";
+import * as Style from '../Styles/Styles'
+import * as coordintorFunc from '../coordinatorFunctions'
 
 class SubmissionDeadlines extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      submission: null,
+      submission: "cs", //Initial, = choose submission
       newDeadlineDate: "",
       newDeadlineTime: "",
       showMessage: false,
       message: ""
     };
+
+    this.resetMessage = this.resetMessage.bind(this)
   }
 
   toggleMessage(message) {
@@ -34,12 +38,33 @@ class SubmissionDeadlines extends Component {
     this.setState({ submission: event.target.value });
     console.log(this.state);
   }
+  
+  resetMessage(){
+    setTimeout(() => {
+      this.toggleMessage('')
+    }, 2000)
+  }
 
   async handleSubmit() {
-    this.toggleMessage("Loading");
+    if(this.state.submission === "cs" ) {
+      this.toggleMessage('You must choose a submission')
+      this.resetMessage()
+      return
+    }
     const deadline = `${this.state.newDeadlineDate}T${
       this.state.newDeadlineTime
     }:00`;
+
+    console.log('DEADLINE', deadline)
+    console.log('LENGTh', deadline.length)
+
+    if (coordintorFunc.validDeadline(deadline) === false) {
+      this.toggleMessage('Date is not valid')
+      this.resetMessage()
+      return
+    }
+
+    this.toggleMessage("Loading");
 
     const students = await generalFunctions.getFromAPI(
       "/coordinator/getAllStudents"
@@ -81,8 +106,7 @@ class SubmissionDeadlines extends Component {
     }
     this.toggleMessage("");
     this.toggleMessage("Updated successfully");
-    this.props.toggleSetDeadline()
-
+    this.resetMessage()
   }
 
   render() {
@@ -113,10 +137,10 @@ class SubmissionDeadlines extends Component {
 
     return (
       <div>
-        <div style={selectSubmissionDiv}>
-          <div style={deadlineRow}>
-            <div style={deadlineRowLeft}>Set deadline for all </div>
-            <div style={deadlineRowRight}>
+        <div style={Style.dropDownBody}>
+          <div style={Style.deadlineRow}>
+            <div style={Style.deadlineRowLeft}>Set deadline for all </div>
+            <div style={Style.deadlineRowRight}>
               <select onChange={() => this.handleSubmissionChange(event)}>
                 {submissions.map(object => {
                   return (
@@ -128,9 +152,9 @@ class SubmissionDeadlines extends Component {
               </select>
             </div>
           </div>
-          <div style={deadlineRow}>
-            <div style={deadlineRowLeft}>Date and time</div>
-            <div style={deadlineRowRight}>
+          <div style={Style.deadlineRow}>
+            <div style={Style.deadlineRowLeft}>Date and time</div>
+            <div style={Style.deadlineRowRight}>
               <input
                 type="date"
                 value={this.state.newDeadlineDate}
@@ -143,11 +167,11 @@ class SubmissionDeadlines extends Component {
               />
             </div>
           </div>
-          <div style={submitRow} onClick={() => this.handleSubmit()}>
+          <div style={Style.submitRow} onClick={() => this.handleSubmit()}>
             Submit
           </div>
           {this.state.showMessage === true ? (
-            <div style={submitRow}>{this.state.message}</div>
+            <div style={Style.submitRow}>{this.state.message}</div>
           ) : null}
         </div>
       </div>
@@ -157,36 +181,3 @@ class SubmissionDeadlines extends Component {
 
 export default SubmissionDeadlines;
 
-const selectSubmissionDiv = {};
-
-const deadlineRow = {
-  height: "30px",
-  lineHeight: "30px",
-  width: "100%",
-  borderBottom: "1px solid black",
-  borderLeft: '1px solid black',
-  borderRight: '1px solid black'
-};
-
-const deadlineRowLeft = {
-  width: "30%",
-  background: "lightgrey",
-  float: "left",
-  borderRight: "1px solid black",
-};
-
-const deadlineRowRight = {
-  float: "left",
-  width: "60%",
-  marginLeft: "5px",
-};
-
-const submitRow = {
-  width: "100%",
-  textAlign: "center",
-  height: "30px",
-  lineHeight: "30px",
-  fontWeight: "bold",
-  background: "#ffee00",
-  border: '1px solid black'
-};
