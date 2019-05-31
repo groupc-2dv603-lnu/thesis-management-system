@@ -132,11 +132,9 @@ class UserController {
 					readerRepository.save(new Reader(user.getId(), "", ""));
 				}
 			}
-			//return repository.save(user);
 			return user;
 		} else  {
 			return findUser;
-			//return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
 		}
 
 	}

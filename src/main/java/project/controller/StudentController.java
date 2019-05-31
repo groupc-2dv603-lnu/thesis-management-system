@@ -47,14 +47,6 @@ public class StudentController {
 		this.submissionRepository = submissionRepository;
 	}
 	
-//	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
-//	Resource<Supervisor> one(@PathVariable String id) {
-//		Supervisor supervisor = supervisorRepository.findFirstById(id);
-//		return new Resource<>(supervisor,
-//				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
-//				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
-//	}
-	
 	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Supervisor>> all() {
 		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
