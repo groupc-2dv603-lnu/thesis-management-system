@@ -1,11 +1,9 @@
 "use strict";
 
 import React, { Component } from "react";
-import CoordinatorHeader from './components/CoordinatorHeader'
-import Submissions from '../Coordinator/Submissions/Submissions'
-import Students from '../Coordinator/Students/Students'
-import Reports from '../Coordinator/Reports/Reports'
-import * as Style from './Styles/Styles'
+import Students from "../Coordinator/Students/Students";
+import Reports from "../Coordinator/Reports/Reports";
+import * as Style from "./Styles/Styles";
 
 class Coordinator extends Component {
   constructor(props) {
@@ -13,7 +11,7 @@ class Coordinator extends Component {
     this.state = {
       page: "students" //sets coordinator start page
     };
-    this.handleChange = this.handleChange.bind(this)
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(page) {
@@ -21,25 +19,33 @@ class Coordinator extends Component {
   }
 
   renderPage() {
-    if(this.state.page === 'submissions') {
-      return <Submissions></Submissions>
-    } else if (this.state.page === 'students') {
-      return <Students></Students>
-    } else if (this.state.page === 'reports') {
-      return <Reports></Reports>
+    if (this.state.page === "students") {
+      return <Students />;
+    } else if (this.state.page === "reports") {
+      return <Reports />;
     }
   }
   render() {
     return (
-      <div style={Style.body}>
-        <CoordinatorHeader
-          handleChange={this.handleChange}
-          key={this.state.page}
-          page={this.state.page}
-        />
-        {this.renderPage()}
+      <div>
+        <button
+          style={Style.headerButtons}
+          onClick={() => this.handleChange("students")}
+        >
+          Students
+        </button>
+        <button
+          style={Style.headerButtons}
+          onClick={() => this.handleChange("reports")}
+        >
+          Initial Reports
+        </button>
+
+        <div style={Style.body}>
+
+          {this.renderPage()}
+        </div>
       </div>
-      
     );
   }
 }
