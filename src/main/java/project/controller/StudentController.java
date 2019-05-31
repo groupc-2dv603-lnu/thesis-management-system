@@ -175,38 +175,40 @@ public class StudentController {
 
 	}
 
-	/* Upload submission/datafile */
+	/* Upload submission and corresponding datafile */
 	@PostMapping("/student/newSubmission")
 	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
 		DataFile df = null;
 		try {
 			df = new DataFile(file.getBytes());
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace();	//TODO: Make 2 different responses depending on outcome (success/fail)
+			return new UploadFileResponse(null, null, "Error: Unable to create DataFile", null, 0);
 		}
+		dataFileRepository.save(df);
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
 
 		Submission newSubmission = new Submission();
-		dataFileRepository.save(df);
-		newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
-//        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
-		newSubmission.setFilePath("TESTUPLOADZWEI");
 		newSubmission.setSubmissionType(type);
-		newSubmission.setUserId(userId);
+		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
+        newSubmission.setUserId(userId);
+        submissionRepository.save(newSubmission);
+        
+		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
+		//TODO: subId is generated with save and in order to inlude its id in fileUrl we have to save again. Workaround?
 		submissionRepository.save(newSubmission);
 
-		updateSubmissionIds(type, newSubmission.getId(), userId);
+        updateSubmissionIds(type, newSubmission.getId(), userId);
 
-		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-		String fileDownloadUri = newSubmission.getFileUrl();
-
+        //TODO: remove system.out
 		System.out.println("Successfully uploaded submission and datafile." +
 				"\nSubmission ID: " + newSubmission.getId() +
-				"\nDatafile ID: " + df.getId());
-		return new UploadFileResponse(newSubmission.getId(), fileName, fileDownloadUri,
+				"\nDatafile ID: " + df.getId() +
+				"\nFilename: " + newSubmission.getFilename());
+		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
 				file.getContentType(), file.getSize());
 	}
 
