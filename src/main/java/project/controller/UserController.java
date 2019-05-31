@@ -35,8 +35,10 @@ import project.model.enums.PendingSupervisor;
 
 import project.model.enums.Role;
 import project.model.entities.Student;
+import project.model.entities.Submission;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
+import project.model.repositories.FeedbackRepository;
 import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.OpponentRepository;
@@ -44,6 +46,7 @@ import project.model.repositories.ProjectDescriptionRepository;
 import project.model.repositories.ProjectPlanRepository;
 import project.model.repositories.ReaderRepository;
 import project.model.repositories.StudentRepository;
+import project.model.repositories.SubmissionRepository;
 import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 import project.model.services.EncryptionService;
@@ -64,11 +67,12 @@ class UserController {
 	private final ProjectPlanRepository projectPlanRepository;
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
-
+	private final SubmissionRepository submissionRepository;
+	private final FeedbackRepository feedbackRepository;
 
 	UserController(UserRepository repository,StudentRepository studentRepository, SupervisorRepository supervisorRepository, OpponentRepository opponentRepository,
 			ReaderRepository readerRepository, ProjectDescriptionRepository projectDescriptionRepository, ProjectPlanRepository projectPlanRepository,InitialReportRepository initialReportRepository,
-			FinalReportRepository finalReportRepository) {
+			FinalReportRepository finalReportRepository, SubmissionRepository submissionRepository, FeedbackRepository feedbackRepository) {
 		this.repository = repository;
 		this.studentRepository = studentRepository;
 		this.supervisorRepository = supervisorRepository;
@@ -79,6 +83,8 @@ class UserController {
 		this.projectPlanRepository = projectPlanRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
+		this.submissionRepository = submissionRepository;
+		this.feedbackRepository = feedbackRepository;
 	}
 
 	@GetMapping(value = "/users/{id}", produces = "application/json; charset=UTF-8")
@@ -164,15 +170,26 @@ class UserController {
 
 			} else if(oldRoleStudent.equals(true) && newRoleStudent.equals(false)) {
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(finduser.getId());
+				submissionRepository.deleteById(projectDescription.getSubmissionId());
 				projectDescriptionRepository.deleteById(projectDescription.getId());
 
 				ProjectPlan projectPlan = projectPlanRepository.findFirstByuserId(finduser.getId());
+				submissionRepository.deleteById(projectPlan.getSubmissionId());
 				projectPlanRepository.deleteById(projectPlan.getId());
 
 				InitialReport initialReport = initialReportRepository.findFirstByuserId(finduser.getId());
+				
+				for(int j=0; j <initialReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(initialReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(initialReport.getSubmissionId());
 				initialReportRepository.deleteById(initialReport.getId());
 
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(finduser.getId());
+				for(int j=0; j <finalReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(finalReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(finalReport.getSubmissionId());
 				finalReportRepository.deleteById(finalReport.getId());
 			}
 			finduser.setRoles(roles);
@@ -183,23 +200,34 @@ class UserController {
 
 	}
 	@DeleteMapping("/admin/deleteUser")
-	void deleteUser(@RequestParam String userId) {
-		User user = repository.findFirstById(userId);
+	void deleteUser(@RequestParam String email) {
+		User user = repository.findFirstByEmailAdress(email);
 		for(int i=0; i < user.getRoles().length; i++){
 			if(user.getRoles()[i].equals(Role.STUDENT)) {
 				Student student = studentRepository.findFirstByuserId(user.getId());
 				studentRepository.deleteById(student.getId());
 
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(user.getId());
+				submissionRepository.deleteById(projectDescription.getSubmissionId());
 				projectDescriptionRepository.deleteById(projectDescription.getId());
 
 				ProjectPlan projectPlan = projectPlanRepository.findFirstByuserId(user.getId());
+				submissionRepository.deleteById(projectPlan.getSubmissionId());
 				projectPlanRepository.deleteById(projectPlan.getId());
 
 				InitialReport initialReport = initialReportRepository.findFirstByuserId(user.getId());
+				
+				for(int j=0; j <initialReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(initialReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(initialReport.getSubmissionId());
 				initialReportRepository.deleteById(initialReport.getId());
 
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(user.getId());
+				for(int j=0; j <finalReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(finalReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(finalReport.getSubmissionId());
 				finalReportRepository.deleteById(finalReport.getId());
 			} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
 				Supervisor supervisor = supervisorRepository.findFirstByuserId(user.getId());
@@ -212,7 +240,7 @@ class UserController {
 				readerRepository.deleteById(reader.getId());
 			}
 		}
-		repository.deleteById(userId);
+		repository.delete(user);
 	}
 
 }
