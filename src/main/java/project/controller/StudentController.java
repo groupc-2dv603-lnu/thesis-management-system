@@ -3,6 +3,7 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,15 +12,15 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import project.model.entities.*;
 import project.model.enums.PendingSupervisor;
+import project.model.enums.SubmissionType;
 import project.model.repositories.*;
+import project.payload.UploadFileResponse;
 
 @RestController
 public class StudentController {
@@ -32,10 +33,11 @@ public class StudentController {
 	private final ProjectDescriptionRepository projectDescriptionRepository;
 	private final StudentRepository studentRepository;
 	private final SubmissionRepository submissionRepository;
+	private final DataFileRepository dataFileRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
 			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository,
-			StudentRepository studentRepository, SubmissionRepository submissionRepository) {
+			StudentRepository studentRepository, SubmissionRepository submissionRepository, DataFileRepository dataFileRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
@@ -45,6 +47,7 @@ public class StudentController {
 		this.projectDescriptionRepository = projectDescriptionRepository;
 		this.studentRepository = studentRepository;
 		this.submissionRepository = submissionRepository;
+		this.dataFileRepository = dataFileRepository;
 	}
 	
 	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
@@ -170,5 +173,34 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).getSubmission(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).getAllMySubmissions()).withRel("submissions"));
 
+	}
+
+	/* Upload submission/datafile */
+	@PostMapping("/student/newSubmission")
+	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
+		DataFile df = null;
+		try {
+			df = new DataFile(file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Submission newSubmission = new Submission();
+		dataFileRepository.save(df);
+		newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
+//        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
+		newSubmission.setFilePath("TESTUPLOAD");
+		newSubmission.setSubmissionType(type);
+		submissionRepository.save(newSubmission);
+
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+		String fileDownloadUri = newSubmission.getFileUrl();
+
+		System.out.println("Successfully uploaded submission and datafile." +
+				"\nSubmission ID: " + newSubmission.getId() +
+				"\nDatafile ID: " + df.getId());
+		return new UploadFileResponse(newSubmission.getId(), fileName, fileDownloadUri,
+				file.getContentType(), file.getSize());
 	}
 }
