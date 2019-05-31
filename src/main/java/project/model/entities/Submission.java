@@ -26,27 +26,27 @@ public class Submission {
     private SubmissionStatus submissionStatus;
     private SubmissionType submissionType;
     private String fileUrl;
-    private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
-    //    private String fileName;        //TODO: redundant?
+//    private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
+    private String filename;
 
 
     public Submission() {}
 
-    public Submission(String filePath) { //TODO: remove constructor?
-//        this.fileName = fileName;
-        this.filePath = filePath;
-
-
-        //TODO: might be redundant. Remove?
-//        try {
-//            byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
-//            this.file = new Binary(bytes);
+//    public Submission(String filePath) { //TODO: remove constructor?
+////        this.fileName = fileName;
+//        this.filePath = filePath;
 //
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        this.filePath = null;
-    }
+//
+//        //TODO: might be redundant. Remove?
+////        try {
+////            byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
+////            this.file = new Binary(bytes);
+////
+////        } catch (IOException e) {
+////            e.printStackTrace();
+////        }
+//        this.filePath = null;
+//    }
 
 //
 }
