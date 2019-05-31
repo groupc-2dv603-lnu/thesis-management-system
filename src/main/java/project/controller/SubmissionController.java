@@ -12,12 +12,15 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import project.model.entities.DataFile;
 import project.model.entities.Submission;
+import project.model.enums.SubmissionType;
 import project.model.repositories.DataFileRepository;
 import project.model.repositories.SubmissionRepository;
+import project.payload.UploadFileResponse;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,12 +48,22 @@ public class SubmissionController {
     }
 
     /* Download file stored in collection dataFiles based on DataFile id */
-    @GetMapping(value = "/submissions/datafiles/{id}")
-    void downloadFile(@PathVariable String id, HttpServletResponse response){
-        DataFile dataFile = dataFileRepository.findFirstById(id);
+    /*
+       TODO: om filnamn ska visas på nedladdad fil:
+       @GetMapping(value = "/submissions/datafiles/{id}   och lägg till {subId} någonstans eller lägg till
+       en @RequestParam subId
+
+       String filename = sub.repository.findFirstById(subId);
+       replace "DownloadTest.pdf" -> filename
+     */
+
+    @GetMapping(value = "/submissions/datafiles/{subId}+{dataFileId}")
+    void downloadFile(@PathVariable String subId, @PathVariable String dataFileId, HttpServletResponse response){
+        DataFile dataFile = dataFileRepository.findFirstById(dataFileId);
+        String filename = subRepository.findFirstById(subId).getFilename();
 
         response.setContentType("application/octet-stream");
-        response.addHeader("Content-Disposition", "attachment; filename="+ "DownloadTest.pdf"); //TODO: maybe add filename to submissions or make user able to choose name
+        response.addHeader("Content-Disposition", "attachment; filename="+ filename);
 
         try {
             FileCopyUtils.copy(dataFile.getBinaryData().getData(), response.getOutputStream());
@@ -76,29 +89,54 @@ public class SubmissionController {
     /* Example POST through curl:
         $curl -X POST localhost:8080/submissions -H "Content-type:application/json" -d "{\"filePath\": \"C:\\Users\\USER\\FILEDIR\\FILE.pdf\", \"submissionStatus\": \"ACTIVE\", \"userId\": \"321\"}"
      */
-    @PostMapping(value = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
-    String newSubmission(@RequestBody Submission newSubmission) {
-        DataFile df = null;
-        try {
-            df = new DataFile(newSubmission.getFilePath());
-        } catch (FileNotFoundException e) {
-            return e.getMessage();
-        }
+//    @PostMapping(value = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
+//    String newSubmission(@RequestBody Submission newSubmission) {
+//        DataFile df = null;
+//        try {
+//            df = new DataFile(newSubmission.getFilePath());
+//        } catch (FileNotFoundException e) {
+//            return e.getMessage();
+//        }
+//
+//        dataFileRepository.save(df);
+//        newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
+//        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
+//        subRepository.save(newSubmission);
+//
+//        return "\nSuccessfully uploaded submission with ID: " + newSubmission.getId() + " and datafile ID: " + df.getId() + "\n";
+//    }
 
-        dataFileRepository.save(df);
-        newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
-        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
-        subRepository.save(newSubmission);
 
-        return "\nSuccessfully uploaded submission with ID: " + newSubmission.getId() + " and datafile ID: " + df.getId() + "\n";
-    }
-
+//    @PostMapping("/submissions")
+//    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
+//        DataFile df = null;
+//        try {
+//            df = new DataFile(file.getBytes());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Submission newSubmission = new Submission();
+//        dataFileRepository.save(df);
+//        newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
+////        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
+//        newSubmission.setFilePath("TESTUPLOAD");
+//        newSubmission.setSubmissionType(type);
+//        subRepository.save(newSubmission);
+//
+//        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+//
+//        String fileDownloadUri = newSubmission.getFileUrl();
+//
+//        return new UploadFileResponse(newSubmission.getId(), fileName, fileDownloadUri,
+//                file.getContentType(), file.getSize());
+//    }
 
     @DeleteMapping("/submissions/{id}")
     String deleteSubmission(@PathVariable String id) {
         Submission submission = subRepository.findFirstById(id);
-        String[] parts = submission.getFileUrl().split("/");
-        String fileId = parts[3];                                       //get id out of string "/submissions/datafiles/id"
+        String[] parts = submission.getFileUrl().split("\\+");
+        String fileId = parts[1];                                       //get id out of string "/submissions/datafiles/{subId}+{dataFileId}"
 
         dataFileRepository.delete(dataFileRepository.findFirstById(fileId));
         subRepository.delete(subRepository.findFirstById(id));

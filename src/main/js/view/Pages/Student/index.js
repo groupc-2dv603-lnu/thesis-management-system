@@ -12,6 +12,7 @@ import React, { Component } from 'react';
 import SupervisorBox from './supervisor';
 import Submission from './submission';
 import * as common from './../../functions'
+import TemporaryFileUpload from "./TemporaryFileUpload";
 
 class Student extends Component {
     constructor(props) {
@@ -43,6 +44,7 @@ class Student extends Component {
     render() {        
         return (
             <div>
+                <TemporaryFileUpload/>
                 <SupervisorBox />
 
                 <h2>Thesis Submissions</h2>

@@ -20,6 +20,17 @@ export function getFromAPI(getPath) {
     });
 }
 
+export function putToAPI2(putPath, data) {
+    return client({ 
+        method: "PUT", 
+        path: putPath,
+        entity: data,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    });
+}
 export function putToAPI(putPath, data) {
     return client({ 
         method: "PUT", 

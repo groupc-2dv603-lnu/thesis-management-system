@@ -3,6 +3,7 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,15 +12,15 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import project.model.entities.*;
 import project.model.enums.PendingSupervisor;
+import project.model.enums.SubmissionType;
 import project.model.repositories.*;
+import project.payload.UploadFileResponse;
 
 @RestController
 public class StudentController {
@@ -32,10 +33,11 @@ public class StudentController {
 	private final ProjectDescriptionRepository projectDescriptionRepository;
 	private final StudentRepository studentRepository;
 	private final SubmissionRepository submissionRepository;
+	private final DataFileRepository dataFileRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
 			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository,
-			StudentRepository studentRepository, SubmissionRepository submissionRepository) {
+			StudentRepository studentRepository, SubmissionRepository submissionRepository, DataFileRepository dataFileRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
@@ -45,15 +47,8 @@ public class StudentController {
 		this.projectDescriptionRepository = projectDescriptionRepository;
 		this.studentRepository = studentRepository;
 		this.submissionRepository = submissionRepository;
+		this.dataFileRepository = dataFileRepository;
 	}
-	
-//	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
-//	Resource<Supervisor> one(@PathVariable String id) {
-//		Supervisor supervisor = supervisorRepository.findFirstById(id);
-//		return new Resource<>(supervisor,
-//				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
-//				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
-//	}
 	
 	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Supervisor>> all() {
@@ -179,4 +174,67 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).getAllMySubmissions()).withRel("submissions"));
 
 	}
+
+	/* Upload submission and corresponding datafile */
+	@PostMapping("/student/newSubmission")
+	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
+		DataFile df = null;
+		try {
+			df = new DataFile(file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();	//TODO: Make 2 different responses depending on outcome (success/fail)
+			return new UploadFileResponse(null, null, "Error: Unable to create DataFile", null, 0);
+		}
+		dataFileRepository.save(df);
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
+
+		Submission newSubmission = new Submission();
+		newSubmission.setSubmissionType(type);
+		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
+        newSubmission.setUserId(userId);
+        submissionRepository.save(newSubmission);
+        
+		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
+		//TODO: subId is generated with save and in order to inlude its id in fileUrl we have to save again. Workaround?
+		submissionRepository.save(newSubmission);
+
+        updateSubmissionIds(type, newSubmission.getId(), userId);
+
+
+        //TODO: remove system.out
+		System.out.println("Successfully uploaded submission and datafile." +
+				"\nSubmission ID: " + newSubmission.getId() +
+				"\nDatafile ID: " + df.getId() +
+				"\nFilename: " + newSubmission.getFilename());
+		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
+				file.getContentType(), file.getSize());
+	}
+
+	private void updateSubmissionIds(SubmissionType type, String submissionId, String userId){
+	    switch(type){
+            case PRJ_DESCRIPTION:
+                ProjectDescription description = projectDescriptionRepository.findFirstByuserId(userId);
+                description.setSubmissionId(submissionId);
+                projectDescriptionRepository.save(description);
+                break;
+            case PRJ_PLAN:
+                ProjectPlan plan = projectPlanRepository.findFirstByuserId(userId);
+                plan.setSubmissionId(submissionId);
+                projectPlanRepository.save(plan);
+                break;
+            case INITIAL_REPORT:
+                InitialReport initialReport = initialReportRepository.findFirstByuserId(userId);
+                initialReport.setSubmissionId(submissionId);
+                initialReportRepository.save(initialReport);
+                break;
+            case FINAL_REPORT:
+                FinalReport finalReport = finalReportRepository.findFirstByuserId(userId);
+                finalReport.setSubmissionId(submissionId);
+                finalReportRepository.save(finalReport);
+                break;
+
+        }
+    }
 }
