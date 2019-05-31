@@ -44,7 +44,13 @@ public class SupervisorController {
 	Feedback newFeedback(@RequestBody Feedback feedback) {
 		return feedbackRepository.save(feedback);
 	}
-
+	@GetMapping(value = "/supervisor/feedback/{id}", produces = "application/json; charset=UTF-8")
+	Resource<Feedback> one2(@PathVariable String id) {
+		Feedback feedback = feedbackRepository.findFirstById(id);
+		return new Resource<>(feedback,
+				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
+				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
+	}
 	@PutMapping("/supervisor/update")
 	Supervisor updateSupervisor(@RequestBody Supervisor supervisor) {
 
