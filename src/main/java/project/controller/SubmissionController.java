@@ -15,8 +15,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import project.model.entities.DataFile;
 import project.model.entities.Submission;
 import project.model.enums.SubmissionType;
@@ -50,12 +48,22 @@ public class SubmissionController {
     }
 
     /* Download file stored in collection dataFiles based on DataFile id */
-    @GetMapping(value = "/submissions/datafiles/{id}")
-    void downloadFile(@PathVariable String id, HttpServletResponse response){
-        DataFile dataFile = dataFileRepository.findFirstById(id);
+    /*
+       TODO: om filnamn ska visas på nedladdad fil:
+       @GetMapping(value = "/submissions/datafiles/{id}   och lägg till {subId} någonstans eller lägg till
+       en @RequestParam subId
+
+       String filename = sub.repository.findFirstById(subId);
+       replace "DownloadTest.pdf" -> filename
+     */
+
+    @GetMapping(value = "/submissions/datafiles/{subId}+{dataFileId}")
+    void downloadFile(@PathVariable String subId, @PathVariable String dataFileId, HttpServletResponse response){
+        DataFile dataFile = dataFileRepository.findFirstById(dataFileId);
+        String filename = subRepository.findFirstById(subId).getFilename();
 
         response.setContentType("application/octet-stream");
-        response.addHeader("Content-Disposition", "attachment; filename="+ "DownloadTest.pdf"); //TODO: maybe add filename to submissions or make user able to choose name
+        response.addHeader("Content-Disposition", "attachment; filename="+ filename);
 
         try {
             FileCopyUtils.copy(dataFile.getBinaryData().getData(), response.getOutputStream());
