@@ -40,8 +40,8 @@ class UpdateUser extends Component {
   }
 
   handleClick() {
-    putToAPI("/admin/assignRoles", {
-      emailAdress: this.state.email,
+    putToAPI("/admin/assignRoles?email2=" + this.state.email, {
+      //emailAdress: this.state.email,
       roles: this.state.roles
     });
   }
