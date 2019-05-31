@@ -4,13 +4,40 @@ import React, { Component } from 'react';
 import * as func from './functions';
 import { capitalizeFirstLetter, getUser } from './../../functions';
 import { grades, dbType } from './../../enums';
+import axios from 'axios';
 
 class Submission extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { showFeedback: false, submissionData: {}, feedbackPopup: false };
+        this.state = { showFeedback: false, submissionData: {}, feedbackPopup: false, file: null };
+ 
+        this.onFormSubmit = this.onFormSubmit.bind(this);
+        this.onChangeFile = this.onChangeFile.bind(this);
+        this.fileUpload = this.fileUpload.bind(this)
     }
+
+    onFormSubmit(e) {
+        e.preventDefault(); // Stop form submit
+        this.fileUpload(this.state.file).then(response=>{
+            console.log(response.data);
+        })
+    }
+    onChangeFile(e) {
+        this.setState({file: e.target.files[0]})
+    }
+    fileUpload(file, dbType) {
+        const url = '/student/newSubmission?subType=PRJ_PLAN';
+        const formData = new FormData();
+        formData.append('file', file);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        };
+        return axios.post(url, formData, config)
+    }
+
 
     componentDidMount() {
         // console.log(this.props.type, this.props.reportData.submissionId)
@@ -25,17 +52,6 @@ class Submission extends Component {
                 this.setState({ submissionData: response.entity })
             })
         }
-    }
-
-    sendFile() {
-        func.uploadFile(document.getElementById("file").files[0], this.props.reportData.userId, dbType.get(this.props.type))
-            // .then(() => {
-            // this.updateSubmissionData();
-            // document.getElementById("file").value = "";
-            // })
-            .catch(() => {
-                this.updateSubmissionData();
-            })
     }
 
     setFeedbackPopup(state) {
@@ -89,9 +105,11 @@ class Submission extends Component {
                                             {this.state.submissionData.fileUrl ? "You have already submitted a document. Submitting a new document will overwrite the old one" : null}
                                         </p>
                                         <br />
-                                        <input type="file" id="file" />
-                                        <br />
-                                        <button onClick={() => this.sendFile()}>Upload</button>
+                                        <form onSubmit={this.onFormSubmit}>
+                                            <input type="file" id="file" onChange={this.onChangeFile}/>
+                                            <br />
+                                            <button type="submit">Upload</button>
+                                        </form>
                                     </div>
                                     :
                                     // deadline passed
