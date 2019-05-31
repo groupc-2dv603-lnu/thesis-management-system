@@ -15,6 +15,7 @@ import project.model.entities.Feedback;
 import project.model.entities.InitialReport;
 import project.model.entities.Opponent;
 import project.model.entities.User;
+import project.model.enums.Role;
 import project.model.repositories.FeedbackRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.OpponentRepository;
@@ -42,7 +43,7 @@ public class OpponentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
 		
-		Feedback feedback = new Feedback(user.getId(),opponent.getInitialReportId(), text);
+		Feedback feedback = new Feedback(user.getId(),opponent.getInitialReportId(), text, Role.OPPONENT);
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
