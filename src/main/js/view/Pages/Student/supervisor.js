@@ -43,7 +43,7 @@ class SupervisorBox extends Component {
     render() {
         return (
             <div>
-                <div className="supervisor-box">
+                <div className="supervisorBox">
                     {/* No supervisor */}
                     {!this.state.studentData.assignedSupervisorId 
                     ?
@@ -81,12 +81,14 @@ class SupervisorBox extends Component {
 
                 {/* SupervisorPopup */}
                 {this.state.supervisorPopup ?
-                    <div className="popup">
-                        <i className="fas fa-window-close link right" onClick={() => this.closeSupervisorPopup()} />
-                        <SupervisorPopup studentData={this.state.studentData} reference={this}/>
-                        <br/>
-                        <div style={{"color": "red"}}>
-                            {this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor != pendingSupervisor.denied ? "Request sent. Cannot request a new supervisor until this request has been answered" : null}
+                    <div className="popupOverlay">
+                        <div className="innerPopup">
+                            <i className="fas fa-window-close link right" onClick={() => this.closeSupervisorPopup()} />
+                            <SupervisorList studentData={this.state.studentData} reference={this}/>
+                            <br/>
+                            <div style={{"color": "red"}}>
+                                {this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor != pendingSupervisor.denied ? "Request sent. Cannot request a new supervisor until this request has been answered" : null}
+                            </div>
                         </div>
                     </div>
                 : 
@@ -97,7 +99,7 @@ class SupervisorBox extends Component {
     }
 }
 
-class SupervisorPopup extends Component {
+class SupervisorList extends Component {
     constructor(props) {
         super(props);
 
@@ -116,7 +118,7 @@ class SupervisorPopup extends Component {
         );
         
         return (
-            <table>
+            <table border="1">
                 <tbody>
                     <tr>
                         <th colSpan="2">

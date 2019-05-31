@@ -12,6 +12,7 @@ import React, { Component } from 'react';
 import SupervisorBox from './supervisor';
 import Submission from './submission';
 import * as common from './../../functions'
+import './style.css';
 
 class Student extends Component {
     constructor(props) {

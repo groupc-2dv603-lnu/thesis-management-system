@@ -61,6 +61,10 @@ export function getSubmissionData(submissionId) {
     return getFromAPI("/submissions/" + submissionId)
 }
 
-export function getFeedback(documentId) {
+export function getFeedbackByDocId(documentId) {
     return getFromAPI("/student/feedback?documentId=" + documentId);
+}
+
+export function getFeedback(feedbackId) {
+    return getFromAPI("/student/feedback/" + feedbackId);
 }
