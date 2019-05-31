@@ -41,7 +41,7 @@ class Student extends Component {
         };
     }
 
-    render() {        
+    render() {
         return (
             <div>
                 <SupervisorBox />

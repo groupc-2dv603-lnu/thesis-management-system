@@ -99,30 +99,30 @@ public class SubmissionController {
 //    }
 
 
-    @PostMapping("/submissions")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
-        DataFile df = null;
-        try {
-            df = new DataFile(file.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Submission newSubmission = new Submission();
-        dataFileRepository.save(df);
-        newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
-//        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
-        newSubmission.setFilePath("TESTUPLOAD");
-        newSubmission.setSubmissionType(type);
-        subRepository.save(newSubmission);
-
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-        String fileDownloadUri = newSubmission.getFileUrl();
-
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
-    }
+//    @PostMapping("/submissions")
+//    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
+//        DataFile df = null;
+//        try {
+//            df = new DataFile(file.getBytes());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Submission newSubmission = new Submission();
+//        dataFileRepository.save(df);
+//        newSubmission.setFileUrl("/submissions/datafiles/" + df.getId());
+////        newSubmission.setFilePath(null);        //TODO: if time workaround using filepath as global variable
+//        newSubmission.setFilePath("TESTUPLOAD");
+//        newSubmission.setSubmissionType(type);
+//        subRepository.save(newSubmission);
+//
+//        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+//
+//        String fileDownloadUri = newSubmission.getFileUrl();
+//
+//        return new UploadFileResponse(newSubmission.getId(), fileName, fileDownloadUri,
+//                file.getContentType(), file.getSize());
+//    }
 
     @DeleteMapping("/submissions/{id}")
     String deleteSubmission(@PathVariable String id) {

@@ -1,16 +1,26 @@
 package project.payload;
 
 public class UploadFileResponse {
+    private String submissionId;
     private String fileName;
     private String fileDownloadUri;
     private String fileType;
     private long size;
 
-    public UploadFileResponse(String fileName, String fileDownloadUri, String fileType, long size) {
+    public UploadFileResponse(String submissionId, String fileName, String fileDownloadUri, String fileType, long size) {
+        this.submissionId = submissionId;
         this.fileName = fileName;
         this.fileDownloadUri = fileDownloadUri;
         this.fileType = fileType;
         this.size = size;
+    }
+
+    public String getSubmissionId() {
+        return submissionId;
+    }
+
+    public void setSubmissionId(String submissionId) {
+        this.submissionId = submissionId;
     }
 
     public String getFileName() {

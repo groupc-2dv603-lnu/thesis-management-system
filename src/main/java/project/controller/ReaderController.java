@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +22,7 @@ import project.model.entities.FinalReport;
 import project.model.entities.InitialReport;
 import project.model.entities.Reader;
 import project.model.entities.User;
+import project.model.enums.Role;
 import project.model.repositories.FeedbackRepository;
 import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
@@ -53,7 +53,7 @@ public class ReaderController {
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
 		
-		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text);
+		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text, Role.READER);
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
@@ -76,7 +76,7 @@ public class ReaderController {
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
 		
-		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text);
+		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text, Role.READER);
 		FinalReport report = finalReportRepository.findFirstById(feedback.getDocumentId());
 		System.out.println(report);
 		Boolean doesFeedBackExist = false;
