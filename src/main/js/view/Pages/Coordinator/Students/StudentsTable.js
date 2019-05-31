@@ -11,7 +11,7 @@ import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
-import * as Style from "../Styles/Styles"
+import * as Style from "../Styles/Styles";
 import * as TableStyle from "../Styles/TableStyles";
 import * as func from "./studentFunctions/studentFunctions";
 
@@ -27,7 +27,7 @@ class StudentsTable extends Component {
       showPopup: false,
       students: [],
       loading: true,
-      selectedStudent: null,
+      selectedStudent: null
       // pages: -1
     };
   }
@@ -62,24 +62,7 @@ class StudentsTable extends Component {
       },
       {
         /* ----- ASSIGNED SUPERVISOR ----- */
-        Header: () => (
-          <RCTooltip
-            onMouseEnter={() =>
-              this.setState({ sTooltip: !this.state.sTooltip })
-            }
-            onMouseLeave={() =>
-              this.setState({ sTooltip: !this.state.sTooltip })
-            }
-            visible={!this.state.sTooltip ? false : true}
-            placement="top"
-            trigger={["hover"]}
-            overlay={
-              <span style={TableStyle.tooltip}>Assigned supervisor</span>
-            }
-          >
-            <span>S</span>
-          </RCTooltip>
-        ),
+        Header: () => <span>S</span>,
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         accessor: "supervisor",
@@ -90,109 +73,51 @@ class StudentsTable extends Component {
       },
       {
         /* ----- PROJECT DESCRIPTION ----- */
-        Header: () => (
-          <RCTooltip
-            onMouseEnter={() =>
-              this.setState({ dTooltip: !this.state.dTooltip })
-            }
-            onMouseLeave={() =>
-              this.setState({ dTooltip: !this.state.dTooltip })
-            }
-            visible={!this.state.dTooltip ? false : true}
-            placement="top"
-            trigger={["hover"]}
-            overlay={
-              <span style={TableStyle.tooltip}>
-                Submitted project description
-              </span>
-            }
-          >
-            <span>D</span>
-          </RCTooltip>
-        ),
+        Header: () => <span>D</span>,
         accessor: "description",
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>{func.booleanSymbol(props.original.projectDescriptionSubmitted)}</span>
+        Cell: props => (
+          <span>
+            {func.booleanSymbol(props.original.projectDescriptionSubmitted)}
+          </span>
+        )
       },
       {
         /* ----- PROJECT PLAN ----- */
-        Header: () => (
-          <RCTooltip
-            onMouseEnter={() =>
-              this.setState({ pTooltip: !this.state.pTooltip })
-            }
-            onMouseLeave={() =>
-              this.setState({ pTooltip: !this.state.pTooltip })
-            }
-            visible={!this.state.pTooltip ? false : true}
-            placement="top"
-            trigger={["hover"]}
-            overlay={
-              <span style={TableStyle.tooltip}>Submitted project plan</span>
-            }
-          >
-            <span>P</span>
-          </RCTooltip>
-        ),
+        Header: () => <span>P</span>,
         accessor: "plan",
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>{func.booleanSymbol(props.original.projectPlanSubmitted)}</span>
+        Cell: props => (
+          <span>{func.booleanSymbol(props.original.projectPlanSubmitted)}</span>
+        )
       },
       {
         /* ----- INITIAL REPORT ----- */
-        Header: () => (
-          <RCTooltip
-            onMouseEnter={() =>
-              this.setState({ iTooltip: !this.state.iTooltip })
-            }
-            onMouseLeave={() =>
-              this.setState({ iTooltip: !this.state.iTooltip })
-            }
-            visible={!this.state.iTooltip ? false : true}
-            placement="top"
-            trigger={["hover"]}
-            overlay={
-              <span style={TableStyle.tooltip}>Submitted initial report</span>
-            }
-          >
-            <span>I</span>
-          </RCTooltip>
-        ),
+        Header: () => <span>I</span>,
         accessor: "initial",
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>{func.booleanSymbol(props.original.initialReportSubmitted)}</span>
+        Cell: props => (
+          <span>
+            {func.booleanSymbol(props.original.initialReportSubmitted)}
+          </span>
+        )
       },
       {
         /* ----- FINAL REPORT ----- */
-        Header: () => (
-          <RCTooltip
-            onMouseEnter={() =>
-              this.setState({ fTooltip: !this.state.fTooltip })
-            }
-            onMouseLeave={() =>
-              this.setState({ fTooltip: !this.state.fTooltip })
-            }
-            visible={!this.state.fTooltip ? false : true}
-            placement="top"
-            trigger={["hover"]}
-            overlay={
-              <span style={TableStyle.tooltip}>Submitted final report</span>
-            }
-          >
-            <div>F</div>
-          </RCTooltip>
-        ),
+        Header: () => <div>F</div>,
         accessor: "final",
         headerStyle: TableStyle.headerSubmissionStyle,
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
-        Cell: props => <span>{func.booleanSymbol(props.original.finalReportSubmitted)}</span>
+        Cell: props => (
+          <span>{func.booleanSymbol(props.original.finalReportSubmitted)}</span>
+        )
       }
     ];
 
@@ -204,7 +129,7 @@ class StudentsTable extends Component {
           loading={this.state.loading}
           manual // ??
           onFetchData={async (state, instance) => {
-           // console.log('tableState', state)
+            // console.log('tableState', state)
             this.setState({ loading: true });
             const students = await func.getAllStudents();
 
