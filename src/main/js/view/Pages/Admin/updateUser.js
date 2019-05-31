@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import RolesCheckbox from "./rolesCheckbox";
 import { consolePrint } from "./functions";
 import { putToAPI } from "../../functions";
+import { putToAPI2 } from "../../functions";
 
 class UpdateUser extends Component {
   constructor(props) {
@@ -40,10 +41,10 @@ class UpdateUser extends Component {
   }
 
   handleClick() {
-    putToAPI("/admin/assignRoles?email=" + this.state.email, {
+    putToAPI2("/admin/assignRoles?email=" + this.state.email,
       //emailAdress: this.state.email,
-      roles: this.state.roles
-    });
+      this.state.roles
+    );
   }
 
   render() {
@@ -71,7 +72,7 @@ class UpdateUser extends Component {
           <div className="checkBoxes">
             <input
               type="checkbox"
-              value="Coordinator"
+              value="COORDINATOR"
               name="coordinator"
               onChange={this.onCheckboxChange}
             />
@@ -79,7 +80,7 @@ class UpdateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="Student"
+              value="STUDENT"
               name="student"
               onChange={this.onCheckboxChange}
             />
@@ -87,7 +88,7 @@ class UpdateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="Reader"
+              value="READER"
               name="reader"
               onChange={this.onCheckboxChange}
             />
@@ -95,7 +96,7 @@ class UpdateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="Supervisor"
+              value="SUPERVISOR"
               name="supervisor"
               onChange={this.onCheckboxChange}
             />
@@ -103,7 +104,7 @@ class UpdateUser extends Component {
             <br />
             <input
               type="checkbox"
-              value="Opponent"
+              value="OPPONENT"
               name="opponent"
               onChange={this.onCheckboxChange}
             />
