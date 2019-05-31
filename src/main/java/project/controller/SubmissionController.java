@@ -135,8 +135,8 @@ public class SubmissionController {
     @DeleteMapping("/submissions/{id}")
     String deleteSubmission(@PathVariable String id) {
         Submission submission = subRepository.findFirstById(id);
-        String[] parts = submission.getFileUrl().split("/");
-        String fileId = parts[3];                                       //get id out of string "/submissions/datafiles/id"
+        String[] parts = submission.getFileUrl().split("\\+");
+        String fileId = parts[1];                                       //get id out of string "/submissions/datafiles/{subId}+{dataFileId}"
 
         dataFileRepository.delete(dataFileRepository.findFirstById(fileId));
         subRepository.delete(subRepository.findFirstById(id));

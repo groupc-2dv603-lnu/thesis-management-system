@@ -189,9 +189,12 @@ public class StudentController {
 
 		Submission newSubmission = new Submission();
 
-		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" +df.getId());
+
 		newSubmission.setSubmissionType(type);
 		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
+		submissionRepository.save(newSubmission);
+		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
+		//TODO: subId is generated with save and in order to inlude its id in fileUrl we have to save again. Workaround?
 		submissionRepository.save(newSubmission);
 
 		//TODO: remove system.out
