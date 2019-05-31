@@ -41,10 +41,7 @@ class Coordinator extends Component {
           Initial Reports
         </button>
 
-        <div style={Style.body}>
-
-          {this.renderPage()}
-        </div>
+        <div style={Style.body}>{this.renderPage()}</div>
       </div>
     );
   }

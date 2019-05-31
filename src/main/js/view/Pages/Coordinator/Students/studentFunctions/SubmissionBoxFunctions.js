@@ -48,6 +48,12 @@ export const getDate = date => {
   return moment(date).format("MMMM Do YYYY, hh:mm:ss a");
 };
 
+
+/**
+ * DUBLETT, finns i generalFunctions
+ * @param {*} url 
+ * @param {*} object 
+ */
 export const updateSubmission = async (url, object) => {
   console.log("url", url);
   console.log("object", object);

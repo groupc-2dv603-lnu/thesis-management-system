@@ -17,7 +17,7 @@ class ProjectDescriptionBox extends Component {
       showMessage: false,
       message: ""
     };
-    this.getMessage = this.getMessage.bind(this);
+
     console.log(this.state.submission);
   }
 
@@ -70,8 +70,10 @@ class ProjectDescriptionBox extends Component {
   }
 
   async handleSubmit() {
+  
     const updateProjectDescriptionUrl =
       "http://localhost:8080/coordinator/updateProjectDescription";
+
     const projectDescription = await JSON.stringify(
       this.state.projectDescription
     );

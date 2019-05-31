@@ -62,7 +62,7 @@ export function capitalizeFirstLetter(string) {
 
 
 /**
- * 
+ * REMOVE EITHER THIS OR THE ONE BELOW
  * @param {String} url - Where to send the request 
  * @param {Object} object - Submission object to update -> JSON
  */
@@ -80,4 +80,40 @@ export const updateSubmission = async (url, object) =>  {
     );
     return request
   
+  }
+
+  /**
+   * TESTING
+ * REMOVE EITHER THIS OR THE ONE OVER
+ * @param {String} url - Where to send the request 
+ * @param {Object} submission - Submission object to update -> JSON
+ */
+  export const updateSubmission2 = async (submissionType, object) => {
+    const submissionObject = await JSON.stringify(object)
+    let url = ""
+      if (submissionType === 'pd') {
+          url = "http://localhost:8080/coordinator/updateProjectDescription" 
+        } else if (submissionType === 'pp') {
+            url = "http://localhost:8080/coordinator/updateProjectPlan"
+        } else if (submissionType === 'ir') {
+            url = "http://localhost:8080/coordinator/updateInitialReport"
+        } else if (submissionType === 'fr') {
+            url = "http://localhost:8080/coordinator/updateFinalReport"
+        }
+
+
+        const request = await fetch(
+            url,
+            {
+              method: "PUT",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: submissionObject
+            }
+          );
+          console.log('REQUEST', request)
+          return request
+        
   }
