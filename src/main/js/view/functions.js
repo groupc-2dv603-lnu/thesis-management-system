@@ -20,11 +20,11 @@ export function getFromAPI(getPath) {
     });
 }
 
-export function putToAPI(putPath) {
+export function putToAPI(putPath, data) {
     return client({ 
         method: "PUT", 
         path: putPath,
-        // body: JSON.stringify(data),
+        body: JSON.stringify(data),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ export function postToAPI(postPath, object) {
     });
 }
 
-export function deleteToAPI(delPath) {
+export function deleteFromAPI(delPath) {
     return client({ method: "DELETE", path: delPath });
 }
 
@@ -52,4 +52,8 @@ export function capitalizeFirstLetter(string) {
     if(string == null)
         return "N/A";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+export function getUser(userId) {
+    return getFromAPI("/users/" + userId)
 }
