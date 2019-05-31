@@ -12,6 +12,7 @@ class DeleteUser extends Component {
     this.state = {
       email: ""
     };
+    this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -22,9 +23,7 @@ class DeleteUser extends Component {
   }
 
   handleClick() {
-    deleteToAPI("/admin/deleteUser", {
-      emailAdress: this.state.email
-    });
+    deleteToAPI("/admin/assignRoles?email=" + this.state.email);
   }
 
   render() {
