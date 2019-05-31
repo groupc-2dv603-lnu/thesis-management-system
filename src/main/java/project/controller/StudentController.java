@@ -197,6 +197,8 @@ public class StudentController {
 		newSubmission.setUserId(userId);
 		submissionRepository.save(newSubmission);
 
+		updateSubmissionIds(type, newSubmission.getId(), userId);
+
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
 		String fileDownloadUri = newSubmission.getFileUrl();
@@ -207,4 +209,30 @@ public class StudentController {
 		return new UploadFileResponse(newSubmission.getId(), fileName, fileDownloadUri,
 				file.getContentType(), file.getSize());
 	}
+
+	private void updateSubmissionIds(SubmissionType type, String submissionId, String userId){
+	    switch(type){
+            case PRJ_DESCRIPTION:
+                ProjectDescription description = projectDescriptionRepository.findFirstByuserId(userId);
+                description.setSubmissionId(submissionId);
+                projectDescriptionRepository.save(description);
+                break;
+            case PRJ_PLAN:
+                ProjectPlan plan = projectPlanRepository.findFirstByuserId(userId);
+                plan.setSubmissionId(submissionId);
+                projectPlanRepository.save(plan);
+                break;
+            case INITIAL_REPORT:
+                InitialReport initialReport = initialReportRepository.findFirstByuserId(userId);
+                initialReport.setSubmissionId(submissionId);
+                initialReportRepository.save(initialReport);
+                break;
+            case FINAL_REPORT:
+                FinalReport finalReport = finalReportRepository.findFirstByuserId(userId);
+                finalReport.setSubmissionId(submissionId);
+                finalReportRepository.save(finalReport);
+                break;
+
+        }
+    }
 }
