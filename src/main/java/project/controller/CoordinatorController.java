@@ -61,7 +61,7 @@ public class CoordinatorController {
 
     @PutMapping(value = "/coordinator/updateFinalReport", consumes = {"application/json"})
     void updateFinalReport(@RequestBody FinalReport finalReport) {
-        if (initialReportRepository.findById(finalReport.getId()).isPresent()) {
+        if (finalReportRepository.findById(finalReport.getId()).isPresent()) {
             finalReportRepository.save(finalReport);
         }
     }
