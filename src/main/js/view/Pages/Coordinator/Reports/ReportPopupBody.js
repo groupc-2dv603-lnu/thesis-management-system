@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import * as Style from "../Styles/ReportStyles";
 import * as PopupStyle from "../Styles/PopupStyles";
 import * as generalFunctions from "../../../functions";
+import * as corFunc from '../coordinatorFunctions'
+import { dbTypes } from '../../../enums'
 
 class ReportPopupBody extends Component {
   constructor(props) {
@@ -173,19 +175,12 @@ class ReportPopupBody extends Component {
       this.state.assignedOpponents
     );
     let initialReport = Object.assign({}, this.props.report);
-    console.log("IR", initialReport);
-    console.log("PROPSREP", this.props.report);
     delete initialReport.name;
 
-    const updateinitialReportUrl =
-      "http://localhost:8080/coordinator/updateInitialReport";
-    initialReport = await JSON.stringify(this.props.report);
-
-    const request = await generalFunctions.updateSubmission(
-      updateinitialReportUrl,
+    const request = await corFunc.updateSubmission(
+      dbTypes.initialReport,
       initialReport
     );
-    console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
@@ -242,7 +237,7 @@ class ReportPopupBody extends Component {
 
         {/* ---- SUBMIT ---- */}
 
-        <div style={PopupStyle.submitDiv}>
+        <div style={PopupStyle.reportSubmitDiv}>
           <button
             style={PopupStyle.submitButton}
             onClick={() => this.handleSubmit()}

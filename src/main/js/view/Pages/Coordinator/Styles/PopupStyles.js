@@ -92,3 +92,8 @@ export const message = {
   fontWeight: 'bold'
 }
 
+export const reportSubmitDiv = {
+  width: '100%',
+  textAlign: 'center'
+
+}

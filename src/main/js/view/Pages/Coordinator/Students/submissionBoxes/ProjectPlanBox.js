@@ -4,6 +4,7 @@ import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
+import { dbTypes } from '../../../../enums'
 
 class ProjectPlanBox extends Component {
   constructor(props) {
@@ -74,7 +75,7 @@ class ProjectPlanBox extends Component {
       return;
     }
     const request = await corFunc.updateSubmission(
-      "pp",
+      dbTypes.projectPlan,
       this.state.projectPlan
     );
     if (request.status === 200) {
@@ -88,10 +89,10 @@ class ProjectPlanBox extends Component {
     return (
       <div>
         {/* ----- ERROR NO SUBMISSION ----- */}
-        {this.state.projectDescripton === null ||
-        this.state.submission === null ? (
+        {this.props.projectPlan === undefined ||
+        this.props.submission === undefined ? (
           <div style={Style.noSubFound}>
-            No submission found, try reload the page
+            No submission found
           </div>
         ) : (
           <div style={Style.subBoxDiv}>

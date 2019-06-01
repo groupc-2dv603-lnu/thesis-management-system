@@ -5,12 +5,8 @@ import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import Feedback from "./ShowFeedback";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
+import { dbTypes } from '../../../../enums'
 
-/**
- * TODO:
- *  - handleSubmit() update submissions - Need from backend
- *  - add Feedback
- */
 
 class InitialReportBox extends Component {
   constructor(props) {
@@ -24,7 +20,8 @@ class InitialReportBox extends Component {
       submission: this.props.submission,
       showMessage: false,
       message: "",
-      feedbacks: this.props.feedbacks
+      feedbacks: this.props.feedbacks,
+      showFeedback: false
     };
     this.getMessage = this.getMessage.bind(this);
   }
@@ -44,6 +41,12 @@ class InitialReportBox extends Component {
 
   getMessage() {
     return <div style={PopupStyle.message}>{this.state.message}</div>;
+  }
+
+  toggleFeedback() {
+    this.setState({
+      showFeedback: !this.state.showFeedback
+    });
   }
 
   toggleDeadlineChange() {
@@ -83,7 +86,7 @@ class InitialReportBox extends Component {
       return;
     }
     const request = await corFunc.updateSubmission(
-      "ir",
+      dbTypes.initialReport,
       this.state.initialReport
     );
     console.log("REQUEST", request);
@@ -100,11 +103,9 @@ class InitialReportBox extends Component {
     return (
       <div>
         {/* ----- ERROR NO SUBMISSION ----- */}
-        {this.state.projectDescripton === null ||
-        this.state.submission === null ? (
-          <div style={Style.noSubFound}>
-            No submission found, try reload the page
-          </div>
+        {this.props.initialReport === undefined ||
+        this.props.submission === undefined ? (
+          <div style={Style.noSubFound}>No submission found</div>
         ) : (
           <div style={Style.subBoxDiv}>
             <div>
@@ -206,11 +207,22 @@ class InitialReportBox extends Component {
                 Submit changes
               </div>
             </div>
+            
+            {/* ----- FEEDBACK ----- */}
+            <div
+              style={Style.showFeedback}
+              onClick={() => this.toggleFeedback()}
+            >
+              Show Feedback
+            </div>
           </div>
         )}
-        {this.props.feedbacks.map(feedback => {
-          return <Feedback feedback={feedback} key={i++} />;
-        })}
+
+        {this.props.feedbacks !== undefined && this.state.showFeedback !== false
+          ? this.props.feedbacks.map(feedback => {
+              return <Feedback feedback={feedback} key={i++} />;
+            })
+          : null}
       </div>
     );
   }

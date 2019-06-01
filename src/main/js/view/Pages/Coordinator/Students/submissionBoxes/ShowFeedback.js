@@ -5,7 +5,6 @@ class Feedback extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    console.log("FPROPS", this.props);
   }
 
   render() {

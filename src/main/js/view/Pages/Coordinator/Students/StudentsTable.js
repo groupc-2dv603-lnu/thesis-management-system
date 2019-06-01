@@ -11,15 +11,18 @@ class StudentsTable extends Component {
     super(props);
     this.state = {
       showPopup: false,
-      students: [],
       loading: true,
-      selectedStudent: null
+      selectedStudent: null,
+      assignedSupervisorName: null
       // pages: -1
     };
   }
 
-  togglePopup(student) {
-    this.setState({ selectedStudent: student });
+  async togglePopup(student) {
+    this.setState({ 
+      selectedStudent: student,
+      assignedSupervisorName: student.assignedSupervisorId !== "" ? await func.getName(student.assignedSupervisorId) : null  
+     });
     this.setState({ showPopup: !this.state.showPopup });
   }
 
@@ -131,6 +134,7 @@ class StudentsTable extends Component {
         {this.state.showPopup ? (
           <StudentPopup
             student={this.state.selectedStudent}
+            assignedSupervisorName={this.state.assignedSupervisorName}
             closePopup={this.togglePopup.bind(this)}
           />
         ) : null}

@@ -4,6 +4,7 @@ import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import * as generalFunctions from "../../../../functions";
 import * as corFunc from '../../coordinatorFunctions'
+import { dbTypes } from '../../../../enums'
 
 class ProjectDescriptionBox extends Component {
   constructor(props) {
@@ -18,8 +19,7 @@ class ProjectDescriptionBox extends Component {
       showMessage: false,
       message: ""
     };
-    console.log("PD", this.state.projectDescription);
-    console.log("PDSUB", this.state.submission);
+    console.log('PDPROPS', this.props)
   }
 
   toggleMessage(message) {
@@ -75,7 +75,7 @@ class ProjectDescriptionBox extends Component {
       return;
     }
     const request = await corFunc.updateSubmission(
-      "pd",
+      dbTypes.projectDescription,
       this.state.projectDescription
     );
     console.log("REQUEST", request);
@@ -90,10 +90,10 @@ class ProjectDescriptionBox extends Component {
     return (
       <div>
         {/* ----- ERROR NO SUBMISSION ----- */}
-        {this.state.projectDescripton === null ||
-        this.state.submission === null ? (
+        {this.props.projectDescription === undefined ||
+        this.props.submission === undefined ? (
           <div style={Style.noSubFound}>
-            No submission found, try reload the page
+            No submission found
           </div>
         ) : (
           <div style={Style.subBoxDiv}>
@@ -112,7 +112,7 @@ class ProjectDescriptionBox extends Component {
                 >
                   <i className="fas fa-download" />
                 </span>
-              ) : null}
+                ) : null}
             </div>
 
             {/* ----- STATUS ----- */}
@@ -166,7 +166,7 @@ class ProjectDescriptionBox extends Component {
                 <span style={Style.submissionRightColumn}>
                   {this.state.submission.submissionDate
                     ? func.getDate(this.state.submission.submissionDate)
-                    : "No file uploaded"}
+                  : "No file uploaded" }
                 </span>
               </div>
               {/* ----- GRADE ----- */}

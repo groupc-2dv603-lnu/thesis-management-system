@@ -1,5 +1,6 @@
 import moment from "moment";
 import * as generalFunctions from '../../functions'
+import { dbTypes } from '../../enums'
 
 export const validDeadline = deadline => {
   if (deadline === "T:00") {
@@ -19,20 +20,20 @@ export const validDeadline = deadline => {
 };
 
 /**
- * @param {String} SubmissionType - "pd", "pp", "ir", "fr"
+ * @param {String} dbType 
  * @param {Object} object - object to update, will be JSON stringified
  */
-export const updateSubmission = async (submissionType, object) => {
+export const updateSubmission = async (dbType, object) => {
   const submissionObject = await JSON.stringify(object);
-  console.log('SUBOBJ', submissionObject)
+
   let url = "";
-  if (submissionType === "pd") {
+  if (dbType === dbTypes.projectDescription) {
     url = "http://localhost:8080/coordinator/updateProjectDescription";
-  } else if (submissionType === "pp") {
+  } else if (dbType === dbTypes.projectPlan) {
     url = "http://localhost:8080/coordinator/updateProjectPlan";
-  } else if (submissionType === "ir") {
+  } else if (dbType === dbTypes.initialReport) {
     url = "http://localhost:8080/coordinator/updateInitialReport";
-  } else if (submissionType === "fr") {
+  } else if (dbType === dbTypes.finalReport) {
     url = "http://localhost:8080/coordinator/updateFinalReport";
   }
 

@@ -90,7 +90,8 @@ export const submitRow = {
   lineHeight: rowHeight,
   background: 'lightgrey',
   fontWeight: 'bold',
-  borderTop: standardBorder
+  borderTop: standardBorder,
+  borderBottom: standardBorder
 }
 
 export const downloadSpan = {
@@ -161,3 +162,12 @@ export const textarea = {
   padding: '2px'
 };
 
+export const showFeedback = {
+  width: '100%',
+  height: rowHeight,
+  lineHeight: rowHeight,
+  background: lightgrey,
+  textAlign: 'center',
+  marginTop: rowHeight,
+  borderTop: standardBorder
+}

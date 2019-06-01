@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import moment from "moment";
-
 export function statusOptions() {
   //Shall match enums for submissionStatus -> backend
   const status = ["DISABLED", "ACTIVE", "FINISHED"];

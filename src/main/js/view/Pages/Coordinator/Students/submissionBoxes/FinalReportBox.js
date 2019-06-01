@@ -5,7 +5,7 @@ import * as PopupStyle from "../../Styles/PopupStyles";
 import Feedback from "./ShowFeedback";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
-
+import { dbTypes } from '../../../../enums'
 
 class FinalReportBox extends Component {
   constructor(props) {
@@ -20,6 +20,7 @@ class FinalReportBox extends Component {
       showMessage: false,
       message: "",
       feedbacks: this.props.feedbacks,
+      showFeedback: false,
       comment: ""
     };
 
@@ -37,6 +38,12 @@ class FinalReportBox extends Component {
         showMessage: !this.state.showMessage
       });
     }, 2000);
+  }
+
+  toggleFeedback() {
+    this.setState({
+      showFeedback: !this.state.showFeedback
+    });
   }
 
   getMessage() {
@@ -85,7 +92,7 @@ class FinalReportBox extends Component {
       return;
     }
     const request = await corFunc.updateSubmission(
-      "fr",
+      dbTypes.finalReport,
       this.state.finalReport
     );
 
@@ -103,10 +110,10 @@ class FinalReportBox extends Component {
     return (
       <div>
         {/* ----- ERROR NO SUBMISSION ----- */}
-        {this.state.projectDescripton === null ||
-        this.state.submission === null ? (
+        {this.props.finalReport === undefined ||
+        this.props.submission === undefined ? (
           <div style={Style.noSubFound}>
-            No submission found, try reload the page
+            No submission found
           </div>
         ) : (
           <div style={Style.subBoxDiv}>
@@ -215,11 +222,22 @@ class FinalReportBox extends Component {
                 Submit changes
               </div>
             </div>
+
+            {/* ----- FEEDBACK ----- */}
+            <div
+              style={Style.showFeedback}
+              onClick={() => this.toggleFeedback()}
+            >
+              Show Feedback
+            </div>
           </div>
         )}
-        {this.props.feedbacks.map(feedback => {
-          return <Feedback feedback={feedback} key={i++} />;
-        })}
+
+        {this.props.feedbacks !== undefined && this.state.showFeedback !== false
+          ? this.props.feedbacks.map(feedback => {
+              return <Feedback feedback={feedback} key={i++} />;
+            })
+          : null}
       </div>
     );
   }

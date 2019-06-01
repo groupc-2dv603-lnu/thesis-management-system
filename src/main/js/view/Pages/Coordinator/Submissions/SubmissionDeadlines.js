@@ -7,13 +7,13 @@ class SubmissionDeadlines extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      submission: "cs", //Initial, = choose submission
+      submissionType: "cs", //Initial, = choose submission
       newDeadlineDate: "",
       newDeadlineTime: "",
       showMessage: false,
       message: ""
     };
-
+   
     this.resetMessage = this.resetMessage.bind(this)
   }
 
@@ -35,7 +35,7 @@ class SubmissionDeadlines extends Component {
   }
 
   handleSubmissionChange(event) {
-    this.setState({ submission: event.target.value });
+    this.setState({ submissionType: event.target.value });
     console.log(this.state);
   }
   
@@ -46,6 +46,7 @@ class SubmissionDeadlines extends Component {
   }
 
   async handleSubmit() {
+
     if(this.state.submission === "cs" ) {
       this.toggleMessage('You must choose a submission')
       this.resetMessage()
@@ -63,47 +64,18 @@ class SubmissionDeadlines extends Component {
       this.resetMessage()
       return
     }
-
+    
     this.toggleMessage("Loading");
 
-    const students = await generalFunctions.getFromAPI(
-      "/coordinator/getAllStudents"
-    );
-    for (const student of students.entity) {
-      let submissions = await generalFunctions.getFromAPI(
-        `/coordinator/getAllSubmissionsByUserID?userId=${student.userId}`
-      );
-      console.log(submissions);
-      if (this.state.submission === "pd") {
-        let submission = submissions.entity.projectDescriptions[0];
-        submission.deadLine = deadline;
-        const request = await corFunc.updateSubmission(
-          "pd",
-          submission
-        );
-      } else if (this.state.submission === "pp") {
-        let submission = submissions.entity.projectPlans[0];
-        submission.deadLine = deadline;
-        const request = await corFunc.updateSubmission(
-          "pp",
-          submission
-        );
-      } else if (this.state.submission === "ir") {
-        let submission = submissions.entity.initialReports[0];
-        submission.deadLine = deadline;
-        const request = await corFunc.updateSubmission(
-          "ir",
-          submission
-        );
-      } else if (this.state.submission === "fr") {
-        let submission = submissions.entity.finalReports[0];
-        submission.deadLine = deadline;
-        const request = await corFunc.updateSubmission(
-          "fr",
-          submission
-        );
-      }
+    const response = await generalFunctions.getFromAPI(`/submissions`)
+    const allSubmissions = response.entity._embedded.submissions
+    const submissions = allSubmissions.filter(sub => sub.submissionType !== this.state.submissionType)
+  
+    for (const submission of submissions) {
+      submission.deadLine = deadline
+      await corFunc.updateSubmission(this.state.submissionType, submission)
     }
+
     this.toggleMessage("");
     this.toggleMessage("Updated successfully");
     this.resetMessage()
@@ -117,19 +89,19 @@ class SubmissionDeadlines extends Component {
       },
       {
         name: "Project Descriptions",
-        value: "pd"
+        value: "PRJ_DESCRIPTION"
       },
       {
         name: "Project Plans",
-        value: "pp"
+        value: "PRJ_PLAN"
       },
       {
         name: "Initial Reports",
-        value: "ir"
+        value: "INITIAL_REPORT"
       },
       {
         name: "Final Reports",
-        value: "fr"
+        value: "FINAL_REPORT"
       }
     ];
 
