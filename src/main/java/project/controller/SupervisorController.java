@@ -105,16 +105,16 @@ public class SupervisorController {
 		Supervisor supervisor = getLoggedInSupervisor();
 		List<Resource<Student>> students = new ArrayList<>();
 
-
-		for(String userId : supervisor.getAssignedStudents())
-		{
-			Student student = studentRepository.findFirstByuserId(userId);
-			if(student != null) {
+		if(supervisor != null) {
+			for (String userId : supervisor.getAssignedStudents()) {
+				Student student = studentRepository.findFirstByuserId(userId);
+				if (student != null) {
 					students.add(new Resource<>(student,
-				linkTo(methodOn(SupervisorController.class).assignedStudents()).withRel("appliedStudents")));
+							linkTo(methodOn(SupervisorController.class).assignedStudents()).withRel("appliedStudents")));
+				}
+
 			}
 		}
-
 		return new Resources<>(students,
 				linkTo(methodOn(SupervisorController.class).assignedStudents()).withSelfRel());
 	}
@@ -125,16 +125,15 @@ public class SupervisorController {
 		Supervisor supervisor = getLoggedInSupervisor();
 		List<Resource<Student>> students = new ArrayList<>();
 
-
-		for(String userId : supervisor.getAwaitingResponse())
-		{
-			Student student = studentRepository.findFirstByuserId(userId);
-			if(student != null) {
-				students.add(new Resource<>(student,
-						linkTo(methodOn(SupervisorController.class).appliedStudents()).withRel("appliedStudents")));
+		if(supervisor != null) {
+			for (String userId : supervisor.getAwaitingResponse()) {
+				Student student = studentRepository.findFirstByuserId(userId);
+				if (student != null) {
+					students.add(new Resource<>(student,
+							linkTo(methodOn(SupervisorController.class).appliedStudents()).withRel("appliedStudents")));
+				}
 			}
 		}
-
 		return new Resources<>(students,
 				linkTo(methodOn(SupervisorController.class).appliedStudents()).withSelfRel());
 	}
@@ -168,7 +167,8 @@ public class SupervisorController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
-		Supervisor supervisor = supervisorRepository.findFirstByuserId("5ce6f07f1c9d44000041e900");
+		Supervisor supervisor = supervisorRepository.findFirstByuserId(user.getId());
+
 		if(supervisor != null)
 		{
 			return supervisor;

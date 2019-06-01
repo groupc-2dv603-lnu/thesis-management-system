@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import project.model.enums.ApprovedStatus;
 import project.model.enums.Grade;
 
 import javax.validation.constraints.NotNull;
@@ -25,9 +26,9 @@ public class ProjectPlan {
 	@NotNull
 	private String deadLine;
 	@NotNull
-	private Boolean approved;
+	private ApprovedStatus approved;
 	
-	public ProjectPlan(String userId, String submissionId, String feedBackId, Grade grade, String deadLine, Boolean approved) {
+	public ProjectPlan(String userId, String submissionId, String feedBackId, Grade grade, String deadLine, ApprovedStatus approved) {
 		this.userId = userId;
 		this.submissionId = submissionId;
 		this.feedBackId = feedBackId;
@@ -42,7 +43,13 @@ public class ProjectPlan {
 	}
 	public void setApproved(Boolean state)
 	{
-		this.approved = state;
+		if(state) {
+			this.approved = ApprovedStatus.APPROVED;
+		}
+		else
+		{
+			this.approved = ApprovedStatus.FAILED;
+		}
 	}
 }
 
