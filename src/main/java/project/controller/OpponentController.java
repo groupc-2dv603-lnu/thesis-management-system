@@ -3,6 +3,10 @@ package project.controller;
 
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -43,7 +47,10 @@ public class OpponentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
 		
-		Feedback feedback = new Feedback(user.getId(),opponent.getInitialReportId(), text, Role.OPPONENT);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		
+		Feedback feedback = new Feedback(user.getId(),opponent.getInitialReportId(), text, Role.OPPONENT, dateFormat.format(date));
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
