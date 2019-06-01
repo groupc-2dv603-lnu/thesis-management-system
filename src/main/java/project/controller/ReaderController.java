@@ -33,6 +33,8 @@ import project.model.repositories.InitialReportRepository;
 import project.model.repositories.ReaderRepository;
 import project.model.repositories.UserRepository;
 
+import javax.validation.Valid;
+
 @RestController
 public class ReaderController {
 	private final FeedbackRepository feedbackRepository;

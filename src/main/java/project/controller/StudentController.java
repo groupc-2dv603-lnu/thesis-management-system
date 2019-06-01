@@ -131,13 +131,14 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one5()).withSelfRel());
 	}
 	
-//	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
-//	Resource<Feedback> one2(@PathVariable String id) {
-//		Feedback feedback = feedbackRepository.findFirstById(id);
-//		return new Resource<>(feedback,
-//				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
-//				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
-//	}
+	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
+	Resource<Feedback> one2(@PathVariable String id) {
+		Feedback feedback = feedbackRepository.findFirstById(id);
+		
+		return new Resource<>(feedback,
+				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
+				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
+	}
 	@GetMapping(value = "/student/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
