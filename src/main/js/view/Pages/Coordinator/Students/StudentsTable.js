@@ -1,15 +1,6 @@
-/**
- * TODO
- *  - needs GET all students (using mock)
- *  - Add supervisorName if assigned
- *  - Fix tooltipBug, doesnt disappear after mouseLeave
- *  - Fix tooltipstyling, width 100% expands over whole page
- */
-
 import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
-import RCTooltip from "rc-tooltip";
 import StudentPopup from "./StudentPopup";
 import * as Style from "../Styles/Styles";
 import * as TableStyle from "../Styles/TableStyles";
@@ -19,11 +10,6 @@ class StudentsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sTooltip: false,
-      dTooltip: false,
-      pTooltip: false,
-      iTooltip: false,
-      fTooltip: false,
       showPopup: false,
       students: [],
       loading: true,
@@ -156,7 +142,7 @@ class StudentsTable extends Component {
 Object.assign(ReactTableDefaults, {
   defaultPageSize: 25,
   minRows: 0,
-  showPagination: false,
+  showPagination: true,
   resizable: false,
   showPageSizeOptions: false
 });

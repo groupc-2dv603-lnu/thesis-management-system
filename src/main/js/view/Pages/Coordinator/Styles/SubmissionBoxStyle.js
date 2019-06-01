@@ -1,23 +1,30 @@
 const lnuYellow = '#ffee00';
 const standardBorder = '1px solid black'
 const rowHeight = '30px'
+const boldBorder = '2px solid black'
+const lightgrey = "#eff0f2"
+
 
 /* ---- NavigationButtons ---- */
 export const submissionMenu = {
-  height: "50px",
+  height: "40px",
   width: "100%",
   display: "flex",
   justifyContent: "center",
-  marginBottom: "20px",
+  background: lnuYellow,
+  borderBottom: boldBorder,
+  marginBottom: '20px'
+
 };
 
 export const menuButtons = {
-  border: standardBorder,
+  borderRight: standardBorder,
   width: "25%",
+  height: '40px',
+  lineHeight: '40px',
   textAlign: "center",
   background: lnuYellow,
-  fontWeight: 'bold',
-  marginLeft: '3px'
+  fontSize: '14px'
 };
 
 /* ---  SubmissionBox  --- */
@@ -25,9 +32,11 @@ export const subBoxDiv = {
   margin: '0 auto',
   width: '80%',
   border: standardBorder,
+  marginBottom: '20px'
 }
 export const subBoxHeader = {
-  border: standardBorder,
+  borderBottom: standardBorder,
+  borderRight: standardBorder,
   textAlign: "center",
   fontWeight: "bold",
   height: "40px",
@@ -49,7 +58,7 @@ export const submissionLeftColumn = {
   float: "left",
   lineHeight: rowHeight,
   fontWeight: "bold",
-  background: 'lightgrey'
+  background: lightgrey
 };
 export const submissionRightColumn = {
   height: "100%",
@@ -74,18 +83,12 @@ export const select = {
   border: '1px solid black'
 }
 
-export const noSubfound = {
-  margin: '0 auto',
-  border: standardBorder,
-  textAlign: 'center'
-}
-
 export const submitRow = {
   width: '100%',
   textAlign: 'center',
   height: rowHeight,
   lineHeight: rowHeight,
-  background: lnuYellow,
+  background: 'lightgrey',
   fontWeight: 'bold',
   borderTop: standardBorder
 }
@@ -108,7 +111,8 @@ export const feedbackHeader = {
   lineHeight: '20px',
   textAlign: 'center',
   borderBottom: standardBorder,
-  background: lnuYellow
+  borderRight: standardBorder,
+  background: lightgrey
 }
 
 export const feedbackText = {

@@ -45,6 +45,8 @@ export async function getAllStudents() {
  */
 export async function checkIfSubmitted(submissionId) {
   try {
+    if (submissionId === "") return false
+  
     const response = await generalFunctions.getFromAPI(
       `/submissions/${submissionId}`
     );

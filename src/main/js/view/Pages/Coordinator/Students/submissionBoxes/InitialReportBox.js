@@ -28,17 +28,6 @@ class InitialReportBox extends Component {
     this.getMessage = this.getMessage.bind(this);
   }
 
-  /*
-  setStatus(event) {
-    this.state.submission.submissionStatus = event.target.value;
-    this.setState({ submission: this.state.submission });
-    console.log(
-      `submissionStatus set to ${this.state.submission.submissionStatus}`
-    );
-  }
-  */
-
-
   toggleMessage(message) {
     this.setState({
       message: message,
@@ -100,6 +89,8 @@ class InitialReportBox extends Component {
   }
 
   render() {
+    let i = 0 // key for feedback
+
     return (
       <div>
         {/* ----- ERROR NO SUBMISSION ----- */}
@@ -182,25 +173,7 @@ class InitialReportBox extends Component {
                     : "No file uploaded"}
                 </span>
               </div>
-              {/* ----- GRADE ----- 
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Grade</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.initialReport !== null
-                    ? func.getGrade(this.state.initialReport.grade)
-                    : "Not set"}
-                </span>
-                <span style={Style.submissionEditColumn}>
-                  <select
-                    style={Style.select}
-                    placeholder="set status"
-                    onChange={() => this.setGrade(event)}
-                  >
-                    {func.getGrades(1)}
-                  </select>
-                </span>
-              </div>
-              */}
+
               {/* ----- BIDS ----- */}
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Bids</span>
@@ -219,7 +192,7 @@ class InitialReportBox extends Component {
               <div style={Style.submissionRow}>
                 <span style={Style.submissionLeftColumn}>Opponent</span>
                 <span style={Style.submissionRightColumn}>
-                  Fixa OpponentName
+                  {this.state.initialReport.assignedOpponents.length}
                 </span>
               </div>
               {/* ----- SUBMIT ----- */}
@@ -230,7 +203,8 @@ class InitialReportBox extends Component {
           </div>
         )}
         {this.props.feedbacks.map(feedback => {
-          return <Feedback feedback={feedback} />;
+
+          return <Feedback feedback={feedback} key={i++} />;
         })}
       </div>
     );

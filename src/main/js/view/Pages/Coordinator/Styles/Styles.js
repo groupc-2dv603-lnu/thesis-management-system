@@ -1,5 +1,6 @@
 const lnuYellow = "#ffee00";
 const standardBorder = "1px solid black";
+const tableLeftColor = "#eff0f2"
 
 export const body = {
   width: "600px",
@@ -28,12 +29,12 @@ export const deadlineRow = {
   lineHeight: "30px",
   width: "100%",
   borderBottom: standardBorder,
-
+  borderLeft: standardBorder,
 };
 
 export const deadlineRowLeft = {
   width: "30%",
-  background: "#eff0f2",
+  background: tableLeftColor,
   borderRight: standardBorder,
   borderTop: standardBorder,
   float: "left",
@@ -53,4 +54,5 @@ export const submitRow = {
   fontWeight: "bold",
   background: "lightgrey",
   borderTop: standardBorder,
+  borderLeft: standardBorder
 };

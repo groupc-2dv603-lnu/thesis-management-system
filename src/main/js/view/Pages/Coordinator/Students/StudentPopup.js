@@ -56,7 +56,7 @@ class StudentPopup extends React.Component {
       initialReportSubmission: await func.getSubmission(
         submissions.initialReports[0].submissionId
       ),
-  
+
       finalReportSubmission: await func.getSubmission(
         submissions.finalReports[0].submissionId
       ),
@@ -65,7 +65,7 @@ class StudentPopup extends React.Component {
       initialReportFeedbacks: await func.getFeedbacks(
         submissions.initialReports[0].feedBackIds
       ),
-      
+
       finalReportFeedbacks: await func.getFeedbacks(
         submissions.finalReports[0].feedBackIds
       ),
@@ -127,6 +127,7 @@ class StudentPopup extends React.Component {
     return (
       <div style={PopupStyle.popup}>
         <div style={PopupStyle.popupInner}>
+          <div style={PopupStyle.headerDiv}>
           <div style={PopupStyle.closeButtonDiv}>
             <i
               className="fas fa-window-close"
@@ -134,40 +135,44 @@ class StudentPopup extends React.Component {
               style={PopupStyle.popupClose}
             />
           </div>
+          <div style={PopupStyle.popupHeader}>
+                {this.props.student.name}
+              </div>
+              <div style={PopupStyle.popupSupervisor}>
+                {this.state.supervisorName}
+              </div>
+          </div>
           {this.state.loading === true ? (
             <div style={PopupStyle.loading}>Loading...</div>
           ) : (
             <div>
-              <h3 style={PopupStyle.popupHeader}>{this.props.student.name}</h3>
-              <h5 style={PopupStyle.popupSupervisor}>
-                {this.state.supervisorName}
-              </h5>
+
               <div style={PopupStyle.popupBody}>
                 <div style={SubBox.submissionMenu}>
-                  <button
+                  <div
                     style={SubBox.menuButtons}
                     onClick={() => this.setPage("projectDescription")}
                   >
                     Project Description
-                  </button>
-                  <button
+                  </div>
+                  <div
                     style={SubBox.menuButtons}
                     onClick={() => this.setPage("projectPlan")}
                   >
                     Project Plan
-                  </button>
-                  <button
+                  </div>
+                  <div
                     style={SubBox.menuButtons}
                     onClick={() => this.setPage("initialReport")}
                   >
                     Initial Report
-                  </button>
-                  <button
+                  </div>
+                  <div
                     style={SubBox.menuButtons}
                     onClick={() => this.setPage("finalReport")}
                   >
                     Final Report
-                  </button>
+                  </div>
                 </div>
 
                 {this.renderPage()}

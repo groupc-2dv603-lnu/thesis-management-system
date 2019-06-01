@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import StudentsTable from "./Students/StudentsTable"
+import StudentsTable from "./Students/StudentsTable";
 import SubmissionDeadlines from "./Submissions/SubmissionDeadlines";
-import ReportsTable from './Reports/ReportsTable'
-import * as Style from './Styles/Styles'
+import ReportsTable from "./Reports/ReportsTable";
+import * as Style from "./Styles/Styles";
 
 class Coordinator extends Component {
   constructor(props) {
@@ -10,7 +10,7 @@ class Coordinator extends Component {
     this.state = {
       showSetDeadline: false,
       showStudentsTable: false,
-      showReportsTable: false,
+      showReportsTable: false
     };
   }
 
@@ -24,12 +24,24 @@ class Coordinator extends Component {
     this.setState({
       showStudentsTable: !this.state.showStudentsTable
     });
+    //bugfix
+    if (this.state.showReportsTable === true) {
+      this.setState({
+        showReportsTable: false
+      });
+    }
   }
 
   toggleReportsTable() {
     this.setState({
       showReportsTable: !this.state.showReportsTable
     });
+    //bugfix
+    if(this.state.showStudentsTable === true) {
+      this.setState({
+        showStudentsTable: false
+      })
+    }
   }
 
   render() {
@@ -68,6 +80,5 @@ class Coordinator extends Component {
     );
   }
 }
-
 
 export default Coordinator;

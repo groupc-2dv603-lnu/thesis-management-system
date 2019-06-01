@@ -92,6 +92,8 @@ class FinalReportBox extends Component {
   }
 
   render() {
+    let i = 0
+
     return (
       <div>
         {/* ----- ERROR NO SUBMISSION ----- */}
@@ -200,7 +202,7 @@ class FinalReportBox extends Component {
           </div>
         )}
         {this.props.feedbacks.map(feedback => {
-          return <Feedback feedback={feedback} />;
+          return <Feedback feedback={feedback} key={i++} />;
         })}
       </div>
     );

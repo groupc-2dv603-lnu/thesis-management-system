@@ -11,7 +11,7 @@ class Feedback extends Component {
     return (
       <div style={Style.feedbackBox}>
         <div style={Style.feedbackHeader}>
-          Feedback from coordinator{/*add role */} {this.props.feedback.name}
+          Feedback from: {/*add role */} {this.props.feedback.name}
         </div>
         <div style={Style.feedbackText}>
           {this.props.feedback.text}

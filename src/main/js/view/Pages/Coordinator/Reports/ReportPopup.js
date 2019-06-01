@@ -34,6 +34,7 @@ class ReportPopup extends Component {
     return (
       <div style={PopupStyle.popup}>
         <div style={PopupStyle.popupInner}>
+          <div style={PopupStyle.headerDiv}>
           <div style={PopupStyle.closeButtonDiv}>
             <i
               className="fas fa-window-close"
@@ -41,11 +42,12 @@ class ReportPopup extends Component {
               style={PopupStyle.popupClose}
             />
           </div>
+          <div style={PopupStyle.popupHeader}>Initial Report of {this.props.report.name}</div>
+          </div>
           {this.state.loading === true ? (
             <div style={PopupStyle.loading}>Loading...</div>
           ) : (
             <div>
-              <h3 style={PopupStyle.popupHeader}>Initial Report of {this.props.report.name}</h3>
 
               <div style={PopupStyle.popupBody}>
                 <ReportPopupBody
