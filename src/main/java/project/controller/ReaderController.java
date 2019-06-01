@@ -3,6 +3,9 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +56,9 @@ public class ReaderController {
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
 		
-		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text, Role.READER);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text, Role.READER, dateFormat.format(date));
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
@@ -75,8 +80,9 @@ public class ReaderController {
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
-		
-		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text, Role.READER);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text, Role.READER, dateFormat.format(date));
 		FinalReport report = finalReportRepository.findFirstById(feedback.getDocumentId());
 		System.out.println(report);
 		Boolean doesFeedBackExist = false;
