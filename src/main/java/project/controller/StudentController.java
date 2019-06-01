@@ -131,18 +131,17 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one5()).withSelfRel());
 	}
 	
-	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
-	Resource<Feedback> one2(@PathVariable String id) {
-		Feedback feedback = feedbackRepository.findFirstById(id);
-		return new Resource<>(feedback,
-				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
-				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
-	}
+//	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
+//	Resource<Feedback> one2(@PathVariable String id) {
+//		Feedback feedback = feedbackRepository.findFirstById(id);
+//		return new Resource<>(feedback,
+//				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
+//				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
+//	}
 	@GetMapping(value = "/student/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
-			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
 			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
 			    	    .collect(Collectors.toList());				
 		return new Resources<>(feedbacks,
@@ -155,7 +154,7 @@ public class StudentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		return new Resource<>(student,
-				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
+				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
 	}
 
 	// Returns all of a students' submissions //

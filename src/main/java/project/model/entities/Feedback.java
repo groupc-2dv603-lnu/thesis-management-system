@@ -20,12 +20,12 @@ public class Feedback {
 	private Date submittedDate;
 	
 	
-	public Feedback(String userId, String documentId , String text, Role role, Date string) {
+	public Feedback(String userId, String documentId , String text, Role role, Date submittedDate) {
 		this.userId = userId;
 		this.documentId = documentId;
 		this.text = text;
 		this.role = role;
-		this.submittedDate = string;
+		this.submittedDate = submittedDate;
 		
 	}
 }
