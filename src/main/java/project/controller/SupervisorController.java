@@ -168,7 +168,7 @@ public class SupervisorController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
-		Supervisor supervisor = supervisorRepository.findFirstByuserId("5ce6f07f1c9d44000041e900");
+		Supervisor supervisor = supervisorRepository.findFirstByuserId(user.getId());
 		if(supervisor != null)
 		{
 			return supervisor;
