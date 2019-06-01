@@ -37,20 +37,53 @@ class Coordinator extends Component {
       showReportsTable: !this.state.showReportsTable
     });
     //bugfix
-    if(this.state.showStudentsTable === true) {
+    if (this.state.showStudentsTable === true) {
       this.setState({
         showStudentsTable: false
-      })
+      });
     }
   }
 
+  getStudentsTable(boolean) {
+    return boolean === false ? (
+      <div style={Style.dropDown} onClick={() => this.toggleStudentsTable()}>
+        Show studentstable
+      </div>
+    ) : (
+      <div style={Style.isActive} onClick={() => this.toggleStudentsTable()}>
+        Hide Studentstable
+      </div>
+    );
+  }
+
+  getReportsTable (boolean) {
+    return boolean === false ? (
+      <div style={Style.dropDown} onClick={() => this.toggleReportsTable()}>
+        Show Initial reports
+       </div>
+    ) : (
+      <div style={Style.isActive} onClick={() => this.toggleReportsTable()}>
+        Hide Initial reports
+      </div>
+    );
+  }
+
+  getSetDeadlines (boolean) {
+    return boolean === false ? (
+      <div style={Style.dropDown} onClick={() => this.toggleSetDeadline()}>
+      Set deadlines
+    </div>
+    ) : (
+      <div style={Style.isActive} onClick={() => this.toggleSetDeadline()}>
+      Hide Set deadlines      
+      </div>
+    );
+  }
   render() {
     return (
       <div>
         {/* ---- SET DEADLINES ---- */}
-        <div style={Style.dropDown} onClick={() => this.toggleSetDeadline()}>
-          Set deadlines
-        </div>
+        {this.getSetDeadlines(this.state.showSetDeadline)}
         {this.state.showSetDeadline ? (
           <div>
             <SubmissionDeadlines
@@ -59,18 +92,14 @@ class Coordinator extends Component {
           </div>
         ) : null}
         {/* ---- STUDENTS TABLE ---- */}
-        <div style={Style.dropDown} onClick={() => this.toggleStudentsTable()}>
-          Show students
-        </div>
+        {this.getStudentsTable(this.state.showStudentsTable)}
         {this.state.showStudentsTable ? (
           <div>
             <StudentsTable />
           </div>
         ) : null}
         {/* ---- INITIAL REPORT TABLE ---- */}
-        <div style={Style.dropDown} onClick={() => this.toggleReportsTable()}>
-          Show Initial reports
-        </div>
+        {this.getReportsTable(this.state.showReportsTable)}
         {this.state.showReportsTable ? (
           <div>
             <ReportsTable />

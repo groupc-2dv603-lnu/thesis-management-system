@@ -1,6 +1,7 @@
 const lnuYellow = "#ffee00";
 const standardBorder = "1px solid black";
 const tableLeftColor = "#eff0f2"
+const lightgrey = "#eff0f2"
 
 export const body = {
   width: "600px",
@@ -13,14 +14,25 @@ export const dropDownBody = {
 
 export const dropDown = {
   width: "100%",
-  background: "#ffee00",
+  background: lightgrey,
   textAlign: "center",
-  height: "30px",
-  lineHeight: "30px",
+  height: "50px",
+  lineHeight: "50px",
   border: "1px solid black",
   fontWeight: "bold",
   marginBottom: "20px"
 };
+
+export const isActive = {
+  width: "100%",
+  background: lnuYellow,
+  textAlign: "center",
+  height: "50px",
+  lineHeight: "50px",
+  border: "1px solid black",
+  fontWeight: "bold",
+  marginBottom: "20px"
+}
 
 /* ---- SET DEADLINE STYLES ---- */
 
