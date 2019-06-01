@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
 import project.model.repositories.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class SupervisorController {
 
 
 	@PostMapping("/supervisor/feedback")
-	Feedback newFeedback(@RequestBody Feedback feedback) {
+	Feedback newFeedback(@Valid @RequestBody Feedback feedback) {
 		return feedbackRepository.save(feedback);
 	}
 	@GetMapping(value = "/supervisor/feedback/{id}", produces = "application/json; charset=UTF-8")

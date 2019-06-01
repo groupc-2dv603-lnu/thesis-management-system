@@ -21,10 +21,10 @@ public class Student {
 	@NotNull
 	private String assignedSupervisorId;
 	@NotNull
-	private String pendingSupervisor;
+	private PendingSupervisor pendingSupervisor;
 	
 	
-	public Student(String userId, String assignedSupervisorId, String pendingSupervisor) {
+	public Student(String userId, String assignedSupervisorId, PendingSupervisor pendingSupervisor) {
 		this.userId = userId;
 		this.assignedSupervisorId = assignedSupervisorId;
 		this.pendingSupervisor = pendingSupervisor;
