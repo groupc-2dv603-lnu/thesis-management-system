@@ -47,10 +47,9 @@ public class OpponentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		
-		Feedback feedback = new Feedback(user.getId(),opponent.getInitialReportId(), text, Role.OPPONENT, dateFormat.format(date));
+		Feedback feedback = new Feedback(user.getId(),opponent.getInitialReportId(), text, Role.OPPONENT, date);
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
