@@ -155,7 +155,7 @@ public class StudentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		return new Resource<>(student,
-				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
+				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
 	}
 
 	// Returns all of a students' submissions //
