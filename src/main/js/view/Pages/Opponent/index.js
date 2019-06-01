@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from "react";
-const client = require("../../../client");
+import { postToAPI, getFromAPI, putToAPI } from "../../functions";
 
 const mockState = {
   finalReport: {
@@ -19,13 +19,22 @@ class Opponent extends Component {
   }
 
   componentDidMount() {
-    client({ method: "GET", path: "/users" }).then(response => {
-      this.setState({ users: response.entity._embedded.users });
+    getFromAPI("/loginUser").then(user => {
+      this.setState({
+        user: user.entity
+      });
+    });
+    getFromAPI("/opponent/opponentInfo").then(info => {
+      console.log(info, "uhigu");
     });
   }
 
   sendFinalReport() {
-    console.log(document.getElementById("finalreport").value);
+    postToAPI(
+      `/opponent/feedbackFinalReport?text=${
+        document.getElementById("finalreport").value
+      }`
+    );
   }
 
   render() {
