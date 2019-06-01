@@ -71,13 +71,12 @@ class Reader extends Component {
       });
     });
     getFromAPI("/loginUser").then(user => {
-      console.log(user);
       this.setState({
         user: user.entity
       });
     });
     getFromAPI("/reader/readerInfo").then(info => {
-      console.log(info);
+      console.log(info, "uhigu");
     });
   }
 
