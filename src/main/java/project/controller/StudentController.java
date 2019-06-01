@@ -188,6 +188,15 @@ public class StudentController {
 	/* Upload submission and corresponding datafile */
 	@PostMapping("/student/newSubmission")
 	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = repository.findFirstByEmailAdress(auth.getName());
+
+		if (submissionAlreadyExist(user.getId(), type)){
+			System.out.println("Sub exists");
+			deleteSubmission(getAlreadyUploadedSubmission(user.getId(), type).getId());
+		}
+
+
 		DataFile df = null;
 		try {
 			df = new DataFile(file.getBytes());
@@ -197,15 +206,11 @@ public class StudentController {
 		}
 		dataFileRepository.save(df);
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = repository.findFirstByEmailAdress(auth.getName());
-//		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
-		String userId = user.getId();
 
 		Submission newSubmission = new Submission();
 		newSubmission.setSubmissionType(type);
 		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
-        newSubmission.setUserId(userId);
+        newSubmission.setUserId(user.getId());
         newSubmission.setAuthor(user.getName());
         submissionRepository.save(newSubmission);
         
@@ -213,7 +218,7 @@ public class StudentController {
 		//TODO: subId is generated with save and in order to inlude its id in fileUrl we have to save again. Workaround?
 		submissionRepository.save(newSubmission);
 
-        updateSubmissionIds(type, newSubmission.getId(), userId);
+        updateSubmissionIds(type, newSubmission.getId(), user.getId());
 
 
         //TODO: remove system.out
@@ -224,6 +229,28 @@ public class StudentController {
 				"\nAuthor: " + newSubmission.getAuthor());
 		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
 				file.getContentType(), file.getSize());
+	}
+
+	private boolean submissionAlreadyExist(String userId, SubmissionType type){
+		List<Submission> submissions = submissionRepository.findAllByUserId(userId);
+
+		for (Submission sub : submissions){
+			if (sub.getSubmissionType() == type){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Submission getAlreadyUploadedSubmission(String userId, SubmissionType type){
+		List<Submission> submissions = submissionRepository.findAllByUserId(userId);
+
+		for (Submission sub : submissions){
+			if (sub.getSubmissionType() == type){
+				return sub;
+			}
+		}
+		return null;
 	}
 
 	private void updateSubmissionIds(SubmissionType type, String submissionId, String userId){
@@ -251,4 +278,53 @@ public class StudentController {
 
         }
     }
+
+    private String getDataFileIdFromSubmissionFileUrl(Submission submission){
+		String[] parts = submission.getFileUrl().split("\\+");	//get id out of string "/submissions/datafiles/{subId}+{dataFileId}"
+		String fileId = parts[1];
+		return fileId;
+	}
+
+
+
+
+
+
+
+	@DeleteMapping("/student/mySubmissions/delete/{id}")
+	String deleteSubmission(@PathVariable String id) {
+		Submission submission = submissionRepository.findFirstById(id);
+		String fileId = getDataFileIdFromSubmissionFileUrl(submission);
+		updateSubmissionIds(submission.getSubmissionType(), "", submission.getUserId());
+
+		dataFileRepository.delete(dataFileRepository.findFirstById(fileId));
+		submissionRepository.delete(submissionRepository.findFirstById(id));
+
+		return "\nSubmission deleted: " + submission.getId()
+				+ "\nDatafile deleted: " + fileId + "\n";
+	}
+
+
+
+	/* TEMPORARY DELETE METHODS*/
+	//TODO: ska vara deletemapping men använder get under utveckling
+	@GetMapping("student/mySubmissions/deleteAll")
+	void deleteMySubmissions() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = repository.findFirstByEmailAdress(auth.getName());
+
+		List<Submission> submissions = submissionRepository.findAllByUserId(user.getId());
+		for (Submission sub : submissions){
+			updateSubmissionIds(sub.getSubmissionType(), "", user.getId());
+			dataFileRepository.deleteById(getDataFileIdFromSubmissionFileUrl(sub));
+			submissionRepository.deleteById(sub.getId());
+		}
+	}
+
+
 }
+
+
+
+
+
