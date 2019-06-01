@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { dbTypes } from '../../../../enums'
+import { dbSubmissionTypes } from '../../../../enums'
 import * as generalFunctions from "../../../../functions";
 
 
@@ -18,10 +18,10 @@ export const getStudentTableData = async () =>  {
         userId: student.userId,
         name: await getName(student.userId),
         assignedSupervisorId: student.assignedSupervisorId,
-        projectDescription: await studentSubmissions.find(sub => sub.submissionType === dbTypes.projectDescription),
-        projectPlan: await studentSubmissions.find(sub => sub.submissionType === dbTypes.projectPlan),
-        initialReport: await studentSubmissions.find(sub => sub.submissionType === dbTypes.initialReport),
-        finalReport: await studentSubmissions.find(sub => sub.submissionType === dbTypes.finalReport),
+        projectDescription: await studentSubmissions.find(sub => sub.submissionType === dbSubmissionTypes.projectDescription),
+        projectPlan: await studentSubmissions.find(sub => sub.submissionType === dbSubmissionTypes.projectPlan),
+        initialReport: await studentSubmissions.find(sub => sub.submissionType === dbSubmissionTypes.initialReport),
+        finalReport: await studentSubmissions.find(sub => sub.submissionType === dbSubmissionTypes.finalReport),
       }
     studentsList.push(studentObject)
   }

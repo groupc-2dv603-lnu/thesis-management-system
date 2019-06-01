@@ -1,0 +1,60 @@
+.content {
+    display: block;
+}
+
+.supervisorBox {
+    background-color: #eaeaea;
+    padding: 10px 25px;
+}
+
+.hidden {
+    display: none;
+}
+
+.submission {
+    margin: 9px auto;
+    width: 94%;
+    border: 1px solid black;
+}
+
+.submission > .header {
+    padding: 5px 10px;
+    background-color: #ddd;
+    border-bottom: 1px;
+    font-size: 105%;
+}
+
+.submission > .content {
+    padding: 15px 25px;
+}
+
+.finished {
+    opacity: 0.5;
+}
+
+.disabled {
+    opacity: 0.2;
+}
+
+.active {
+    width: 100%;
+}
+
+select {
+    height: 30px;
+}
+
+.smallText {
+    font-size: 90%;
+}
+
+.feedbackBox {
+    /* max-width: 95%; */
+    word-wrap: break-word;
+    padding: 10px 15px;
+}
+
+th, tr, td {
+    padding: 10px 15px;
+    vertical-align: top;
+}

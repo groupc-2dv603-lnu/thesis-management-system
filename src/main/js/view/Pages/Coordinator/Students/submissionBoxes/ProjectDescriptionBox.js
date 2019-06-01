@@ -4,7 +4,7 @@ import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import * as generalFunctions from "../../../../functions";
 import * as corFunc from '../../coordinatorFunctions'
-import { dbTypes } from '../../../../enums'
+import { dbSubmissionTypes } from '../../../../enums'
 
 class ProjectDescriptionBox extends Component {
   constructor(props) {
@@ -75,7 +75,7 @@ class ProjectDescriptionBox extends Component {
       return;
     }
     const request = await corFunc.updateSubmission(
-      dbTypes.projectDescription,
+      dbSubmissionTypes.projectDescription,
       this.state.projectDescription
     );
     console.log("REQUEST", request);

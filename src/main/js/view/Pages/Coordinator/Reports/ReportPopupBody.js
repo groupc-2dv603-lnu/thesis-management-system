@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import * as Style from "../Styles/ReportStyles";
 import * as PopupStyle from "../Styles/PopupStyles";
-import * as generalFunctions from "../../../functions";
 import * as corFunc from '../coordinatorFunctions'
-import { dbTypes } from '../../../enums'
+import { dbSubmissionTypes } from '../../../enums'
 
 class ReportPopupBody extends Component {
   constructor(props) {
@@ -178,7 +177,7 @@ class ReportPopupBody extends Component {
     delete initialReport.name;
 
     const request = await corFunc.updateSubmission(
-      dbTypes.initialReport,
+      dbSubmissionTypes.initialReport,
       initialReport
     );
     if (request.status === 200) {

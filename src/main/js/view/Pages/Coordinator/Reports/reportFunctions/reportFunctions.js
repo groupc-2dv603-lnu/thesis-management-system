@@ -37,7 +37,6 @@ const getSubmission = async (submissionId) => {
 export async function getName(userId) {
   try {
     const response = await generalFunctions.getFromAPI(`/users/${userId}`);
-    console.log('RESPONSE', response)
     return response.entity.name === undefined ? 'User not found' : (
       await generalFunctions.capitalizeFirstLetter(response.entity.name)
     );

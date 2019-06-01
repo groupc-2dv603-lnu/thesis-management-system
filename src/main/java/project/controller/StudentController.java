@@ -56,6 +56,16 @@ public class StudentController {
 			    .map(supervisor -> new Resource<>(supervisor,
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		
+		for(int i=0; i < supervisors.size(); i++) {
+			if(supervisors.get(i).getContent().getUserId().equals(user.getId())) {
+				supervisors.remove(i);
+			}
+		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
@@ -69,7 +79,7 @@ public class StudentController {
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
 		
-		if(PendingSupervisor.AWAITING.equals(student.getPendingSupervisor()) || PendingSupervisor.ACCEPTED.equals(student.getPendingSupervisor())) {
+		if(PendingSupervisor.AWAITING.equals(student.getPendingSupervisor()) || PendingSupervisor.ACCEPTED.equals(student.getPendingSupervisor()) || user.getId().equals(supervisorUserId)) {
 			return supervisor;
 		} else {
 			supervisor.getAwaitingResponse().add(user.getId());
@@ -124,6 +134,7 @@ public class StudentController {
 	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
+		
 		return new Resource<>(feedback,
 				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
@@ -132,7 +143,6 @@ public class StudentController {
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
-			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
 			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
 			    	    .collect(Collectors.toList());				
 		return new Resources<>(feedbacks,
@@ -145,7 +155,7 @@ public class StudentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		return new Resource<>(student,
-				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
+				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
 	}
 
 	// Returns all of a students' submissions //
@@ -188,12 +198,15 @@ public class StudentController {
 		dataFileRepository.save(df);
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
+		User user = repository.findFirstByEmailAdress(auth.getName());
+//		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
+		String userId = user.getId();
 
 		Submission newSubmission = new Submission();
 		newSubmission.setSubmissionType(type);
 		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
         newSubmission.setUserId(userId);
+        newSubmission.setAuthor(user.getName());
         submissionRepository.save(newSubmission);
         
 		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
@@ -207,7 +220,8 @@ public class StudentController {
 		System.out.println("Successfully uploaded submission and datafile." +
 				"\nSubmission ID: " + newSubmission.getId() +
 				"\nDatafile ID: " + df.getId() +
-				"\nFilename: " + newSubmission.getFilename());
+				"\nFilename: " + newSubmission.getFilename() +
+				"\nAuthor: " + newSubmission.getAuthor());
 		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
 				file.getContentType(), file.getSize());
 	}

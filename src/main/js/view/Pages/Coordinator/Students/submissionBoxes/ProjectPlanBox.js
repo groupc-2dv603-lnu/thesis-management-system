@@ -4,7 +4,7 @@ import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
-import { dbTypes } from '../../../../enums'
+import { dbSubmissionTypes } from '../../../../enums'
 
 class ProjectPlanBox extends Component {
   constructor(props) {
@@ -75,7 +75,7 @@ class ProjectPlanBox extends Component {
       return;
     }
     const request = await corFunc.updateSubmission(
-      dbTypes.projectPlan,
+      dbSubmissionTypes.projectPlan,
       this.state.projectPlan
     );
     if (request.status === 200) {

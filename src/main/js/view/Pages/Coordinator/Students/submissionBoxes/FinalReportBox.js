@@ -5,7 +5,7 @@ import * as PopupStyle from "../../Styles/PopupStyles";
 import Feedback from "./ShowFeedback";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
-import { dbTypes } from '../../../../enums'
+import { dbSubmissionTypes } from '../../../../enums'
 
 class FinalReportBox extends Component {
   constructor(props) {
@@ -92,7 +92,7 @@ class FinalReportBox extends Component {
       return;
     }
     const request = await corFunc.updateSubmission(
-      dbTypes.finalReport,
+      dbSubmissionTypes.finalReport,
       this.state.finalReport
     );
 

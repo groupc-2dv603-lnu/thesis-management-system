@@ -9,44 +9,31 @@ import lombok.Data;
 
 import java.util.Date;
 
-import project.model.enums.SubmissionStatus;
 import project.model.enums.SubmissionType;
+
+import javax.validation.constraints.NotNull;
 
 
 @Data
 @Document(collection = "submissions")
 public class Submission {
 
+    @NotNull
     @Id
     private String id;
+    @NotNull
     @CreatedDate
     private Date submissionDate;
-
+    @NotNull
     private String userId;
-    private SubmissionStatus submissionStatus;
+    @NotNull
     private SubmissionType submissionType;
+    @NotNull
     private String fileUrl;
-//    private String filePath;                //Used for creating binary file and will then be set to null and not stored in mongodb
+    @NotNull
     private String filename;
-
+    private String author;
 
     public Submission() {}
 
-//    public Submission(String filePath) { //TODO: remove constructor?
-////        this.fileName = fileName;
-//        this.filePath = filePath;
-//
-//
-//        //TODO: might be redundant. Remove?
-////        try {
-////            byte[] bytes = Files.readAllBytes(new File(filePath).toPath());
-////            this.file = new Binary(bytes);
-////
-////        } catch (IOException e) {
-////            e.printStackTrace();
-////        }
-//        this.filePath = null;
-//    }
-
-//
 }

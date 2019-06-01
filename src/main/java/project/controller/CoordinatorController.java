@@ -4,14 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
 import project.model.DTOs.SubmissionsDTO;
-import project.model.enums.Grade;
-import project.model.enums.SubmissionStatus;
+
+import project.model.enums.Role;
+
 import project.model.repositories.*;
 
 import javax.validation.Valid;
+
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +48,29 @@ public class CoordinatorController {
 
     @Autowired
     private SubmissionRepository submissionRepository;
+    
+    @Autowired
+    private UserRepository repository;
+    
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
+    
+	@PostMapping("/coordinator/feedback")
+	Feedback newFeedback(@RequestParam String text, @RequestParam String FinalReportId) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		
+		Date date = new Date();
+		Feedback feedback = new Feedback(user.getId(), FinalReportId, text, Role.COORDINATOR, date);
+		FinalReport report = finalReportRepository.findFirstById(feedback.getDocumentId());
 
+		feedbackRepository.save(feedback);
+		report.getFeedBackIds().add(feedback.getId());
+		finalReportRepository.save(report);
+		return feedback;
+	}
     @PutMapping(value = "/coordinator/updateProjectPlan", consumes = {"application/json"})
     void updateProjectPlan(@Valid @RequestBody ProjectPlan projectPlan) {
         if (projectPlanRepository.findById(projectPlan.getId()).isPresent()) {
@@ -53,7 +79,7 @@ public class CoordinatorController {
     }
 
     @PutMapping(value = "/coordinator/updateProjectDescription", consumes = {"application/json"})
-    void updateProjectDescription(@RequestBody ProjectDescription projectDescription) {
+    void updateProjectDescription(@Valid @RequestBody ProjectDescription projectDescription) {
         if (projectDescriptionRepository.findById(projectDescription.getId()).isPresent()) {
             projectDescriptionRepository.save(projectDescription);
         }
@@ -67,7 +93,7 @@ public class CoordinatorController {
     }
 
     @PutMapping(value = "/coordinator/updateInitialReport", consumes = {"application/json"})
-    void updateInitialReport(@RequestBody InitialReport initialReport) {
+    void updateInitialReport(@Valid @RequestBody InitialReport initialReport) {
         if (initialReportRepository.findById(initialReport.getId()).isPresent()) {
             initialReportRepository.save(initialReport);
         }
@@ -126,15 +152,5 @@ public class CoordinatorController {
         return new Resources<>(submissions,
                 linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withSelfRel());
     }
-
-    /* Update the status of a submission */
-    @PutMapping("/coordinator/submissions/{id}/updateStatus")
-    Submission updateSubmissionStatus(@PathVariable String id, @RequestParam SubmissionStatus newStatus){
-        Submission updatedSubmission = submissionRepository.findFirstById(id);
-        updatedSubmission.setSubmissionStatus(newStatus);
-        submissionRepository.save(updatedSubmission);
-
-        return updatedSubmission;
-
-    }
+    
 }

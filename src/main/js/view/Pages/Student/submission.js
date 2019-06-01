@@ -1,66 +1,64 @@
 'use strict'
 
 import React, { Component } from 'react';
+import FeedbackList from './feedback';
 import * as func from './functions';
-import { capitalizeFirstLetter } from './../../functions';
+import { getUser, putToAPI, fileUpload, formatCamelCaseToText } from './../../functions';
+import { grades, dbSubmissionTypeMap } from './../../enums';
 
-// const submissionStatus = { ACTIVE: "ACTIVE", FINISHED: "FINISHED", DISABLED: "DISABLED" };
-const grades = { NOGRADE: "NOGRADE", PASS: "PASS", FAIL: "FAIL" };
-const dbType = new Map([ ["projectDescription", "PRJ_DESCRIPTION"], ["projectPlan", "PRJ_PLAN"], ["initialReport", "INITIAL_REPORT"], ["finalReport", "FINAL_REPORT"] ]); //hopefully temporary
-
-class Submission extends Component {
-
+export default class Submission extends Component {
     constructor(props) {
         super(props);
-        this.state = { showFeedback: false, submissionData: {} };
+        this.state = { showFeedback: false, submissionData: {}, feedbackPopup: false, file: null };
 
-        this.toggleShowFeedback = this.toggleShowFeedback.bind(this);
+        this.onFormSubmit = this.onFormSubmit.bind(this);
+        this.onChangeFile = this.onChangeFile.bind(this);
+        // this.fileUpload = this.fileUpload.bind(this)
+    }
+
+    onFormSubmit(e) {
+        e.preventDefault(); // Stop form submit
+        // console.log(dbSubmissionTypeMap.get(this.props.type));
+        fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type)).then(response => { console.log("file uploaded", response); })
+            .catch(error => console.log("upload error", error))
+    }
+    onChangeFile(e) {
+        this.setState({ file: e.target.files[0] })
     }
 
     componentDidMount() {
-        // console.log(this.props.type, this.props.reportData.submissionId)
         this.updateSubmissionData();
     }
 
-    sendFile() {
-        func.uploadFile(document.getElementById("file").files[0], this.props.reportData.userId, dbType.get(this.props.type))
-        // .then(() => {
-            // this.updateSubmissionData();
-            // document.getElementById("file").value = "";
-        // })
-        .catch(() => {
-            this.updateSubmissionData();
-        })      
-    }
-
     updateSubmissionData() {
-        if(this.props.reportData.submissionId) { // the report will only have a submission tied to it if a file has been uploaded
+        if (this.props.reportData.submissionId) { // the report will only have a submission tied to it if a file has been uploaded
             console.log("updating submission data")
             func.getSubmissionData(this.props.reportData.submissionId).then(response => {
-                // console.log(response.entity)
                 this.setState({ submissionData: response.entity })
             })
         }
     }
 
-    toggleShowFeedback() {
-        this.setState({ showFeedback: !this.state.showFeedback });
+    setFeedbackPopup(state) {
+        // only open popup if feedback data exists
+        if (this.props.reportData.feedBackId || (this.props.reportData.feedBackIds && this.props.reportData.feedBackIds.length > 0)) {
+            this.setState({ feedbackPopup: state });
+        }
     }
 
     render() {
         let line1, line2, styleClass;
-        
+
         let currentDate = new Date().toISOString(); // TODO get date from server
-      
-        // submission graded
-        if(this.props.reportData.grade != grades.NOGRADE) {
-        // if(this.props.submissionData && this.props.submissionData.submissionStatus == submissionStatus.FINISHED) {
+
+        // report graded - counted as finished
+        if (this.props.reportData.grade != grades.NOGRADE) {
             line1 = "Status: Graded";
             line2 = "Grade: " + func.capitalizeFirstLetter(this.props.reportData.grade);
             styleClass = "finished";
         }
-        // deadline is set (but not graded) == submission counted as active
-        else if(this.props.reportData.deadLine) {
+        // deadline is set (but not graded) == report counted as active
+        else if (this.props.reportData.deadLine) {
             line1 = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
             line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
             styleClass = "active";
@@ -73,114 +71,75 @@ class Submission extends Component {
         return (
             <div>
                 <div className={"submission " + styleClass}>
-                    <div className="header" onClick={() => this.toggleShowFeedback()}>{func.capitalizeFirstLetter(this.props.type)}</div>
+                    <div className="header">{formatCamelCaseToText(this.props.type)}</div>
                     <div className="content">
 
-                        {/* finished or active submission */}
-                        {this.props.reportData.deadLine != null ? (
+                        {/* finished or active report */}
+                        {this.props.reportData.deadLine != null
+                            ?
                             <div>
                                 {line1}
-                                <br/>
+                                <br />
                                 {line2}
+
+                                {/* has feedback */}
+                                {this.state.submissionData && this.state.submissionData.feedBackId || (this.state.submissionData.feedBackIds && this.state.submissionData.feedBackIds.length > 0)
+                                    ?
+                                    <i style={{ fontSize: "24px" }} className="far fa-comment-alt right link" onClick={() => this.setFeedbackPopup(true)} title="This report has got feedback (click to show)" />
+                                    :
+                                    null
+                                }
+
                                 {/* show file upload for active submission */}
-                                {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE ? (
+                                {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE
+                                    ?
                                     <div>
                                         <p style={{ fontSize: "12px" }}>
-                                            {this.state.submissionData.fileUrl ? "You have already submitted a document. Submitting a new document will overwrite the old one" : null }
+                                            {this.state.submissionData.fileUrl ? "You have already submitted a document. Submitting a new document will overwrite the old one" : null}
                                         </p>
-                                        <br/>
-                                        <input type="file" id="file"/>
-                                        <br/>
-                                        <button onClick={() => this.sendFile()}>Upload</button>
+                                        <br />
+                                        <form onSubmit={this.onFormSubmit}>
+                                            <input type="file" id="file" onChange={this.onChangeFile} />
+                                            <br />
+                                            <button type="submit">Upload</button>
+                                        </form>
                                     </div>
-                                // deadline passed
-                                ) : (this.props.reportData.deadLine && !this.props.reportData.grade) ? (
-                                        <div style={{"color":"red"}}>
-                                            <br/>
+                                    :
+                                    // deadline passed
+                                    this.props.reportData.deadLine && !this.props.reportData.grade
+                                        ?
+                                        <div style={{ "color": "red" }}>
+                                            <br />
                                             Submission deadline has passed. If you missed it, contact your coordinator to open up the submission again
                                         </div>
-                                ) : ''}
-                              </div>
-                        ) : (
+                                        :
+                                        null
+                                }
+                            </div>
+                            :
                             // submission not started
                             <div>
                                 {line1}
                             </div>
-                        )}
-
-                        {/* Feedback */}
-                        {/* {this.state.showFeedback && this.props.submissionData.submissionStatus == "finished" ? */}
-                        <FeedbackList documentId={this.props.reportData.id}/>
-                        {/* : ''} */}
+                        }
 
                     </div>
-                </div>            
-            </div>
-        )
+                </div>
 
-    }
-}
-
-class FeedbackList extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = { feedback: [] };
-    }
-
-    componentDidMount() {
-        if(this.props.documentId) { // because not getting id for all documents from the API (for some reason...)
-            func.getFeedback(this.props.documentId).then(response => {
-                if(response._embedded) { // if not empty
-                    this.setState({ feedback: response._embedded.feedbacks });
+                {/* Feedback popup */}
+                {this.state.feedbackPopup
+                    ?
+                    <div className="popupOverlay">
+                        <div className="innerPopup">
+                            <i className="fas fa-window-close link right" onClick={() => this.setFeedbackPopup(false)} title="Close" />
+                            <FeedbackList reportData={this.props.reportData} type={this.props.type} />
+                        </div>
+                    </div>
+                    :
+                    null
                 }
-            });
-        }
-    }
-
-    render() {
-        const feedbackList = this.state.feedback.map(obj =>
-            <div key={obj.id}>
-                <br/>
-                <br/>
-                <Feedback {...obj}/>
-            </div>
-        );
-    
-        return (
-            <div>
-                {feedbackList}
             </div>
         )
+
     }
 }
-
-class Feedback extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = { feedbackUser: {} };
-    }
-
-    componentDidMount() {
-        getUser(this.props.userId).then(response => {
-            this.setState({ feedbackUser: response.entity })
-        })
-    }
-
-    render() {
-        return (
-            <div className="feedback">
-                <div className="header">
-                    Feedback from {this.props.role + " " + this.state.feedbackUser.name}
-                </div>
-                <div className="content">
-                    {this.props.text}
-                </div>
-            </div>
-        )
-    }
-}
-
-export default Submission
