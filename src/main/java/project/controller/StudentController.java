@@ -69,7 +69,7 @@ public class StudentController {
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
 		
-		if(PendingSupervisor.AWAITING.equals(student.getPendingSupervisor()) || PendingSupervisor.ACCEPTED.equals(student.getPendingSupervisor())) {
+		if(PendingSupervisor.AWAITING.equals(student.getPendingSupervisor()) || PendingSupervisor.ACCEPTED.equals(student.getPendingSupervisor()) || user.getId().equals(supervisorUserId)) {
 			return supervisor;
 		} else {
 			supervisor.getAwaitingResponse().add(user.getId());
