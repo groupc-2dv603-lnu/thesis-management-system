@@ -77,6 +77,6 @@ public class OpponentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
 		return new Resource<>(opponent,
-				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
+				linkTo(methodOn(OpponentController.class).one6()).withSelfRel());
 	}
 }

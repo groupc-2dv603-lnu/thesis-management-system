@@ -123,7 +123,7 @@ public class ReaderController {
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
 		return new Resource<>(reader,
-				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
+				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());
 	}
 	
 //	
