@@ -56,9 +56,8 @@ public class ReaderController {
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
 		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
-		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text, Role.READER, dateFormat.format(date));
+		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text, Role.READER, date);
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
@@ -80,9 +79,8 @@ public class ReaderController {
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
-		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text, Role.READER, dateFormat.format(date));
+		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text, Role.READER, date);
 		FinalReport report = finalReportRepository.findFirstById(feedback.getDocumentId());
 		System.out.println(report);
 		Boolean doesFeedBackExist = false;

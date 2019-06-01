@@ -17,10 +17,10 @@ public class Feedback {
 	private String documentId;
 	private String text;
 	private Role role;
-	private String submittedDate;
+	private Date submittedDate;
 	
 	
-	public Feedback(String userId, String documentId , String text, Role role, String string) {
+	public Feedback(String userId, String documentId , String text, Role role, Date string) {
 		this.userId = userId;
 		this.documentId = documentId;
 		this.text = text;
