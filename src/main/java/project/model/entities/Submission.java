@@ -24,6 +24,7 @@ public class Submission {
     private SubmissionType submissionType;
     private String fileUrl;
     private String filename;
+    private String author;
 
     public Submission() {}
 
