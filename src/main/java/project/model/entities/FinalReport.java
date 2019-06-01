@@ -20,8 +20,11 @@ public class FinalReport {
 	private String userId;
 	@NotNull
 	private String submissionId;
+	@NotNull
 	private GradeAF grade;
+	@NotNull
 	private String deadLine;
+	@NotNull
 	private ArrayList<String> feedBackIds;
 	@NotNull
 	private List<Opponent> opponents;

@@ -23,7 +23,9 @@ public class Feedback {
 	private String documentId;
 	@NotNull
 	private String text;
+	@NotNull
 	private Role role;
+	@NotNull
 	private Date submittedDate;
 	
 	

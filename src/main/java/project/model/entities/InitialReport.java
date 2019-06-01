@@ -28,7 +28,9 @@ public class InitialReport {
 	private ArrayList<String> assignedOpponents;
 	@NotNull
 	private ArrayList<String> feedBackIds;
+	@NotNull
 	private Grade grade;
+	@NotNull
 	private String deadLine;
 	
 	

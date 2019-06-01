@@ -18,6 +18,7 @@ public class ProjectDescription {
 	private String userId;
 	@NotNull
 	private String submissionId;
+	@NotNull
 	private Grade grade;
 	@NotNull
 	private String deadLine;

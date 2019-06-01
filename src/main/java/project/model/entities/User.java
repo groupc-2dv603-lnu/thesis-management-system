@@ -20,7 +20,6 @@ public class User {
 	@NotNull
 	private String name;
 	@NotNull
-	
 	@JsonIgnore
 	private String password;
 	@NotNull
