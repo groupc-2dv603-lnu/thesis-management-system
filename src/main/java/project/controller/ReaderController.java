@@ -24,6 +24,7 @@ import project.model.entities.Feedback;
 import project.model.entities.FinalReport;
 import project.model.entities.InitialReport;
 import project.model.entities.Reader;
+import project.model.entities.Student;
 import project.model.entities.User;
 import project.model.enums.Role;
 import project.model.repositories.FeedbackRepository;
@@ -100,7 +101,7 @@ public class ReaderController {
 		return feedback;
 	}
 	@PutMapping("/reader/requestBidding")
-	InitialReport replaceEmployee(@RequestParam String initialReportId) {
+	InitialReport requestBidding(@RequestParam String initialReportId) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String name = auth.getName();
 		User user = repository.findFirstByEmailAdress(name);
@@ -115,24 +116,35 @@ public class ReaderController {
 		return initialReportRepository.save(report);
 	}
 	
-	@GetMapping(value = "/reader/initialReport/{id}", produces = "application/json; charset=UTF-8")
-	Resource<InitialReport> one(@PathVariable String id) {
-		InitialReport initialReport = initialReportRepository.findFirstById(id);
-		return new Resource<>(initialReport,
-				linkTo(methodOn(ReaderController.class).one(id)).withSelfRel(),
-				linkTo(methodOn(ReaderController.class).all()).withRel("initialReport"));
+	@GetMapping(value = "/reader/readerInfo", produces = "application/json; charset=UTF-8")
+	Resource<Reader> one6() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Reader reader = readerRepository.findFirstByuserId(user.getId());
+		return new Resource<>(reader,
+				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
 	}
 	
-	@GetMapping(value = "/reader/initialReport", produces = "application/json; charset=UTF-8")
-	Resources<Resource<InitialReport>> all() {
-		List<Resource<InitialReport>> initialReports = initialReportRepository.findAll().stream()
-			    .map(initialReport -> new Resource<>(initialReport,
-			    		linkTo(methodOn(ReaderController.class).one(initialReport.getId())).withSelfRel(),
-			    		linkTo(methodOn(ReaderController.class).all()).withRel("initialReports")))
-			    	    .collect(Collectors.toList());
-
-		return new Resources<>(initialReports,
-				linkTo(methodOn(ReaderController.class).all()).withSelfRel());
-	}
+//	
+//	@GetMapping(value = "/reader/initialReport/{id}", produces = "application/json; charset=UTF-8")
+//	Resource<InitialReport> one(@PathVariable String id) {
+//		InitialReport initialReport = initialReportRepository.findFirstById(id);
+//		return new Resource<>(initialReport,
+//				linkTo(methodOn(ReaderController.class).one(id)).withSelfRel(),
+//				linkTo(methodOn(ReaderController.class).all()).withRel("initialReport"));
+//	}
+//	
+//	@GetMapping(value = "/reader/initialReport", produces = "application/json; charset=UTF-8")
+//	Resources<Resource<InitialReport>> all() {
+//		List<Resource<InitialReport>> initialReports = initialReportRepository.findAll().stream()
+//			    .map(initialReport -> new Resource<>(initialReport,
+//			    		linkTo(methodOn(ReaderController.class).one(initialReport.getId())).withSelfRel(),
+//			    		linkTo(methodOn(ReaderController.class).all()).withRel("initialReports")))
+//			    	    .collect(Collectors.toList());
+//
+//		return new Resources<>(initialReports,
+//				linkTo(methodOn(ReaderController.class).all()).withSelfRel());
+//	}
 
 }
