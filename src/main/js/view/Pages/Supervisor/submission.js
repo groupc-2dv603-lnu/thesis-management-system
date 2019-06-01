@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as func from './functions';
-import { dbTypes } from './../../enums';
+import { dbSubmissionTypes } from './../../enums';
 
 export class Submission extends Component {
     
@@ -50,7 +50,7 @@ export class Submission extends Component {
         return (
             <div>
                 <h2>
-                    {this.state.submissionData.type == dbTypes.projectPlan 
+                    {this.state.submissionData.type == dbSubmissionTypes.projectPlan
                     ?
                         <span >Approve/Reject Project Plan</span>
                     :
@@ -79,7 +79,7 @@ export class Submission extends Component {
                 </table>
 
                 <br/>
-                {this.state.submissionData.type == dbTypes.projectPlan
+                {this.state.submissionData.type == dbSubmissionTypes.projectPlan
                 ? // Submission is a Project plan
                     <div>
                         <button onClick={() => this.answerReport(true)}>Approve</button>

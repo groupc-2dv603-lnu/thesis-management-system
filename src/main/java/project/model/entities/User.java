@@ -9,18 +9,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import project.model.enums.Role;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Document(collection = "users")
 public class User {
-
+	@NotNull
 	@Id
 	private String id;
+	@NotNull
 	private String name;
-	
+	@NotNull
 	@JsonIgnore
 	private String password;
-
+	@NotNull
 	private String emailAdress;
+	@NotNull
 	private Role[] roles;
 	
 	

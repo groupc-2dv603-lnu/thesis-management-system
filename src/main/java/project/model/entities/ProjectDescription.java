@@ -6,14 +6,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import project.model.enums.Grade;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Document(collection = "projectDescriptions")
 public class ProjectDescription {
+	@NotNull
 	@Id
 	private String id;
+	@NotNull
 	private String userId;
+	@NotNull
 	private String submissionId;
+	@NotNull
 	private Grade grade;
+	@NotNull
 	private String deadLine;
 	
 	
