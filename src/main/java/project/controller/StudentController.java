@@ -56,6 +56,16 @@ public class StudentController {
 			    .map(supervisor -> new Resource<>(supervisor,
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		
+		for(int i=0; i < supervisors.size(); i++) {
+			if(supervisors.get(i).getContent().getUserId().equals(user.getId())) {
+				supervisors.remove(i);
+			}
+		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
