@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from "react";
-import { postToAPI, getFromAPI } from "../../functions";
+import { postToAPI, getFromAPI, putToAPI } from "../../functions";
 
 const mockState = {
   reports: [
@@ -55,14 +55,29 @@ const mockState = {
 class Reader extends Component {
   constructor(props) {
     super(props);
-    this.state = mockState;
+    this.state = {
+      user: null,
+      reports: [],
+      selectedReports: [],
+      initialReport: null,
+      finalreport: null
+    };
   }
 
   componentDidMount() {
     getFromAPI("/reader/initialReport").then(result => {
       this.setState({
-        reportss: result.entity._embedded.initialReports
+        reports: result.entity._embedded.initialReports
       });
+    });
+    getFromAPI("/loginUser").then(user => {
+      console.log(user);
+      this.setState({
+        user: user.entity
+      });
+    });
+    getFromAPI("/reader/readerInfo").then(info => {
+      console.log(info);
     });
   }
 
@@ -95,7 +110,9 @@ class Reader extends Component {
   }
 
   sendBiddedReports() {
-    // mock
+    this.state.selectedReports.map(report => {
+      postToAPI(`/reader/requestBidding?text=${report.id}`);
+    });
   }
 
   sendInitialReport() {
@@ -115,7 +132,7 @@ class Reader extends Component {
   }
 
   render() {
-    console.log(this.state.reports);
+    console.log(this.state);
     return (
       <div>
         {this.state.reports.length && (
