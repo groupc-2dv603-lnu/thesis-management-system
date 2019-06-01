@@ -2,13 +2,8 @@ import React, { Component } from "react";
 import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
-import * as corFunc from '../../coordinatorFunctions'
-
-/**
- * TODO:
- *  - handleSubmit() update submissions - Need from backend
- *  - add Feedback ?
- */
+import * as corFunc from "../../coordinatorFunctions";
+import * as generalFunctions from "../../../../functions";
 
 class ProjectPlanBox extends Component {
   constructor(props) {
@@ -21,11 +16,10 @@ class ProjectPlanBox extends Component {
       projectPlan: this.props.projectPlan,
       submission: this.props.submission,
       showMessage: false,
-      message: "",
+      message: ""
     };
     this.getMessage = this.getMessage.bind(this);
   }
-
 
   toggleMessage(message) {
     this.setState({
@@ -34,12 +28,11 @@ class ProjectPlanBox extends Component {
     });
     setTimeout(() => {
       this.setState({
-        message: '',
+        message: "",
         showMessage: !this.state.showMessage
-      })
-    }, 2000)
+      });
+    }, 2000);
   }
-
 
   getMessage() {
     return <div style={PopupStyle.message}>{this.state.message}</div>;
@@ -73,13 +66,17 @@ class ProjectPlanBox extends Component {
   }
 
   async handleSubmit() {
-    const validDeadline = corFunc.validDeadline(this.state.projectPlan.deadLine)
+    const validDeadline = corFunc.validDeadline(
+      this.state.projectPlan.deadLine
+    );
     if (validDeadline !== true) {
-      this.toggleMessage('Deadline is not valid')
-      return
+      this.toggleMessage("Deadline is not valid");
+      return;
     }
-    const request = await corFunc.updateSubmission('pp', this.state.projectDescription)
-    console.log("REQUEST", request);
+    const request = await corFunc.updateSubmission(
+      "pp",
+      this.state.projectPlan
+    );
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
@@ -105,13 +102,13 @@ class ProjectPlanBox extends Component {
             <div style={Style.subBoxHeader}>
               Project Plan
               {this.state.submission.fileUrl !== "" ? (
-                <span style={Style.downloadSpan}>
-                  <a
-                    href={`localhost:8080${this.state.submission.fileUrl}`}
-                    target="_blank"
-                  >
-                    <i className="fas fa-download" />
-                  </a>
+                <span
+                  style={Style.downloadSpan}
+                  onClick={() =>
+                    generalFunctions.downloadFile(this.state.submission.fileUrl)
+                  }
+                >
+                  <i className="fas fa-download" />
                 </span>
               ) : null}
             </div>
@@ -188,6 +185,15 @@ class ProjectPlanBox extends Component {
                   </select>
                 </span>
               </div>
+              {/* ----- APPROVED BY SUPERVISOR ----- */}
+              <div style={Style.submissionRow}>
+                <span style={Style.submissionLeftColumn}>Approved</span>
+                <span style={Style.submissionRightColumn}>
+                  {this.state.projectPlan.approved === true
+                    ? `Plan is approved by a supervisor`
+                    : `Plan is not approved by a supervisor`}
+                </span>
+              </div>
               {/* ----- SUBMIT ----- */}
               <div onClick={() => this.handleSubmit()} style={Style.submitRow}>
                 Submit changes
@@ -195,7 +201,6 @@ class ProjectPlanBox extends Component {
             </div>
           </div>
         )}
-
       </div>
     );
   }

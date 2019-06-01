@@ -98,6 +98,41 @@ export const downloadSpan = {
   marginRight: '15px'
 }
 
+/* ---- COMMENT ----- */
+
+export const commentRow = {
+  borderTop: standardBorder,
+  borderBottom: standardBorder,
+  height: '100px',
+  width: "100%"
+}
+
+export const commentLeftColumn = {
+  borderRight: standardBorder,
+  width: "25%",
+  height: "100%",
+  float: "left",
+  lineHeight: '100px',
+  fontWeight: "bold",
+  background: lightgrey
+}
+
+export const commentRightColumn = {
+  height: "100%",
+  float: "left",
+  lineHeight: '100px',
+  marginLeft: "3px"
+}
+
+export const textArea = {
+  border: 'none',
+  width: '340px',
+  height: '90%',
+  resize: 'none',
+  padding: '2px'
+  
+}
+
 /* ---- feedback ---- */
 export const feedbackBox = {
   border: standardBorder,

@@ -1,4 +1,5 @@
 import moment from "moment";
+import * as generalFunctions from '../../functions'
 
 export const validDeadline = deadline => {
   if (deadline === "T:00") {
@@ -23,6 +24,7 @@ export const validDeadline = deadline => {
  */
 export const updateSubmission = async (submissionType, object) => {
   const submissionObject = await JSON.stringify(object);
+  console.log('SUBOBJ', submissionObject)
   let url = "";
   if (submissionType === "pd") {
     url = "http://localhost:8080/coordinator/updateProjectDescription";
@@ -45,3 +47,4 @@ export const updateSubmission = async (submissionType, object) => {
   console.log("REQUEST", request);
   return request;
 };
+

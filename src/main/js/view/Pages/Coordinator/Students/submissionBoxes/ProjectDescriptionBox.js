@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
+import * as generalFunctions from "../../../../functions";
 import * as corFunc from '../../coordinatorFunctions'
 
 class ProjectDescriptionBox extends Component {
@@ -17,6 +18,8 @@ class ProjectDescriptionBox extends Component {
       showMessage: false,
       message: ""
     };
+    console.log("PD", this.state.projectDescription);
+    console.log("PDSUB", this.state.submission);
   }
 
   toggleMessage(message) {
@@ -26,10 +29,10 @@ class ProjectDescriptionBox extends Component {
     });
     setTimeout(() => {
       this.setState({
-        message: '',
+        message: "",
         showMessage: !this.state.showMessage
-      })
-    }, 2000)
+      });
+    }, 2000);
   }
 
   getMessage() {
@@ -64,12 +67,17 @@ class ProjectDescriptionBox extends Component {
   }
 
   async handleSubmit() {
-    const validDeadline = corFunc.validDeadline(this.state.projectDescription.deadLine)
+    const validDeadline = corFunc.validDeadline(
+      this.state.projectDescription.deadLine
+    );
     if (validDeadline !== true) {
-      this.toggleMessage('Deadline is not valid')
-      return
+      this.toggleMessage("Deadline is not valid");
+      return;
     }
-    const request = await corFunc.updateSubmission('pd', this.state.projectDescription)
+    const request = await corFunc.updateSubmission(
+      "pd",
+      this.state.projectDescription
+    );
     console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
@@ -96,13 +104,13 @@ class ProjectDescriptionBox extends Component {
             <div style={Style.subBoxHeader}>
               Project Description
               {this.state.submission.fileUrl !== "" ? (
-                <span style={Style.downloadSpan}>
-                  <a
-                    href={`localhost:8080${this.state.submission.fileUrl}`}
-                    target="_blank"
-                  >
-                    <i className="fas fa-download" />
-                  </a>
+                <span
+                  onClick={() =>
+                    generalFunctions.downloadFile(this.state.submission.fileUrl)
+                  }
+                  style={Style.downloadSpan}
+                >
+                  <i className="fas fa-download" />
                 </span>
               ) : null}
             </div>

@@ -26,10 +26,6 @@ class StudentsTable extends Component {
   render() {
     /* ---- Table ---- */
     const columnMaxWidth = 60;
-    const projectDescription = "project description";
-    const projectPlan = "project plan";
-    const initialReport = "initial report";
-    const finalReport = "final report";
 
     const columns = [
       {
@@ -54,7 +50,8 @@ class StudentsTable extends Component {
         accessor: "supervisor",
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <span>{func.booleanSymbol(props.original.supervisorAssigned)}</span>
+          
+          <span>{func.booleanSymbol(props.original.assignedSupervisorId !== "")}</span>
         )
       },
       {
@@ -66,7 +63,7 @@ class StudentsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <span>
-            {func.booleanSymbol(props.original.projectDescriptionSubmitted)}
+            {props.original.projectDescription !== undefined ? func.booleanSymbol(props.original.projectDescription.fileUrl !== "") : func.booleanSymbol(false)}
           </span>
         )
       },
@@ -78,7 +75,9 @@ class StudentsTable extends Component {
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <span>{func.booleanSymbol(props.original.projectPlanSubmitted)}</span>
+          <span>
+            {props.original.projectPlan !== undefined ? func.booleanSymbol(props.original.projectPlan.fileUrl !== "") : func.booleanSymbol(false)}
+          </span>
         )
       },
       {
@@ -90,7 +89,7 @@ class StudentsTable extends Component {
         maxWidth: columnMaxWidth,
         Cell: props => (
           <span>
-            {func.booleanSymbol(props.original.initialReportSubmitted)}
+            {props.original.initialReport !== undefined ? func.booleanSymbol(props.original.initialReport.fileUrl !== "") : func.booleanSymbol(false)}
           </span>
         )
       },
@@ -102,7 +101,9 @@ class StudentsTable extends Component {
         style: TableStyle.submissionColumnStyle,
         maxWidth: columnMaxWidth,
         Cell: props => (
-          <span>{func.booleanSymbol(props.original.finalReportSubmitted)}</span>
+          <span>
+          {props.original.finalReport !== undefined ? func.booleanSymbol(props.original.finalReport.fileUrl !== "") : func.booleanSymbol(false)}
+         </span>
         )
       }
     ];
@@ -117,7 +118,7 @@ class StudentsTable extends Component {
           onFetchData={async (state, instance) => {
             // console.log('tableState', state)
             this.setState({ loading: true });
-            const students = await func.getAllStudents();
+            const students = await func.getStudentTableData();
 
             this.setState({
               students: students,

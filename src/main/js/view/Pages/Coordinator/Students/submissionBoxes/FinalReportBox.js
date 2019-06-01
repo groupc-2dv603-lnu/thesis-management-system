@@ -2,14 +2,10 @@ import React, { Component } from "react";
 import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
-import Feedback from './Feedback'
-import * as corFunc from '../../coordinatorFunctions'
+import Feedback from "./ShowFeedback";
+import * as corFunc from "../../coordinatorFunctions";
+import * as generalFunctions from "../../../../functions";
 
-/**
- * TODO:
- *  - handleSubmit() update submissions - Need from backend
- *  - add Feedback ?
- */
 
 class FinalReportBox extends Component {
   constructor(props) {
@@ -23,12 +19,12 @@ class FinalReportBox extends Component {
       submission: this.props.submission,
       showMessage: false,
       message: "",
-      feedbacks: this.props.feedbacks
+      feedbacks: this.props.feedbacks,
+      comment: ""
     };
 
     this.getMessage = this.getMessage.bind(this);
   }
-
 
   toggleMessage(message) {
     this.setState({
@@ -37,10 +33,10 @@ class FinalReportBox extends Component {
     });
     setTimeout(() => {
       this.setState({
-        message: '',
+        message: "",
         showMessage: !this.state.showMessage
-      })
-    }, 2000)
+      });
+    }, 2000);
   }
 
   getMessage() {
@@ -76,13 +72,23 @@ class FinalReportBox extends Component {
     console.log(`grade set to ${this.state.finalReport.grade}`);
   }
 
+  handleFeedbackChange(event) {
+    this.state.comment = event.target.value;
+  }
+
   async handleSubmit() {
-    const validDeadline = corFunc.validDeadline(this.state.finalReport.deadLine)
+    const validDeadline = corFunc.validDeadline(
+      this.state.finalReport.deadLine
+    );
     if (validDeadline !== true) {
-      this.toggleMessage('Deadline is not valid')
-      return
+      this.toggleMessage("Deadline is not valid");
+      return;
     }
-    const request = await corFunc.updateSubmission('fr', this.state.finalReport)
+    const request = await corFunc.updateSubmission(
+      "fr",
+      this.state.finalReport
+    );
+
     console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
@@ -92,7 +98,7 @@ class FinalReportBox extends Component {
   }
 
   render() {
-    let i = 0
+    let i = 0;
 
     return (
       <div>
@@ -111,13 +117,13 @@ class FinalReportBox extends Component {
             <div style={Style.subBoxHeader}>
               Final Report
               {this.state.submission.fileUrl !== "" ? (
-                <span style={Style.downloadSpan}>
-                  <a
-                    href={`localhost:8080${this.state.submission.fileUrl}`}
-                    target="_blank"
-                  >
-                    <i className="fas fa-download" />
-                  </a>
+                <span
+                  onClick={() =>
+                    generalFunctions.downloadFile(this.state.submission.fileUrl)
+                  }
+                  style={Style.downloadSpan}
+                >
+                  <i className="fas fa-download" />
                 </span>
               ) : null}
             </div>
@@ -192,6 +198,16 @@ class FinalReportBox extends Component {
                   >
                     {func.getGrades(2)}
                   </select>
+                </span>
+              </div>
+              {/* ----- GIVE FEEDBACK ----- */}
+              <div style={Style.commentRow}>
+                <span style={Style.commentLeftColumn}>Comment</span>
+                <span style={Style.commentRightColumn}>
+                  <textarea
+                    style={Style.textArea}
+                    onChange={() => this.handleFeedbackChange(event)}
+                  />
                 </span>
               </div>
               {/* ----- SUBMIT ----- */}

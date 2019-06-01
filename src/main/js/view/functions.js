@@ -55,6 +55,12 @@ export function postToAPI(postPath, object) {
     });
 }
 
+
+export const downloadFile = async (fileUrl) => {
+    let win = window.open(fileUrl, '_blank')
+    win.focus
+  }
+
 export function deleteFromAPI(delPath) {
     return client({ method: "DELETE", path: delPath });
 }

@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
-import Feedback from "./Feedback";
-import * as corFunc from '../../coordinatorFunctions'
+import Feedback from "./ShowFeedback";
+import * as corFunc from "../../coordinatorFunctions";
+import * as generalFunctions from "../../../../functions";
 
 /**
  * TODO:
@@ -35,10 +36,10 @@ class InitialReportBox extends Component {
     });
     setTimeout(() => {
       this.setState({
-        message: '',
+        message: "",
         showMessage: !this.state.showMessage
-      })
-    }, 2000)
+      });
+    }, 2000);
   }
 
   getMessage() {
@@ -74,12 +75,17 @@ class InitialReportBox extends Component {
   }
 
   async handleSubmit() {
-    const validDeadline = corFunc.validDeadline(this.state.initialReport.deadLine)
+    const validDeadline = corFunc.validDeadline(
+      this.state.initialReport.deadLine
+    );
     if (validDeadline !== true) {
-      this.toggleMessage('Deadline is not valid')
-      return
+      this.toggleMessage("Deadline is not valid");
+      return;
     }
-    const request = await corFunc.updateSubmission('ir', this.state.initialReport)
+    const request = await corFunc.updateSubmission(
+      "ir",
+      this.state.initialReport
+    );
     console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
@@ -89,7 +95,7 @@ class InitialReportBox extends Component {
   }
 
   render() {
-    let i = 0 // key for feedback
+    let i = 0; // key for feedback
 
     return (
       <div>
@@ -108,13 +114,13 @@ class InitialReportBox extends Component {
             <div style={Style.subBoxHeader}>
               Initial Report
               {this.state.submission.fileUrl !== "" ? (
-                <span style={Style.downloadSpan}>
-                  <a
-                    href={`localhost:8080${this.state.submission.fileUrl}`}
-                    target="_blank"
-                  >
-                    <i className="fas fa-download" />
-                  </a>
+                <span
+                  onClick={() =>
+                    generalFunctions.downloadFile(this.state.submission.fileUrl)
+                  }
+                  style={Style.downloadSpan}
+                >
+                  <i className="fas fa-download" />
                 </span>
               ) : null}
             </div>
@@ -203,7 +209,6 @@ class InitialReportBox extends Component {
           </div>
         )}
         {this.props.feedbacks.map(feedback => {
-
           return <Feedback feedback={feedback} key={i++} />;
         })}
       </div>
