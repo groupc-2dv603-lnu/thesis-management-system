@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
+import project.model.enums.SubmissionType;
 import project.model.repositories.*;
 
 import javax.validation.Valid;
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static project.model.enums.SubmissionType.FINAL_REPORT;
+import static project.model.enums.SubmissionType.INITIAL_REPORT;
 
 @RestController
 public class SupervisorController {
@@ -64,7 +67,22 @@ public class SupervisorController {
 					.map(feedback -> new Resource<>(feedback,
 							linkTo(methodOn(SupervisorController.class).all2(documentId)).withRel("feedback")))
 					.collect(Collectors.toList());
+
+			switch(submission.getSubmissionType())
+			{
+				case FINAL_REPORT:
+					FinalReport fp = finalReportRepository.findFirstBySubmissionId(submission.getId());
+					if(fp.readersSize() < 1 || fp.opponentSize() < 1) { System.out.println("No opponent");feedbacks = null;}
+					break;
+				case INITIAL_REPORT:
+					InitialReport ip = initialReportRepository.findFirstBySubmissionId(submission.getId());
+					if(ip.getOpponentsSize() < 1 || ip.getReadersSize() < 1) {
+						System.out.println("No opponent");feedbacks = null;}
+					break;
+			}
+
 		}
+
 		return new Resources<>(feedbacks,
 				linkTo(methodOn(SupervisorController.class).all2(documentId)).withSelfRel());
 	}
