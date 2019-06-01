@@ -46,5 +46,17 @@ public class InitialReport {
 		this.grade = grade;
 		this.deadLine = deadLine;
 	}
+
+	public int getOpponentsSize()
+	{
+		return assignedOpponents.size();
+	}
+
+	public int getReadersSize()
+	{
+		return assignedReaders.size();
+	}
+
+
 }
 
