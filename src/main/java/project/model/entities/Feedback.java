@@ -1,10 +1,13 @@
 package project.model.entities;
 
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import project.model.enums.Role;
 
 import javax.validation.constraints.NotNull;
 
@@ -20,12 +23,16 @@ public class Feedback {
 	private String documentId;
 	@NotNull
 	private String text;
+	private Role role;
+	private Date submittedDate;
 	
 	
-	public Feedback(String userId, String documentId , String text) {
+	public Feedback(String userId, String documentId , String text, Role role, Date string) {
 		this.userId = userId;
 		this.documentId = documentId;
 		this.text = text;
+		this.role = role;
+		this.submittedDate = string;
 		
 	}
 }

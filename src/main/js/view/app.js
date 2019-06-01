@@ -9,16 +9,11 @@ import Student from "./Pages/Student";
 import Coordinator from "./Pages/Coordinator";
 import Reader from "./Pages/Reader";
 import PrivateRoute from "./utils/PrivateRoute";
-const client = require("../client");
 import Opponent from "./Pages/Opponent";
+import Supervisor from "./Pages/Supervisor";
+import Admin from "./Pages/Admin";
 
 class App extends Component {
-  componentDidMount() {
-    client({ method: "GET", path: "/users" }).then(response => {
-      this.setState({ users: response.entity._embedded.users });
-    });
-  }
-
   render() {
     return (
       <div>
@@ -29,6 +24,8 @@ class App extends Component {
             <Route exact path="/" component={FrontPage} />
             <Route exact path="/student" component={Student} />
             <Route exact path="/coordinator" component={Coordinator} />
+            <Route exact path="/supervisor" component={Supervisor} />
+            <Route exact path="/admin" component={Admin} />
             <PrivateRoute
               authenticated={true}
               exact

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import project.model.enums.Grade;
 
 import javax.validation.constraints.NotNull;
 
@@ -27,15 +28,13 @@ public class InitialReport {
 	private ArrayList<String> assignedOpponents;
 	@NotNull
 	private ArrayList<String> feedBackIds;
-	@NotNull
-	private String grade;
-	@NotNull
+	private Grade grade;
 	private String deadLine;
 	
 	
 	
 	public InitialReport(String userId, String submissionId, ArrayList<String> bids, ArrayList<String> assignedReaders, ArrayList<String> assignedOpponents, 
-			ArrayList<String> feedBackIds, String grade, String deadLine) {
+			ArrayList<String> feedBackIds, Grade grade, String deadLine) {
 		this.userId = userId;
 		this.submissionId = submissionId;
 		this.feedBackIds = feedBackIds;

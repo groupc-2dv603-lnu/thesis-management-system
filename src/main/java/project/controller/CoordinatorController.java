@@ -1,14 +1,27 @@
 package project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
 import project.model.DTOs.SubmissionsDTO;
-import project.model.enums.Grade;
+
+import project.model.enums.Role;
+
 import project.model.repositories.*;
 
 import javax.validation.Valid;
+
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class CoordinatorController {
@@ -33,7 +46,31 @@ public class CoordinatorController {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private SubmissionRepository submissionRepository;
+    
+    @Autowired
+    private UserRepository repository;
+    
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
+    
+	@PostMapping("/coordinator/feedback")
+	Feedback newFeedback(@RequestParam String text, @RequestParam String FinalReportId) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		
+		Date date = new Date();
+		Feedback feedback = new Feedback(user.getId(), FinalReportId, text, Role.COORDINATOR, date);
+		FinalReport report = finalReportRepository.findFirstById(feedback.getDocumentId());
+
+		feedbackRepository.save(feedback);
+		report.getFeedBackIds().add(feedback.getId());
+		finalReportRepository.save(report);
+		return feedback;
+	}
     @PutMapping(value = "/coordinator/updateProjectPlan", consumes = {"application/json"})
     void updateProjectPlan(@Valid @RequestBody ProjectPlan projectPlan) {
         if (projectPlanRepository.findById(projectPlan.getId()).isPresent()) {
@@ -49,8 +86,8 @@ public class CoordinatorController {
     }
 
     @PutMapping(value = "/coordinator/updateFinalReport", consumes = {"application/json"})
-    void updateFinalReport(@Valid @RequestBody FinalReport finalReport) {
-        if (initialReportRepository.findById(finalReport.getId()).isPresent()) {
+    void updateFinalReport(@RequestBody FinalReport finalReport) {
+        if (finalReportRepository.findById(finalReport.getId()).isPresent()) {
             finalReportRepository.save(finalReport);
         }
     }
@@ -68,8 +105,8 @@ public class CoordinatorController {
     }
 
     @GetMapping("/coordinator/getAllReports")
-    List<FinalReport> getAllReports() {
-        return finalReportRepository.findAll();
+    List<InitialReport> getAllReports() {
+        return initialReportRepository.findAll();
     }
 
     @GetMapping("/coordinator/getAllReaders")
@@ -91,4 +128,29 @@ public class CoordinatorController {
 
         return new SubmissionsDTO(plans, projectDescriptions, finalReports, initialReports);
     }
+
+    /* Get specific submission based on id */
+    @GetMapping(value = "/coordinator/submissions/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    Resource<Submission> getSubmission(@PathVariable String id) {
+        Submission submission = submissionRepository.findFirstById(id);
+
+        return new Resource<>(submission,
+                linkTo(methodOn(CoordinatorController.class).getSubmission(id)).withSelfRel(),
+                linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withRel("submissions"));
+
+    }
+
+    /* Get all submissions */
+    @GetMapping(value = "/coordinator/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
+    Resources<Resource<Submission>> getAllSubmissions() {
+        List<Resource<Submission>> submissions = submissionRepository.findAll().stream()
+                .map(submission -> new Resource<>(submission,
+                        linkTo(methodOn(CoordinatorController.class).getSubmission(submission.getId())).withSelfRel(),
+                        linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withRel("submissions")))
+                .collect(Collectors.toList());
+
+        return new Resources<>(submissions,
+                linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withSelfRel());
+    }
+    
 }

@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import project.model.enums.Grade;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,14 +18,13 @@ public class ProjectDescription {
 	private String userId;
 	@NotNull
 	private String submissionId;
-	@NotNull
-	private String grade;
+	private Grade grade;
 	@NotNull
 	private String deadLine;
 	
 	
 	
-	public ProjectDescription(String userId, String submissionId, String grade, String deadLine) {
+	public ProjectDescription(String userId, String submissionId, Grade grade, String deadLine) {
 		this.userId = userId;
 		this.submissionId = submissionId;
 		this.grade = grade;

@@ -3,28 +3,24 @@ package project.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
-import project.model.entities.Feedback;
-import project.model.entities.FinalReport;
-import project.model.entities.InitialReport;
-import project.model.entities.ProjectDescription;
-import project.model.entities.ProjectPlan;
-import project.model.entities.Student;
-import project.model.entities.Supervisor;
-import project.model.entities.User;
+import org.springframework.web.multipart.MultipartFile;
+import project.model.entities.*;
+import project.model.enums.PendingSupervisor;
+import project.model.enums.SubmissionType;
 import project.model.repositories.*;
+import project.payload.UploadFileResponse;
 
 @RestController
 public class StudentController {
@@ -36,10 +32,12 @@ public class StudentController {
 	private final FinalReportRepository finalReportRepository;
 	private final ProjectDescriptionRepository projectDescriptionRepository;
 	private final StudentRepository studentRepository;
+	private final SubmissionRepository submissionRepository;
+	private final DataFileRepository dataFileRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
 			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository,
-			StudentRepository studentRepository) {
+			StudentRepository studentRepository, SubmissionRepository submissionRepository, DataFileRepository dataFileRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
@@ -48,31 +46,26 @@ public class StudentController {
 		this.finalReportRepository = finalReportRepository;
 		this.projectDescriptionRepository = projectDescriptionRepository;
 		this.studentRepository = studentRepository;
+		this.submissionRepository = submissionRepository;
+		this.dataFileRepository = dataFileRepository;
 	}
-	
-//	@GetMapping(value = "/supervisors/{id}", produces = "application/json; charset=UTF-8")
-//	Resource<Supervisor> one(@PathVariable String id) {
-//		Supervisor supervisor = supervisorRepository.findFirstById(id);
-//		return new Resource<>(supervisor,
-//				linkTo(methodOn(StudentController.class).one(id)).withSelfRel(),
-//				linkTo(methodOn(StudentController.class).all()).withRel("supervisors"));
-//	}
 	
 	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Supervisor>> all() {
 		List<Resource<Supervisor>> supervisors = supervisorRepository.findByAvailableForSupervisorTrue().stream()
 			    .map(supervisor -> new Resource<>(supervisor,
-			    		
-//			    		linkTo(methodOn(StudentController.class).one(supervisor.getId())).withSelfRel(),
-//			    		linkTo(methodOn(UserController.class).one(supervisor.getUserId())).withRel("userUrl"),
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
-//		ArrayList<User> user = new ArrayList<User>();
-//		for(int i=0; i < supervisors.size(); i++){
-//			User findUser = repository.findFirstById(supervisors.get(i).getContent().getId());
-//			user.add(findUser);
-//			supervisors.get(i).getContent()
-//		}
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		
+		for(int i=0; i < supervisors.size(); i++) {
+			if(supervisors.get(i).getContent().getUserId().equals(user.getId())) {
+				supervisors.remove(i);
+			}
+		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
@@ -86,17 +79,20 @@ public class StudentController {
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		Supervisor supervisor = supervisorRepository.findFirstByuserId(supervisorUserId);
 		
-		if("awaiting".equals(student.getPendingSupervisor()) || "accepted".equals(student.getPendingSupervisor())) {
+		if(PendingSupervisor.AWAITING.equals(student.getPendingSupervisor()) || PendingSupervisor.ACCEPTED.equals(student.getPendingSupervisor()) || user.getId().equals(supervisorUserId)) {
 			return supervisor;
 		} else {
 			supervisor.getAwaitingResponse().add(user.getId());
-			student.setPendingSupervisor("awaiting");
+			student.setPendingSupervisor(PendingSupervisor.AWAITING);
+			student.setAssignedSupervisorId(supervisor.getUserId());
+
 			
 			studentRepository.save(student);
 			return supervisorRepository.save(supervisor);
 		}
 
 	}
+	
 	@GetMapping(value = "/student/projectPlan", produces = "application/json; charset=UTF-8")
 	Resource<ProjectPlan> one1() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -142,17 +138,113 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
 	}
-	
 	@GetMapping(value = "/student/feedback", produces = "application/json; charset=UTF-8")
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
 			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
 			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
-			    	    .collect(Collectors.toList());
-						
+			    	    .collect(Collectors.toList());				
 		return new Resources<>(feedbacks,
 				linkTo(methodOn(StudentController.class).all2(documentId)).withSelfRel());
 	}
+	@GetMapping(value = "/student/studentInfo", produces = "application/json; charset=UTF-8")
+	Resource<Student> one6() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Student student = studentRepository.findFirstByuserId(user.getId());
+		return new Resource<>(student,
+				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
+	}
 
+	// Returns all of a students' submissions //
+	@GetMapping(value = "/student/mySubmissions", produces = "application/json; charset=UTF-8")
+	Resources<Resource<Submission>> getAllMySubmissions() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = repository.findFirstByEmailAdress(auth.getName());
+
+		List<Resource<Submission>> submissions = submissionRepository.findAllByUserId(user.getId()).stream()
+				.map(submission -> new Resource<>(submission,
+						linkTo(methodOn(StudentController.class).getSubmission(submission.getId())).withSelfRel(),
+						linkTo(methodOn(StudentController.class).getAllMySubmissions()).withRel("submissions")))
+				.collect(Collectors.toList());
+
+		return new Resources<>(submissions,
+				linkTo(methodOn(StudentController.class).getAllMySubmissions()).withSelfRel());
+	}
+
+	/* Get specific submission based on id */
+	@GetMapping(value = "/student/mySubmissions/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	Resource<Submission> getSubmission(@PathVariable String id) {
+		Submission submission = submissionRepository.findFirstById(id);
+
+		return new Resource<>(submission,
+				linkTo(methodOn(StudentController.class).getSubmission(id)).withSelfRel(),
+				linkTo(methodOn(StudentController.class).getAllMySubmissions()).withRel("submissions"));
+
+	}
+
+	/* Upload submission and corresponding datafile */
+	@PostMapping("/student/newSubmission")
+	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
+		DataFile df = null;
+		try {
+			df = new DataFile(file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();	//TODO: Make 2 different responses depending on outcome (success/fail)
+			return new UploadFileResponse(null, null, "Error: Unable to create DataFile", null, 0);
+		}
+		dataFileRepository.save(df);
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
+
+		Submission newSubmission = new Submission();
+		newSubmission.setSubmissionType(type);
+		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
+        newSubmission.setUserId(userId);
+        submissionRepository.save(newSubmission);
+        
+		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
+		//TODO: subId is generated with save and in order to inlude its id in fileUrl we have to save again. Workaround?
+		submissionRepository.save(newSubmission);
+
+        updateSubmissionIds(type, newSubmission.getId(), userId);
+
+
+        //TODO: remove system.out
+		System.out.println("Successfully uploaded submission and datafile." +
+				"\nSubmission ID: " + newSubmission.getId() +
+				"\nDatafile ID: " + df.getId() +
+				"\nFilename: " + newSubmission.getFilename());
+		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
+				file.getContentType(), file.getSize());
+	}
+
+	private void updateSubmissionIds(SubmissionType type, String submissionId, String userId){
+	    switch(type){
+            case PRJ_DESCRIPTION:
+                ProjectDescription description = projectDescriptionRepository.findFirstByuserId(userId);
+                description.setSubmissionId(submissionId);
+                projectDescriptionRepository.save(description);
+                break;
+            case PRJ_PLAN:
+                ProjectPlan plan = projectPlanRepository.findFirstByuserId(userId);
+                plan.setSubmissionId(submissionId);
+                projectPlanRepository.save(plan);
+                break;
+            case INITIAL_REPORT:
+                InitialReport initialReport = initialReportRepository.findFirstByuserId(userId);
+                initialReport.setSubmissionId(submissionId);
+                initialReportRepository.save(initialReport);
+                break;
+            case FINAL_REPORT:
+                FinalReport finalReport = finalReportRepository.findFirstByuserId(userId);
+                finalReport.setSubmissionId(submissionId);
+                finalReportRepository.save(finalReport);
+                break;
+
+        }
+    }
 }

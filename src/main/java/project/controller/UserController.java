@@ -27,13 +27,15 @@ import project.model.entities.Opponent;
 import project.model.entities.ProjectDescription;
 import project.model.entities.ProjectPlan;
 import project.model.entities.Reader;
+import project.model.enums.*;
 
 //import project.model.entities.Student;
 
-import project.model.enums.Role;
 import project.model.entities.Student;
+import project.model.entities.Submission;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
+import project.model.repositories.FeedbackRepository;
 import project.model.repositories.FinalReportRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.OpponentRepository;
@@ -41,6 +43,7 @@ import project.model.repositories.ProjectDescriptionRepository;
 import project.model.repositories.ProjectPlanRepository;
 import project.model.repositories.ReaderRepository;
 import project.model.repositories.StudentRepository;
+import project.model.repositories.SubmissionRepository;
 import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 import project.model.services.EncryptionService;
@@ -49,7 +52,7 @@ import javax.validation.Valid;
 
 @RestController
 class UserController {
-	
+
 	@Autowired
 	private EncryptionService enrypt;
 
@@ -58,37 +61,40 @@ class UserController {
 	private final SupervisorRepository supervisorRepository;
 	private final OpponentRepository opponentRepository;
 	private final ReaderRepository readerRepository;
-	
+
 	private final ProjectDescriptionRepository projectDescriptionRepository;
 	private final ProjectPlanRepository projectPlanRepository;
 	private final InitialReportRepository initialReportRepository;
 	private final FinalReportRepository finalReportRepository;
-	
-	
+	private final SubmissionRepository submissionRepository;
+	private final FeedbackRepository feedbackRepository;
+
 	UserController(UserRepository repository,StudentRepository studentRepository, SupervisorRepository supervisorRepository, OpponentRepository opponentRepository,
 			ReaderRepository readerRepository, ProjectDescriptionRepository projectDescriptionRepository, ProjectPlanRepository projectPlanRepository,InitialReportRepository initialReportRepository,
-			FinalReportRepository finalReportRepository) {
+			FinalReportRepository finalReportRepository, SubmissionRepository submissionRepository, FeedbackRepository feedbackRepository) {
 		this.repository = repository;
 		this.studentRepository = studentRepository;
 		this.supervisorRepository = supervisorRepository;
 		this.opponentRepository = opponentRepository;
 		this.readerRepository = readerRepository;
-		
+
 		this.projectDescriptionRepository = projectDescriptionRepository;
 		this.projectPlanRepository = projectPlanRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
+		this.submissionRepository = submissionRepository;
+		this.feedbackRepository = feedbackRepository;
 	}
-	
+
 	@GetMapping(value = "/users/{id}", produces = "application/json; charset=UTF-8")
 	Resource<User> one(@PathVariable String id) {
 		User user = repository.findFirstById(id);
 		return new Resource<>(user,
 			    linkTo(methodOn(UserController.class).one(id)).withSelfRel(),
 			    linkTo(methodOn(UserController.class).all()).withRel("users"));
-		
+
 	}
-	
+
 	@GetMapping(value = "/users", produces = "application/json; charset=UTF-8")
 	Resources<Resource<User>> all() {
 		List<Resource<User>> users = repository.findAll().stream()
@@ -108,7 +114,7 @@ class UserController {
 		return new Resource<>(user,
 				linkTo(methodOn(UserController.class).one1()).withSelfRel());
 	}
-	
+
 	@PostMapping("/admin/createUser")
 	User newUser2(@Valid @RequestBody User user) {
 		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
@@ -117,12 +123,12 @@ class UserController {
 			repository.save(user);
 			for(int i=0; i < user.getRoles().length; i++){
 				if(user.getRoles()[i].equals(Role.STUDENT)) {
-					studentRepository.save(new Student(user.getId(), "", null));
-					projectDescriptionRepository.save(new ProjectDescription(user.getId(), null, null, null));
-					projectPlanRepository.save(new ProjectPlan(user.getId(), null, null, null, null));
-					initialReportRepository.save(new InitialReport(user.getId(), null, null, null, null, null, null, null));
-					finalReportRepository.save(new FinalReport(user.getId(), null, null, null));
-					
+					studentRepository.save(new Student(user.getId(), "", PendingSupervisor.NONE));
+					projectDescriptionRepository.save(new ProjectDescription(user.getId(), "", Grade.NOGRADE, ""));
+					projectPlanRepository.save(new ProjectPlan(user.getId(), "", "", Grade.NOGRADE, "", ApprovedStatus.PENDING));
+					initialReportRepository.save(new InitialReport(user.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
+					finalReportRepository.save(new FinalReport(user.getId(), "", GradeAF.NOGRADE, "", new ArrayList<String>()));
+
 				} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
 					supervisorRepository.save(new Supervisor(user.getId(), false, new ArrayList<String>(), new ArrayList<String>()));
 				} else if(user.getRoles()[i].equals(Role.OPPONENT)) {
@@ -131,17 +137,15 @@ class UserController {
 					readerRepository.save(new Reader(user.getId(), "", ""));
 				}
 			}
-			//return repository.save(user);
 			return user;
 		} else  {
 			return findUser;
-			//return repository.save(new User("Test_Auth", enrypt.hash("password"), "Jtest@hotmail.com", new Role[] { Role.STUDENT } ));
 		}
-		
+
 	}
 	@PutMapping("/admin/assignRoles")
-	User updateUser(@Valid @RequestBody User updateUser) {
-		User finduser = repository.findFirstByEmailAdress(updateUser.getEmailAdress());
+	User updateUser(@RequestParam String email, @RequestBody Role[] roles) {
+		User finduser = repository.findFirstByEmailAdress(email);
 		Boolean oldRoleStudent = false;
 		Boolean newRoleStudent = false;
 		if(finduser != null) {
@@ -150,33 +154,44 @@ class UserController {
 					oldRoleStudent = true;
 				}
 			}
-			
-			for(int i=0; i < updateUser.getRoles().length; i++) {
-				if(updateUser.getRoles()[i].equals(Role.STUDENT)) {
+
+			for(int i=0; i < roles.length; i++) {
+				if(roles[i].equals(Role.STUDENT)) {
 					newRoleStudent = true;
 				}
 			}
-			
+
 			if(oldRoleStudent.equals(false) && newRoleStudent.equals(true)) {
-				projectDescriptionRepository.save(new ProjectDescription(finduser.getId(), null, null, null));
-				projectPlanRepository.save(new ProjectPlan(finduser.getId(), null, null, null, null));
-				initialReportRepository.save(new InitialReport(finduser.getId(), null, null, null, null, null, null, null));
-				finalReportRepository.save(new FinalReport(finduser.getId(), null, null, null));
+				projectDescriptionRepository.save(new ProjectDescription(finduser.getId(), "", Grade.NOGRADE, ""));
+				projectPlanRepository.save(new ProjectPlan(finduser.getId(), "", "", Grade.NOGRADE, "", ApprovedStatus.PENDING));
+				initialReportRepository.save(new InitialReport(finduser.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
+				finalReportRepository.save(new FinalReport(finduser.getId(), "", GradeAF.NOGRADE, "", new ArrayList<String>()));
 
 			} else if(oldRoleStudent.equals(true) && newRoleStudent.equals(false)) {
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(finduser.getId());
+				submissionRepository.deleteById(projectDescription.getSubmissionId());
 				projectDescriptionRepository.deleteById(projectDescription.getId());
-				
+
 				ProjectPlan projectPlan = projectPlanRepository.findFirstByuserId(finduser.getId());
+				submissionRepository.deleteById(projectPlan.getSubmissionId());
 				projectPlanRepository.deleteById(projectPlan.getId());
-				
+
 				InitialReport initialReport = initialReportRepository.findFirstByuserId(finduser.getId());
-				initialReportRepository.deleteById(initialReport.getId());
 				
+				for(int j=0; j <initialReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(initialReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(initialReport.getSubmissionId());
+				initialReportRepository.deleteById(initialReport.getId());
+
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(finduser.getId());
+				for(int j=0; j <finalReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(finalReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(finalReport.getSubmissionId());
 				finalReportRepository.deleteById(finalReport.getId());
 			}
-			finduser.setRoles(updateUser.getRoles());
+			finduser.setRoles(roles);
 			return repository.save(finduser);
 		} else {
 			return finduser;
@@ -184,23 +199,34 @@ class UserController {
 
 	}
 	@DeleteMapping("/admin/deleteUser")
-	void deleteUser(@RequestParam String userId) {
-		User user = repository.findFirstById(userId);
+	void deleteUser(@RequestParam String email) {
+		User user = repository.findFirstByEmailAdress(email);
 		for(int i=0; i < user.getRoles().length; i++){
 			if(user.getRoles()[i].equals(Role.STUDENT)) {
 				Student student = studentRepository.findFirstByuserId(user.getId());
 				studentRepository.deleteById(student.getId());
-				
+
 				ProjectDescription projectDescription = projectDescriptionRepository.findFirstByuserId(user.getId());
+				submissionRepository.deleteById(projectDescription.getSubmissionId());
 				projectDescriptionRepository.deleteById(projectDescription.getId());
-				
+
 				ProjectPlan projectPlan = projectPlanRepository.findFirstByuserId(user.getId());
+				submissionRepository.deleteById(projectPlan.getSubmissionId());
 				projectPlanRepository.deleteById(projectPlan.getId());
-				
+
 				InitialReport initialReport = initialReportRepository.findFirstByuserId(user.getId());
-				initialReportRepository.deleteById(initialReport.getId());
 				
+				for(int j=0; j <initialReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(initialReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(initialReport.getSubmissionId());
+				initialReportRepository.deleteById(initialReport.getId());
+
 				FinalReport finalReport = finalReportRepository.findFirstByuserId(user.getId());
+				for(int j=0; j <finalReport.getFeedBackIds().size(); j++) {
+					feedbackRepository.deleteById(finalReport.getFeedBackIds().get(j));
+				}
+				submissionRepository.deleteById(finalReport.getSubmissionId());
 				finalReportRepository.deleteById(finalReport.getId());
 			} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
 				Supervisor supervisor = supervisorRepository.findFirstByuserId(user.getId());
@@ -213,7 +239,7 @@ class UserController {
 				readerRepository.deleteById(reader.getId());
 			}
 		}
-		repository.deleteById(userId);
+		repository.delete(user);
 	}
-	
+
 }

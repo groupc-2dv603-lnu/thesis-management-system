@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import project.model.enums.PendingSupervisor;
 
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +29,12 @@ public class Student {
 		this.assignedSupervisorId = assignedSupervisorId;
 		this.pendingSupervisor = pendingSupervisor;
 
-		
+
+	}
+
+	public void setSupervisor(Boolean state)
+	{
+		if(state) {this.pendingSupervisor = PendingSupervisor.ACCEPTED;}
+		else{this.pendingSupervisor = PendingSupervisor.DENIED;}
 	}
 }
