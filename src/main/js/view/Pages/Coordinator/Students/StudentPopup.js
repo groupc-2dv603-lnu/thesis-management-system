@@ -36,7 +36,6 @@ class StudentPopup extends React.Component {
 
   async componentDidMount() {
     const submissions = await func.getAllSubmissions(this.props.student.userId);
-    console.log(submissions);
     this.setState({
       supervisorName: await func.getSupervisorName(
         this.props.student.supervisorId

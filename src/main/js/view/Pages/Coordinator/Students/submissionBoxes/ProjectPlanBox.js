@@ -26,12 +26,6 @@ class ProjectPlanBox extends Component {
     this.getMessage = this.getMessage.bind(this);
   }
 
-  /*
-  setStatus(event) {
-    this.state.submission.submissionStatus = event.target.value;
-    this.setState({ submission: this.state.submission });
-  }
-  */
 
   toggleMessage(message) {
     this.setState({
