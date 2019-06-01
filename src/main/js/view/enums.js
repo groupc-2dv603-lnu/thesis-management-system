@@ -1,7 +1,9 @@
 
-export const dbTypeMap = new Map([ ["projectDescription", "PRJ_DESCRIPTION"], ["projectPlan", "PRJ_PLAN"], ["initialReport", "INITIAL_REPORT"], ["finalReport", "FINAL_REPORT"] ]);
+export const dbSubmissionTypeMap = new Map([ ["projectDescription", "PRJ_DESCRIPTION"], ["projectPlan", "PRJ_PLAN"], ["initialReport", "INITIAL_REPORT"], ["finalReport", "FINAL_REPORT"] ]);
 
-export const dbTypes = { projectDescription: "PRJ_DESCRIPTION", projectPlan: "PRJ_PLAN", initialReport: "INITIAL_REPORT", finalReport: "FINAL_REPORT" };
+export const dbSubmissionTypes = { projectDescription: "PRJ_DESCRIPTION", projectPlan: "PRJ_PLAN", initialReport: "INITIAL_REPORT", finalReport: "FINAL_REPORT" };
+
+export const submissionTypes = [ "PRJ_DESCRIPTION", "PRJ_PLAN", "INITIAL_REPORT", "FINAL_REPORT" ];
 
 export const grades = { NOGRADE: "NOGRADE", PASS: "PASS", FAIL: "FAIL" };
 

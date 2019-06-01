@@ -1,3 +1,6 @@
+'use strict';
+
+import axios from 'axios';
 const client = require("../client");
 
 export function getFromAPI(getPath) {
@@ -55,6 +58,18 @@ export function postToAPI(postPath, object) {
     });
 }
 
+export function fileUpload(file, dbType) {
+    const url = '/student/newSubmission?subType=' + dbType;
+    const formData = new FormData();
+    formData.append('file', file);
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+    };
+    return axios.post(url, formData, config)
+}
+
 export function deleteFromAPI(delPath) {
     return client({ method: "DELETE", path: delPath });
 }
@@ -63,6 +78,19 @@ export function capitalizeFirstLetter(string) {
     if(string == null)
         return "N/A";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+export function formatCamelCaseToText(string) {
+    if(string == null)
+        return "N/A";
+ 
+    let text = string.charAt(0).toUpperCase() + string.slice(1);
+    for(let i = 1; i < string.length; i ++) {
+        if(text.charAt(i) == text.charAt(i).toUpperCase()) { //char is upperCase
+            text = text.slice(0, i) + " " + text.slice(i);
+        }
+    }
+    return text;
 }
 
 export function getUser(userId) {

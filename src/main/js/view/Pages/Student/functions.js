@@ -22,7 +22,6 @@ export function requestSupervisor(supervisor) {
     });
 }
 
-
 function getLoggedInUser() {
     return getFromAPI("/loginUser");
 }
