@@ -32,6 +32,7 @@ public class Submission {
     private String fileUrl;
     @NotNull
     private String filename;
+    private String author;
 
     public Submission() {}
 

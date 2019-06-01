@@ -198,12 +198,15 @@ public class StudentController {
 		dataFileRepository.save(df);
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
+		User user = repository.findFirstByEmailAdress(auth.getName());
+//		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
+		String userId = user.getId();
 
 		Submission newSubmission = new Submission();
 		newSubmission.setSubmissionType(type);
 		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
         newSubmission.setUserId(userId);
+        newSubmission.setAuthor(user.getName());
         submissionRepository.save(newSubmission);
         
 		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
@@ -217,7 +220,8 @@ public class StudentController {
 		System.out.println("Successfully uploaded submission and datafile." +
 				"\nSubmission ID: " + newSubmission.getId() +
 				"\nDatafile ID: " + df.getId() +
-				"\nFilename: " + newSubmission.getFilename());
+				"\nFilename: " + newSubmission.getFilename() +
+				"\nAuthor: " + newSubmission.getAuthor());
 		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
 				file.getContentType(), file.getSize());
 	}
