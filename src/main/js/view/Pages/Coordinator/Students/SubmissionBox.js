@@ -98,7 +98,7 @@ class SubmissionBox extends Component {
               style={Style.submissionHeader}
               onClick={() => this.downloadSubmission()}
             >
-              <span style={Style.submissionHeaderName}>
+              <span style={Style.submissionHeaderStyle}>
                 {capitalizeFirstLetter(this.state.submission.type)} submission{" "}
                 <i className="fas fa-download" />
               </span>
