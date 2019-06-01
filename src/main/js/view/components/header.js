@@ -63,7 +63,7 @@ class Header extends Component {
                         {this.state.currentUser ? 
                             <Link to="" onClick={() => this.logout()}>log out</Link>
                         :
-                            <a href="/login">log in</a>
+                            <a href="/">log in</a>
                         }
                     </div>
                 </div>

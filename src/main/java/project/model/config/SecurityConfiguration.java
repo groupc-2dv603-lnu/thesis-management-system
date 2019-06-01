@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import project.model.enums.Role;
 import project.model.services.MongoUserDetailsService;
 
@@ -22,24 +24,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-          	//.antMatcher("/users")
+            .sessionManagement().disable() // Disables Session Management (unnecessary)
+            .csrf().disable() // Disables CSRF protection (unnecessary)
             .authorizeRequests()
-            .antMatchers("/admin/**").hasAuthority(String.valueOf(Role.ADMIN))
+            .anyRequest().authenticated()
+            .and()
+            .formLogin();
+//            .antMatchers("/admin/**").hasAuthority(String.valueOf(Role.ADMIN))
 //            .antMatchers("/student/**").hasAuthority(String.valueOf(Role.STUDENT))
 //            .antMatchers("/opponent/**").hasAuthority(String.valueOf(Role.OPPONENT))
 //            .antMatchers("/reader/**").hasAuthority(String.valueOf(Role.READER))
 //            .antMatchers("/supervisor/**").hasAuthority(String.valueOf(Role.SUPERVISOR))
 //            .antMatchers("/coordinator/**").hasAuthority(String.valueOf(Role.COORDINATOR))
-            
-               // .anyRequest()
-               // .hasAuthority(String.valueOf(Role.ADMIN))
-            .and().formLogin()
-            .and().httpBasic() // Specifies the authentication method spring will use
-            .and().sessionManagement().disable() // Disables Session Management (unnecessary)
-            .csrf().disable(); // Disables CSRF protection (unnecessary)
-//        	.and()
-//        	.logout();
-//        	.logoutUrl("/perform_logout")
 //        	.invalidateHttpSession(true)
 //        	.deleteCookies("JSESSIONID");
 
