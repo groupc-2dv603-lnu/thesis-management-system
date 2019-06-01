@@ -54,7 +54,7 @@ public class OpponentController {
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
 			Feedback oldFeedback = feedbackRepository.findFirstById(report.getFeedBackIds().get(i));
-			if(oldFeedback != null) {
+			if(oldFeedback.getRole().equals(Role.OPPONENT)) {
 				doesFeedBackExist = true;
 			}
 		}

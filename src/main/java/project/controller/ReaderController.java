@@ -59,10 +59,11 @@ public class ReaderController {
 		Date date = new Date();
 		Feedback feedback = new Feedback(user.getId(), reader.getInitialReportId(), text, Role.READER, date);
 		InitialReport report = initialReportRepository.findFirstById(feedback.getDocumentId());
+		
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
 			Feedback oldFeedback = feedbackRepository.findFirstById(report.getFeedBackIds().get(i));
-			if(oldFeedback != null) {
+			if(oldFeedback.getRole().equals(Role.READER)) {
 				doesFeedBackExist = true;
 			}
 		}
@@ -81,12 +82,13 @@ public class ReaderController {
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
 		Date date = new Date();
 		Feedback feedback = new Feedback(user.getId(), reader.getFinalReportId(), text, Role.READER, date);
+		
 		FinalReport report = finalReportRepository.findFirstById(feedback.getDocumentId());
-		System.out.println(report);
+
 		Boolean doesFeedBackExist = false;
 		for(int i=0; i < report.getFeedBackIds().size(); i++) {
 			Feedback oldFeedback = feedbackRepository.findFirstById(report.getFeedBackIds().get(i));
-			if(oldFeedback != null) {
+			if(oldFeedback.getRole().equals(Role.READER)) {
 				doesFeedBackExist = true;
 			}
 		}
