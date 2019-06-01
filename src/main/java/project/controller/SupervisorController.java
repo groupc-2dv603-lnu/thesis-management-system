@@ -48,8 +48,7 @@ public class SupervisorController {
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
 		return new Resource<>(feedback,
-				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
-				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
+				linkTo(methodOn(SupervisorController.class).one2(id)).withSelfRel());
 	}
 	@PutMapping("/supervisor/update")
 	Supervisor updateSupervisor(@RequestBody Supervisor supervisor) {
