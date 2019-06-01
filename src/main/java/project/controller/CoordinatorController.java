@@ -9,9 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
 import project.model.DTOs.SubmissionsDTO;
-import project.model.enums.Grade;
+
 import project.model.enums.Role;
-import project.model.enums.SubmissionStatus;
+
 import project.model.repositories.*;
 
 import javax.validation.Valid;
@@ -152,15 +152,5 @@ public class CoordinatorController {
         return new Resources<>(submissions,
                 linkTo(methodOn(CoordinatorController.class).getAllSubmissions()).withSelfRel());
     }
-
-    /* Update the status of a submission */
-    @PutMapping("/coordinator/submissions/{id}/updateStatus")
-    Submission updateSubmissionStatus(@PathVariable String id, @RequestParam SubmissionStatus newStatus){
-        Submission updatedSubmission = submissionRepository.findFirstById(id);
-        updatedSubmission.setSubmissionStatus(newStatus);
-        submissionRepository.save(updatedSubmission);
-
-        return updatedSubmission;
-
-    }
+    
 }
