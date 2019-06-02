@@ -56,6 +56,16 @@ public class StudentController {
 			    .map(supervisor -> new Resource<>(supervisor,
 			    		linkTo(methodOn(StudentController.class).all()).withRel("getAvailableSupervisors")))
 			    	    .collect(Collectors.toList());
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		
+		for(int i=0; i < supervisors.size(); i++) {
+			if(supervisors.get(i).getContent().getUserId().equals(user.getId())) {
+				supervisors.remove(i);
+			}
+		}
 		return new Resources<>(supervisors,
 				linkTo(methodOn(StudentController.class).all()).withSelfRel());
 	}
@@ -124,6 +134,7 @@ public class StudentController {
 	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
+		
 		return new Resource<>(feedback,
 				linkTo(methodOn(StudentController.class).one2(id)).withSelfRel(),
 				linkTo(methodOn(StudentController.class).all2(id)).withRel("feedback"));
@@ -132,7 +143,6 @@ public class StudentController {
 	Resources<Resource<Feedback>> all2(@RequestParam String documentId) {
 		List<Resource<Feedback>> feedbacks = feedbackRepository.findBydocumentId(documentId).stream()
 			    .map(feedback -> new Resource<>(feedback,
-			    		linkTo(methodOn(StudentController.class).one2(feedback.getId())).withSelfRel(),
 			    		linkTo(methodOn(StudentController.class).all2(documentId)).withRel("feedback")))
 			    	    .collect(Collectors.toList());				
 		return new Resources<>(feedbacks,
@@ -145,7 +155,7 @@ public class StudentController {
 		User user = repository.findFirstByEmailAdress(name);
 		Student student = studentRepository.findFirstByuserId(user.getId());
 		return new Resource<>(student,
-				linkTo(methodOn(StudentController.class).one1()).withSelfRel());
+				linkTo(methodOn(StudentController.class).one6()).withSelfRel());
 	}
 
 	// Returns all of a students' submissions //
@@ -178,6 +188,15 @@ public class StudentController {
 	/* Upload submission and corresponding datafile */
 	@PostMapping("/student/newSubmission")
 	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = repository.findFirstByEmailAdress(auth.getName());
+
+		if (submissionAlreadyExist(user.getId(), type)){
+			System.out.println("Sub exists");
+			deleteSubmission(getAlreadyUploadedSubmission(user.getId(), type).getId());
+		}
+
+
 		DataFile df = null;
 		try {
 			df = new DataFile(file.getBytes());
@@ -187,29 +206,51 @@ public class StudentController {
 		}
 		dataFileRepository.save(df);
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String userId = repository.findFirstByEmailAdress(auth.getName()).getId();
 
 		Submission newSubmission = new Submission();
 		newSubmission.setSubmissionType(type);
 		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
-        newSubmission.setUserId(userId);
+        newSubmission.setUserId(user.getId());
+        newSubmission.setAuthor(user.getName());
         submissionRepository.save(newSubmission);
         
 		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
 		//TODO: subId is generated with save and in order to inlude its id in fileUrl we have to save again. Workaround?
 		submissionRepository.save(newSubmission);
 
-        updateSubmissionIds(type, newSubmission.getId(), userId);
+        updateSubmissionIds(type, newSubmission.getId(), user.getId());
 
 
         //TODO: remove system.out
 		System.out.println("Successfully uploaded submission and datafile." +
 				"\nSubmission ID: " + newSubmission.getId() +
 				"\nDatafile ID: " + df.getId() +
-				"\nFilename: " + newSubmission.getFilename());
+				"\nFilename: " + newSubmission.getFilename() +
+				"\nAuthor: " + newSubmission.getAuthor());
 		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
 				file.getContentType(), file.getSize());
+	}
+
+	private boolean submissionAlreadyExist(String userId, SubmissionType type){
+		List<Submission> submissions = submissionRepository.findAllByUserId(userId);
+
+		for (Submission sub : submissions){
+			if (sub.getSubmissionType() == type){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Submission getAlreadyUploadedSubmission(String userId, SubmissionType type){
+		List<Submission> submissions = submissionRepository.findAllByUserId(userId);
+
+		for (Submission sub : submissions){
+			if (sub.getSubmissionType() == type){
+				return sub;
+			}
+		}
+		return null;
 	}
 
 	private void updateSubmissionIds(SubmissionType type, String submissionId, String userId){
@@ -237,4 +278,53 @@ public class StudentController {
 
         }
     }
+
+    private String getDataFileIdFromSubmissionFileUrl(Submission submission){
+		String[] parts = submission.getFileUrl().split("\\+");	//get id out of string "/submissions/datafiles/{subId}+{dataFileId}"
+		String fileId = parts[1];
+		return fileId;
+	}
+
+
+
+
+
+
+
+	@DeleteMapping("/student/mySubmissions/delete/{id}")
+	String deleteSubmission(@PathVariable String id) {
+		Submission submission = submissionRepository.findFirstById(id);
+		String fileId = getDataFileIdFromSubmissionFileUrl(submission);
+		updateSubmissionIds(submission.getSubmissionType(), "", submission.getUserId());
+
+		dataFileRepository.delete(dataFileRepository.findFirstById(fileId));
+		submissionRepository.delete(submissionRepository.findFirstById(id));
+
+		return "\nSubmission deleted: " + submission.getId()
+				+ "\nDatafile deleted: " + fileId + "\n";
+	}
+
+
+
+	/* TEMPORARY DELETE METHODS*/
+	//TODO: ska vara deletemapping men använder get under utveckling
+	@GetMapping("student/mySubmissions/deleteAll")
+	void deleteMySubmissions() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = repository.findFirstByEmailAdress(auth.getName());
+
+		List<Submission> submissions = submissionRepository.findAllByUserId(user.getId());
+		for (Submission sub : submissions){
+			updateSubmissionIds(sub.getSubmissionType(), "", user.getId());
+			dataFileRepository.deleteById(getDataFileIdFromSubmissionFileUrl(sub));
+			submissionRepository.deleteById(sub.getId());
+		}
+	}
+
+
 }
+
+
+
+
+

@@ -79,7 +79,7 @@ public class CoordinatorController {
     }
 
     @PutMapping(value = "/coordinator/updateProjectDescription", consumes = {"application/json"})
-    void updateProjectDescription(@RequestBody ProjectDescription projectDescription) {
+    void updateProjectDescription(@Valid @RequestBody ProjectDescription projectDescription) {
         if (projectDescriptionRepository.findById(projectDescription.getId()).isPresent()) {
             projectDescriptionRepository.save(projectDescription);
         }
@@ -93,7 +93,7 @@ public class CoordinatorController {
     }
 
     @PutMapping(value = "/coordinator/updateInitialReport", consumes = {"application/json"})
-    void updateInitialReport(@RequestBody InitialReport initialReport) {
+    void updateInitialReport(@Valid @RequestBody InitialReport initialReport) {
         if (initialReportRepository.findById(initialReport.getId()).isPresent()) {
             initialReportRepository.save(initialReport);
         }

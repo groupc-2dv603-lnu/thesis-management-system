@@ -3,13 +3,17 @@ package project.controller;
 
 
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.hateoas.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import project.model.entities.Feedback;
 import project.model.entities.InitialReport;
 import project.model.entities.Opponent;
+import project.model.entities.Reader;
 import project.model.entities.User;
 import project.model.enums.Role;
 import project.model.repositories.FeedbackRepository;
@@ -64,5 +69,14 @@ public class OpponentController {
 			initialReportRepository.save(report);
 		}
 		return feedback;
+	}
+	@GetMapping(value = "/opponent/opponentInfo", produces = "application/json; charset=UTF-8")
+	Resource<Opponent> one6() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
+		return new Resource<>(opponent,
+				linkTo(methodOn(OpponentController.class).one6()).withSelfRel());
 	}
 }
