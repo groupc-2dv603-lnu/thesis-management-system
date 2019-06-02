@@ -13,7 +13,6 @@ class ReportPopup extends Component {
       assignedOpponents: [],
       loading: true
     }
-
   }
 
   async componentDidMount () {

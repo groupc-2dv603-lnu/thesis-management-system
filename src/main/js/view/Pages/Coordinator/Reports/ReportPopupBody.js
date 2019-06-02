@@ -9,18 +9,26 @@ class ReportPopupBody extends Component {
     super(props);
     this.state = {
       bidders: this.props.bidders,
-      assignedReaders: this.props.readers,
+      assignedReaders: [],
       availableOpponents: this.props.availableOpponents,
       assignedOpponents: this.props.assignedOpponents,
       showMessage: false,
-      message: ""
+      message: "",
+      reportId: this.props.report.id
     };
     this.getBidders = this.getBidders.bind(this);
     this.getReaders = this.getReaders.bind(this);
     this.getAvailableOpponents = this.getAvailableOpponents.bind(this);
+    console.log('PROPS', this.props)
+
   }
 
   assignReader(user) {
+    if (this.state.assignedReaders.length === 1) {
+      this.toggleMessage("One at a time pls");
+      this.resetMessage()
+      return;
+    }
     let bidders = this.state.bidders.filter(
       bidder => bidder.userId !== user.userId
     );
@@ -165,17 +173,19 @@ class ReportPopupBody extends Component {
     });
   }
 
-  async handleSubmit() {
-    this.props.report.bids = this.removeNames(this.state.bidders);
-    this.props.report.assignedReaders = this.removeNames(
-      this.state.assignedReaders
-    );
+  async submitAssignedOpponent() {
+
     this.props.report.assignedOpponents = this.removeNames(
       this.state.assignedOpponents
     );
     let initialReport = Object.assign({}, this.props.report);
     delete initialReport.name;
 
+    
+    const assignedOpponentId = this.state.assignedOpponents[0].userId
+    const request = await corFunc.updateOpponent(assignedOpponentId, this.state.reportId)
+
+   /*
     const request = await corFunc.updateSubmission(
       dbSubmissionTypes.initialReport,
       initialReport
@@ -187,7 +197,18 @@ class ReportPopupBody extends Component {
       this.toggleMessage("Something went wrong");
       this.resetMessage()
     }
+    */
   }
+
+  submitAssignedReader() {
+    this.props.report.bids = this.removeNames(this.state.bidders);
+    this.props.report.assignedReaders = this.removeNames(
+      this.state.assignedReaders
+    );
+    const userId = this.state.assignedReaders[0].userId
+    const request = corFunc.updateReader(userId, this.state.reportId)
+    }
+    
 
   removeNames(users) {
     let userIds = [];
@@ -227,9 +248,18 @@ class ReportPopupBody extends Component {
 
         {/* ---- ASSIGNED READERS ---- */}
         <div style={Style.reportBox}>
-          <div style={Style.reportBoxHeader}>Assigned Readers</div>
+          <div style={Style.reportBoxHeader}>Assign Reader</div>
           {this.getReaders(this.state.assignedReaders)}
         </div>
+             {/* ---- SUBMIT ---- */}
+            <div style={PopupStyle.reportSubmitDiv}>
+          <button
+            style={PopupStyle.submitButton}
+            onClick={() => this.submitAssignedReader()}
+          >
+            Assign reader
+          </button>
+           </div>
 
         {/* ---- AVAILABLE OPPONENTS ---- */}
         <div style={Style.reportBox}>
@@ -247,7 +277,7 @@ class ReportPopupBody extends Component {
         <div style={PopupStyle.reportSubmitDiv}>
           <button
             style={PopupStyle.submitButton}
-            onClick={() => this.handleSubmit()}
+            onClick={() => this.submitAssignedOpponent()}
           >
             Submit
           </button>
