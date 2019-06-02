@@ -58,6 +58,11 @@ export function postToAPI(postPath, object) {
     });
 }
 
+
+export const downloadFile = async (fileUrl) => {
+    let win = window.open(fileUrl, '_blank')
+    win.focus
+  }
 export function fileUpload(file, dbType) {
     const url = '/student/newSubmission?subType=' + dbType;
     const formData = new FormData();
@@ -73,7 +78,7 @@ export function fileUpload(file, dbType) {
 export function deleteFromAPI(delPath) {
     return client({ method: "DELETE", path: delPath });
 }
-
+  
 export function capitalizeFirstLetter(string) {
     if(string == null)
         return "N/A";
@@ -96,3 +101,4 @@ export function formatCamelCaseToText(string) {
 export function getUser(userId) {
     return getFromAPI("/users/" + userId)
 }
+

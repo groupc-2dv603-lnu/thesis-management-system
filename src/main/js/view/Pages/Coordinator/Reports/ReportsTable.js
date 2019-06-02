@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
-import * as Style from "../Styles";
+import * as Style from "../Styles/TableStyles";
 import ReportPopup from "./ReportPopup";
-
-/* ---- mock imports ---- */
-import { getStudents, getInitialReports, getName } from "../functions";
+import * as func from './reportFunctions/reportFunctions'
 
 const client = require("../../../../client");
 
@@ -14,18 +12,18 @@ class ReportsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
+      students: [],
       initialReports: [],
-      selectedReportId: null,
-      showPopup: false
+      selectedReport: null,
+      showPopup: false,
+      loading: false,
+      // pages: -1,
     };
-    this.state.users = getStudents();
-    this.state.initialReports = getInitialReports(this.state.users);
   }
 
-  togglePopup(reportId) {
+  async togglePopup(report) {
     this.setState({
-      selectedReportId: reportId
+      selectedReport: report
     });
     this.setState({
       showPopup: !this.state.showPopup
@@ -37,7 +35,7 @@ class ReportsTable extends Component {
     const columnMaxWidth = 120;
     const columns = [
       {
-        Header: "Submitter",
+        Header: "Name",
         headerStyle: Style.headerNameCellStyle,
         style: Style.nameColumnStyle,
         accessor: "submitter",
@@ -46,10 +44,10 @@ class ReportsTable extends Component {
         Cell: props => (
           <span
             onClick={() => {
-              this.togglePopup(props.original.id);
+              this.togglePopup(props.original);
             }}
           >
-            {getName(props.original.userId)}
+            {props.original.name}
           </span>
         )
       },
@@ -86,9 +84,7 @@ class ReportsTable extends Component {
         Cell: props => (
           <Link to="#">
             <span>
-              {props.original.assignedOpponent === null
-                ? "0"
-                : props.original.assignedOpponent.length}
+            {props.original.assignedOpponents.length}
             </span>
           </Link>
         )
@@ -97,10 +93,26 @@ class ReportsTable extends Component {
 
     return (
       <div>
-        <ReactTable data={this.state.initialReports} columns={columns} />{" "}
+        <ReactTable 
+          data={this.state.initialReports} 
+          pages={this.state.pages}
+          loading={this.state.loading}
+          manual // ??
+          onFetchData={async (state, instance) => {
+            this.setState({ loading: true });
+            const initialReports = await func.getInitialReports();
+
+            this.setState({
+              initialReports: initialReports,
+              pages: 1,
+              loading: false
+            });
+          }}
+          columns={columns}  
+           />{" "}
         {this.state.showPopup ? (
           <ReportPopup
-            report={this.state.selectedReportId}
+            report={this.state.selectedReport}
             closePopup={this.togglePopup.bind(this)}
           />
         ) : null}
@@ -110,10 +122,12 @@ class ReportsTable extends Component {
 }
 /* ---- Table configs ---- */
 Object.assign(ReactTableDefaults, {
-  defaultPageSize: 25,
+  defaultPageSize: 1,
   minRows: 0,
   showPagination: false,
   resizable: false,
   showPageSizeOptions: false
 });
+
+
 export default ReportsTable;
