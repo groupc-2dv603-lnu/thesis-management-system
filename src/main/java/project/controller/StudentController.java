@@ -225,7 +225,6 @@ public class StudentController {
 				"\nDatafile ID: " + df.getId() +
 				"\nFilename: " + newSubmission.getFilename() +
 				"\nAuthor: " + newSubmission.getAuthor());
-
 		return new UploadFileResponse(newSubmission.getId(), newSubmission.getFilename(), newSubmission.getFileUrl(),
 				file.getContentType(), file.getSize());
 	}
