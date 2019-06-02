@@ -72,7 +72,7 @@ class Reader extends Component {
   sendBiddedReports() {
     this.state.selectedReports.map(report => {
       console.log(report);
-      postToAPI(`/reader/requestBidding?initialReportId=${report}`);
+      putToAPI(`/reader/requestBidding?initialReportId=${report}`);
     });
   }
 
