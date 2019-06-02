@@ -98,6 +98,16 @@ public class SupervisorController {
 		return supervisorRepository.save(supervisor);
 	}
 
+	@PutMapping("/supervisor/setAvailability")
+	Supervisor supervisorAvailability(@RequestParam("state") Boolean state) {
+		Supervisor supervisor = getLoggedInSupervisor();
+		if(supervisor != null) {
+			supervisor.setAvailableForSupervisor(state);
+			return supervisorRepository.save(supervisor);
+		}
+		return null;
+	}
+
 	//Add denied list or something for students.
 	@PutMapping("/supervisor/assignStudent/{studentId}")
 	Student assignStudent(@PathVariable String studentId, @RequestParam("state") Boolean state) {
