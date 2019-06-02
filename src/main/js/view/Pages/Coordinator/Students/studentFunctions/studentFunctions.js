@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import moment from "moment";
 import { dbSubmissionTypes } from '../../../../enums'
 import * as generalFunctions from "../../../../functions";
 
@@ -76,9 +77,6 @@ export async function getFeedback(feedbackId) {
 
 
 /* ----- Helpers ----- */
-function supervisorAssigned(userId) {
-  return userId !== "" ? true : false;
-}
 
 export function booleanSymbol(bool) {
   return !bool ? (

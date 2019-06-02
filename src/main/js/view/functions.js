@@ -101,3 +101,4 @@ export function formatCamelCaseToText(string) {
 export function getUser(userId) {
     return getFromAPI("/users/" + userId)
 }
+

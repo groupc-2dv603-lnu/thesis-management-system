@@ -59,3 +59,17 @@ export const postCoordinatorFeedback = async (text, reportId) => {
   return request;
 
 } 
+
+export async function getName(userId) {
+  if(userId === null) {
+    return 
+  }
+  try {
+    const response = await generalFunctions.getFromAPI(`/users/${userId}`);
+    return !response.entity.name
+      ? "User not found"
+      : await generalFunctions.capitalizeFirstLetter(response.entity.name);
+  } catch (e) {
+    console.log(e);
+  }
+}

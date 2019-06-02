@@ -233,7 +233,6 @@ class ReportPopupBody extends Component {
         </div>
 
         {/* ---- SUBMIT ---- */}
-
         <div style={PopupStyle.reportSubmitDiv}>
           <button
             style={PopupStyle.submitButton}
