@@ -103,3 +103,16 @@ export const setDeadlineForAll = async (docType, deadline) =>  {
   }
   return true
 }
+
+
+// /coordinator/updateReader?readerID={readerID}&initialReportID={initialReportID}
+export const updateReader = async (readerId, initialReportID) => {
+  const request = await generalFunctions.postToAPI(`/coordinator/updateReader?readerID=${readerId}&initialReportId=${initialReportID}`)
+  console.log('REQUEST')
+  return request
+}
+// /coordinator/updateOpponent?opponentID={opponentID}&initialReportID={initialReportID}
+export const updateOpponent = async (opponentID, initialReportID) => {
+  const request = await generalFunctions.postToAPI(`/coordinator/updateOpponent?opponentID=${opponentID}&initialReportID=${initialReportID}`)
+  console.log('REQUEST')
+}
