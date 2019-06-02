@@ -47,8 +47,8 @@ public class SupervisorController {
 
 
 
-	@PostMapping("/supervisor/feedback")
-	Feedback newFeedback(@RequestParam("documentId") String documentId, @RequestParam("text") String text) {
+	@PostMapping("/supervisor/feedback/{documentId}")
+    Feedback newFeedback(@PathVariable String documentId, @RequestParam("text") String text) {
 		Submission submission = submissionRepository.findFirstById(documentId);
 		Supervisor supervisor = getLoggedInSupervisor();
 		if(supervisor.isAssignedStudent(submission.getUserId())) {

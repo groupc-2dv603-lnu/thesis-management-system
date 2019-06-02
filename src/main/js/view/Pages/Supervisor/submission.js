@@ -14,23 +14,23 @@ export class Submission extends Component {
 
     answerReport(answer) {
         if (confirm("You cannot change your answer. Are you sure you want to " + (answer ? "approve" : "reject") + " this plan?")) {
-            
+
             if (answer) {
-                func.approvePlan(this.props.reportData);
+                func.approvePlan(this.props.reportData.userId).then(() => {
+                    this.props.reference.updateAppliedStudents();
+                });
             }
             else {
-                func.rejectPlan(this.props.reportData);
+                func.rejectPlan(this.props.reportData.userId);
             }
-            location.href = "/#/supervisor";
         }
     }
 
 
     sendAssessment() {
         if (confirm("You cannot change your assessment. Are you sure you want to submit?")) {
-            func.sendFeedback(document.getElementById("feedbackBox").value);
-            document.getElementById("feedbackBox").value = "";
-            location.href = "/#/supervisor";
+            func.sendFeedback(document.getElementById("feedbackBox").value, this.props.reportData).then(() => {
+            });
         }
     }
 
@@ -38,7 +38,6 @@ export class Submission extends Component {
         return (
             <div>
                 <h2>
-                    {console.log(this.props.submissionData.submissionType)}
                     {this.props.submissionData.submissionType == enums.dbSubmissionTypes.projectPlan
                         ?
                         <span >Approve/Reject Project Plan</span>
@@ -70,17 +69,27 @@ export class Submission extends Component {
                 <br />
                 {this.props.submissionData.submissionType == enums.dbSubmissionTypes.projectPlan
                     ? // Submission is a Project plan
-                    <div>
-                        <button onClick={() => this.answerReport(true)}>Approve</button>
-                        <button onClick={() => this.answerReport(false)}>Reject</button>
-                    </div>
+                    this.props.reportData.approved != enums.projectPlanApprovedStatus.pending
+                        ?
+                        <div>This project has already been {this.props.reportData.approved.toLowerCase()}. You cannot change your answer</div>
+                        :
+                        <div>
+                            <button onClick={() => this.answerReport(true)}>Approve</button>
+                            <button onClick={() => this.answerReport(false)}>Reject</button>
+                        </div>
                     : // else (submissions is an Initial Report)
-                    <div>
-                        Write Assessment
-                        <textarea className="feedbackBox" id="feedbackBox"></textarea>
-                        <br />
-                        <button type="submit" onClick={() => this.sendAssessment()}>Submit</button>
-                    </div>
+                    !this.props.reportData.supervisorId // (if) feedback has not been sent
+                        ?
+                        <div>
+                            Write Assessment
+                                        <textarea className="feedbackBox" id="feedbackBox"></textarea>
+                            <br />
+                            <button type="submit" onClick={() => this.sendAssessment()}>Submit</button>
+                        </div>
+                        :
+                        <div>
+                            Your have already sent your assessment
+                        </div>
                 }
 
             </div>
