@@ -14,6 +14,22 @@ import Supervisor from "./Pages/Supervisor";
 import Admin from "./Pages/Admin";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null
+    };
+  }
+
+  componentDidMount() {
+    getFromAPI("/loginUser").then(user => {
+      this.setState({
+        user: user.entity,
+        roles: user.entity.rules
+      });
+    });
+  }
+
   render() {
     return (
       <div>
@@ -22,17 +38,42 @@ class App extends Component {
           {/* <Switch> */}
           <div className="fluid-container content">
             <Route exact path="/" component={FrontPage} />
-            <Route exact path="/student" component={Student} />
-            <Route exact path="/coordinator" component={Coordinator} />
-            <Route exact path="/supervisor" component={Supervisor} />
-            <Route exact path="/admin" component={Admin} />
             <PrivateRoute
-              authenticated={true}
+              exact
+              path="/student"
+              component={Student}
+              authenticated={user && user.entity.rules.includes("STUDENT")}
+            />
+            <PrivateRoute
+              exact
+              path="/coordinator"
+              component={Coordinator}
+              authenticated={user && user.entity.rules.includes("COORDINATOR")}
+            />
+            <PrivateRoute
+              exact
+              path="/supervisor"
+              component={Supervisor}
+              authenticated={user && user.entity.rules.includes("SUPERVISOR")}
+            />
+            <PrivateRoute
+              exact
+              path="/admin"
+              component={Admin}
+              authenticated={user && user.entity.rules.includes("ADMIN")}
+            />
+            <PrivateRoute
+              authenticated={user && user.entity.rules.includes("READER")}
               exact
               path="/reader"
               component={Reader}
             />
-            <Route exact path="/opponent" component={Opponent} />
+            <PrivateRoute
+              exact
+              path="/opponent"
+              component={Opponent}
+              authenticated={user && user.entity.rules.includes("OPPONENT")}
+            />
           </div>
           {/* </Switch> */}
         </HashRouter>
