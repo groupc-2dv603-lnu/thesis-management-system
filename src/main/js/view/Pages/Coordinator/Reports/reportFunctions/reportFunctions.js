@@ -1,56 +1,27 @@
 import * as generalFunctions from "../../../../functions";
 
 export const getInitialReports = async () => {
-  try {
-    let reports = [];
-
     const response = await generalFunctions.getFromAPI(
       `/coordinator/getAllReports`
-    );
-    for (const report of response.entity) {
-      if (report.submissionId !== "") {
-        const submission = await getSubmission(report.submissionId);
-        if (submission.fileUrl !== "") {
-          report.name = await getName(report.userId);
-          reports.push(report);
-        }
-      }
-    }
-    return reports;
-  } catch (e) {
-    console.log(e);
-  }
+    )
+    const uploadedReports = response.entity.filter(report =>
+      report.submissionId !== "")
+    
+     for (const report of uploadedReports) {
+       const user = await generalFunctions.getUser(report.userId)
+       report.name = generalFunctions.capitalizeFirstLetter(user.entity.name)
+     }
+     uploadedReports.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)); 
+     console.log(uploadedReports)
+    return uploadedReports
 };
-
-const getSubmission = async submissionId => {
-  try {
-    const response = await generalFunctions.getFromAPI(
-      `/submissions/${submissionId}`
-    );
-    return response.entity;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export async function getName(userId) {
-  try {
-    const response = await generalFunctions.getFromAPI(`/users/${userId}`);
-    return response.entity.name === undefined
-      ? "User not found"
-      : await generalFunctions.capitalizeFirstLetter(response.entity.name);
-  } catch (e) {
-    console.log(e);
-  }
-}
 
 export const getUsers = async userIds => {
   let users = [];
-
   for (const id of userIds) {
-    let name = await getName(id);
+    let user = await generalFunctions.getUser(id);
     let obj = {
-      name: generalFunctions.capitalizeFirstLetter(name),
+      name: generalFunctions.capitalizeFirstLetter(user.entity.name),
       userId: id
     };
     users.push(obj);
@@ -66,9 +37,9 @@ export const getAvailableOpponents = async () => {
   );
   let opponents = response.entity;
   for (const opponent of opponents) {
-    let name = await getName(opponent.userId);
+    const user = await generalFunctions.getUser(opponent.userId);
     let obj = {
-      name: !name ? "User not found" : name,
+      name: generalFunctions.capitalizeFirstLetter(user.entity.name),
       userId: opponent.userId
     };
     availableOpponents.push(obj);

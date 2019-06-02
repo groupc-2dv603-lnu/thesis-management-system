@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import * as Style from "../../Styles/SubmissionBoxStyle";
+import * as generalFunctions from '../../../../functions'
 
 class Feedback extends Component {
   constructor(props) {
@@ -11,7 +12,7 @@ class Feedback extends Component {
     return (
       <div style={Style.feedbackBox}>
         <div style={Style.submissionRow}>
-          <span style={Style.submissionLeftColumn}>Feedback from:</span>
+          <span style={Style.submissionLeftColumn}>From:</span>
           <span style={Style.submissionRightColumn}>
             {this.props.feedback.name}
           </span>
@@ -19,7 +20,7 @@ class Feedback extends Component {
         <div style={Style.submissionRow}>
           <span style={Style.submissionLeftColumn}> Role:</span>
           <span style={Style.submissionRightColumn}>
-            {this.props.feedback.role}
+            {generalFunctions.capitalizeFirstLetter(this.props.feedback.role)}
           </span>
         </div>
         <div style={Style.feedbackText}>{this.props.feedback.text}</div>

@@ -3,8 +3,8 @@ import * as Style from "../../Styles/SubmissionBoxStyle";
 import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import * as PopupStyle from "../../Styles/PopupStyles";
 import * as generalFunctions from "../../../../functions";
-import * as corFunc from '../../coordinatorFunctions'
-import { dbSubmissionTypes } from '../../../../enums'
+import * as corFunc from "../../coordinatorFunctions";
+import { dbSubmissionTypes } from "../../../../enums";
 
 class ProjectDescriptionBox extends Component {
   constructor(props) {
@@ -86,111 +86,104 @@ class ProjectDescriptionBox extends Component {
   render() {
     return (
       <div>
-        {/* ----- ERROR NO SUBMISSION ----- */}
-        {this.props.projectDescription === undefined ||
-        this.props.submission === undefined ? (
-          <div style={Style.noSubFound}>
-            No submission found
+        <div>{this.state.showMessage === true ? this.getMessage() : null}</div>
+        <div style={Style.subBoxDiv}>
+          {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
+          <div style={Style.subBoxHeader}>
+            Project Description
+            {this.state.submission !== undefined ? (
+              <span
+                onClick={() =>
+                  generalFunctions.downloadFile(this.state.submission.fileUrl)
+                }
+                style={Style.downloadSpan}
+              >
+                <i className="fas fa-download" />
+              </span>
+            ) : null}
           </div>
-        ) : (
-          <div style={Style.subBoxDiv}>
-            <div>
-              {this.state.showMessage === true ? this.getMessage() : null}
-            </div>
-            {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
-            <div style={Style.subBoxHeader}>
-              Project Description
-              {this.state.submission.fileUrl !== "" ? (
-                <span
-                  onClick={() =>
-                    generalFunctions.downloadFile(this.state.submission.fileUrl)
-                  }
-                  style={Style.downloadSpan}
-                >
-                  <i className="fas fa-download" />
-                </span>
-                ) : null}
-            </div>
 
-            {/* ----- STATUS ----- */}
-            <div style={Style.submissionBody}>
+          {/* ----- STATUS ----- */}
+          <div style={Style.submissionBody}>
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Status</span>
+              <span style={Style.submissionRightColumn}>
+                {func.getStatus(this.state.projectDescription.deadLine)}
+              </span>
+            </div>
+            {/* ----- DEADLINE ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Deadline</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.projectDescription !== null
+                  ? func.getDeadline(this.state.projectDescription.deadLine)
+                  : "not set"}
+              </span>
+              <span style={Style.submissionEditColumn}>
+                <i
+                  onClick={() => this.toggleDeadlineChange()}
+                  className="fas fa-edit"
+                />
+              </span>
+            </div>
+            {/* ----- CHANGE DEADLINE ----- */}
+            {this.state.showChangeDeadline ? (
               <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Status</span>
-                <span style={Style.submissionRightColumn}>
-                  {func.getStatus(this.state.projectDescription.deadLine)}
-                </span>
+                <span style={Style.submissionLeftColumn}>Set deadline</span>
+                <span style={Style.submissionInputColumn} />
+                <input
+                  type="date"
+                  value={this.state.newDeadlineDate}
+                  onChange={() => this.handleDeadlineDate(event)}
+                />
+                <input
+                  type="time"
+                  value={this.state.newDeadlineTime}
+                  onChange={() => this.handleDeadlineTime(event)}
+                />
+                <i
+                  className="fas fa-check"
+                  style={Style.submissionEditColumn}
+                  onClick={() => this.setDeadline()}
+                />
               </div>
-              {/* ----- DEADLINE ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Deadline</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getDeadline(this.state.projectDescription.deadLine)
-                    : "not set"}
-                </span>
-                <span style={Style.submissionEditColumn}>
-                  <i
-                    onClick={() => this.toggleDeadlineChange()}
-                    className="fas fa-edit"
-                  />
-                </span>
-              </div>
-              {/* ----- CHANGE DEADLINE ----- */}
-              {this.state.showChangeDeadline ? (
-                <div style={Style.submissionRow}>
-                  <span style={Style.submissionLeftColumn}>Set deadline</span>
-                  <span style={Style.submissionInputColumn} />
-                  <input
-                    type="date"
-                    value={this.state.newDeadlineDate}
-                    onChange={() => this.handleDeadlineDate(event)}
-                  />
-                  <input
-                    type="time"
-                    value={this.state.newDeadlineTime}
-                    onChange={() => this.handleDeadlineTime(event)}
-                  />
-                  <i
-                    className="fas fa-check"
-                    style={Style.submissionEditColumn}
-                    onClick={() => this.setDeadline()}
-                  />
-                </div>
-              ) : null}
-              {/* ----- File uploaded ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>File uploaded</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.submission.submissionDate
-                    ? func.getDate(this.state.submission.submissionDate)
-                  : "No file uploaded" }
-                </span>
-              </div>
-              {/* ----- GRADE ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Grade</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.projectDescription !== null
-                    ? func.getGrade(this.state.projectDescription.grade)
-                    : "Not set"}
-                </span>
-                <span style={Style.submissionEditColumn}>
-                  <select
-                    style={Style.select}
-                    placeholder="set status"
-                    onChange={() => this.setGrade(event)}
-                  >
-                    {func.getGrades(1)}
-                  </select>
-                </span>
-              </div>
-              {/* ----- SUBMIT ----- */}
-              <div onClick={() => this.handleSubmit()} style={Style.submitRow}>
-                Submit changes
+            ) : null}
+            {/* ----- File uploaded ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>File uploaded</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.submission !== undefined
+                  ? func.getDate(this.state.submission.submissionDate)
+                  : "No file uploaded"}
+              </span>
+            </div>
+            {/* ----- GRADE ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Grade</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.projectDescription !== null
+                  ? func.getGrade(this.state.projectDescription.grade)
+                  : "Not set"}
+              </span>
+              <div>
+                {this.state.submission !== undefined ? (
+                  <span style={Style.submissionEditColumn}>
+                    <select
+                      style={Style.select}
+                      onChange={() => this.setGrade(event)}
+                    >
+                      {func.getGrades(1)}
+                    </select>
+                  </span>
+                ) : null}
               </div>
             </div>
+            {/* ----- SUBMIT ----- */}
+            <div onClick={() => this.handleSubmit()} style={Style.submitRow}>
+              Submit changes
+            </div>
           </div>
-        )}
+        </div>
       </div>
     );
   }

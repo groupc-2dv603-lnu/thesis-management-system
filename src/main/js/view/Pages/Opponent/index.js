@@ -17,7 +17,7 @@ class Opponent extends Component {
         user: user.entity
       });
     });
-    getFromAPI("/opponent/opponentInfo").then(info => {
+    getFromAPI("/opponent/initailReportSubmission").then(info => {
       console.log(info, "uhigu");
       this.setState({
         finalReport: info.entity.finalReportId

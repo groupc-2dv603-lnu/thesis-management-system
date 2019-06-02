@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-
 import ReactTable from "react-table";
-import { ReactTableDefaults } from "react-table";
 import StudentPopup from "./StudentPopup";
 import * as Style from "../Styles/Styles";
 import * as TableStyle from "../Styles/TableStyles";
@@ -15,7 +13,6 @@ class StudentsTable extends Component {
       loading: true,
       selectedStudent: null,
       assignedSupervisorName: null
-      // pages: -1
     };
   }
 
@@ -35,6 +32,7 @@ class StudentsTable extends Component {
       {
         /* ----- TABLE NAME ----- */
         Header: "Name",
+        sortable: true,
         headerStyle: TableStyle.headerNameCellStyle,
         style: TableStyle.nameColumnStyle,
         accessor: "name",
@@ -118,7 +116,10 @@ class StudentsTable extends Component {
           data={this.state.students}
           pages={this.state.pages}
           loading={this.state.loading}
-          manual 
+          showPagination={false}
+          minRows={0}
+          sortable={false}
+          resizable={false}
           onFetchData={async (state, instance) => {
             this.setState({ loading: true });
             const students = await func.getStudentTableData();
@@ -143,14 +144,7 @@ class StudentsTable extends Component {
   }
 }
 
-/* ---- Table configs ---- */
-Object.assign(ReactTableDefaults, {
-  defaultPageSize: 25,
-  minRows: 0,
-  showPagination: true,
-  resizable: false,
-  showPageSizeOptions: false
-});
+
 
 
 export default StudentsTable;

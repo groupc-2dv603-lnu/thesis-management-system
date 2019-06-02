@@ -1,5 +1,6 @@
 import moment from "moment";
 import { dbSubmissionTypes } from '../../enums'
+import * as generalFunctions from '../../functions'
 
 export const validDeadline = deadline => {
   if (deadline === "T:00") {
@@ -72,4 +73,33 @@ export async function getName(userId) {
   } catch (e) {
     console.log(e);
   }
+}
+
+export const setDeadlineForAll = async (docType, deadline) =>  {
+  const response = await generalFunctions.getFromAPI('/coordinator/getAllStudents')
+  const allStudents = response.entity
+
+  
+  const documentsToChange = []
+  for(const student of allStudents) {
+    const studentDocs = await generalFunctions.getFromAPI(`/coordinator/getAllSubmissionsByUserID?userId=${student.userId}`)
+    if (docType === dbSubmissionTypes.projectDescription) {
+      documentsToChange.push(studentDocs.entity.projectDescriptions[0])
+    } else if (docType === dbSubmissionTypes.projectPlan) {
+      documentsToChange.push(studentDocs.entity.projectPlans[0])
+    } else if (docType === dbSubmissionTypes.initialReport) {
+      documentsToChange.push(studentDocs.entity.initialReports[0])
+    } else if (docType === dbSubmissionTypes.finalReport) {
+      documentsToChange.push(studentDocs.entity.finalReports[0])
+    }
+  }
+
+  for (const document of documentsToChange) {
+    document.deadLine = deadline
+    const response = await updateSubmission(docType, document)
+    if (response.status !== 200) {
+      return false
+    }
+  }
+  return true
 }

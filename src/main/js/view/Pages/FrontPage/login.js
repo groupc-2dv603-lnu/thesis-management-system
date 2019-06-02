@@ -26,6 +26,8 @@ class Login extends Component {
     handleClick() {
         alert("Entered email: " + this.state.email
         + "\nEntered password: " + this.state.password);
+
+
     }
 
     render() {
