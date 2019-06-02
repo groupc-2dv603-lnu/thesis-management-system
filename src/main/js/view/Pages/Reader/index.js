@@ -99,19 +99,18 @@ class Reader extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <div>
         {!!this.state.reports.length && (
           <div>
-            <p>Välj rapporter</p>
+            <p>Choose reports to bid on:</p>
             <table>
               <tbody>
                 <tr>
-                  <th style={styles.th}>Namn</th>
-                  <th style={styles.th}>Författare</th>
-                  <th style={styles.th}>ladda ner</th>
-                  <th style={styles.th}>välj</th>
+                  <th style={styles.th}>Name</th>
+                  <th style={styles.th}>Author</th>
+                  <th style={styles.th}>Download</th>
+                  <th style={styles.th}>Choose</th>
                 </tr>
                 {this.state.reports.map((report, index) => (
                   <tr key={index}>
@@ -126,7 +125,7 @@ class Reader extends Component {
                         href={report.content.fileUrl}
                         style={{ display: "block" }}
                       >
-                        ladda ner
+                        Download
                       </a>
                     </td>
                     <td key={report.content.id} style={styles.td}>
@@ -142,13 +141,13 @@ class Reader extends Component {
               </tbody>
             </table>
 
-            <p>Valda rapporter</p>
+            <p>Choosen reports</p>
             <table>
               <tbody>
                 <tr>
                   <th style={styles.th}>#</th>
-                  <th style={styles.th}>Namn</th>
-                  <th style={styles.th}>Författare</th>
+                  <th style={styles.th}>Name</th>
+                  <th style={styles.th}>Author</th>
                 </tr>
                 {this.state.selectedReports.map((reportId, index) => {
                   const report = this.state.reports.filter(
@@ -170,7 +169,7 @@ class Reader extends Component {
                 })}
               </tbody>
             </table>
-            <button onClick={this.sendBiddedReports.bind(this)}>Skicka</button>
+            <button onClick={this.sendBiddedReports.bind(this)}>Send</button>
           </div>
         )}
         {!!this.state.initialReport && (
@@ -185,9 +184,7 @@ class Reader extends Component {
             </p>
             <textarea rows="10" cols="70" id="initialreport" />
             <div>
-              <button onClick={this.sendInitialReport.bind(this)}>
-                Skicka
-              </button>
+              <button onClick={this.sendInitialReport.bind(this)}>Send</button>
             </div>
           </div>
         )}
@@ -203,7 +200,7 @@ class Reader extends Component {
             </p>
             <textarea rows="10" cols="70" id="finalreport" />
             <div>
-              <button onClick={this.sendFinalReport.bind(this)}>Skicka</button>
+              <button onClick={this.sendFinalReport.bind(this)}>Send</button>
             </div>
           </div>
         )}

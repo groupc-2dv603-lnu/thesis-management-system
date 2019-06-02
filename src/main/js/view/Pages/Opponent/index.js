@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from "react";
-import { postToAPI, getFromAPI, putToAPI } from "../../functions";
+import { postToAPI, getFromAPI } from "../../functions";
 
 class Opponent extends Component {
   constructor(props) {
@@ -18,9 +18,6 @@ class Opponent extends Component {
       });
     });
     getFromAPI("/opponent/initailReportSubmission").then(info => {
-      console.log(info, "uhigu");
-      console.log("Filename: " + info.entity.filename);
-      console.log("Entity: " + info.entity);
       this.setState({
         finalReport: info.entity
       });
@@ -50,7 +47,7 @@ class Opponent extends Component {
             </p>
             <textarea rows="10" cols="70" id="initial report" />
             <div>
-              <button onClick={this.sendFinalReport.bind(this)}>Skicka</button>
+              <button onClick={this.sendFinalReport.bind(this)}>Send</button>
             </div>
           </div>
         )}
