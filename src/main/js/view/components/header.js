@@ -20,7 +20,9 @@ class Header extends Component {
 
     logout() {
         getFromAPI("/logout").then(() => {
+            localStorage.removeItem(this.state.currentUser);
             this.setState({ currentUser: null });
+            window.location.href = '/login';
         });
     }
 

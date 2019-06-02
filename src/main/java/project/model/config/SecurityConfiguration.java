@@ -28,16 +28,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .csrf().disable() // Disables CSRF protection (unnecessary)
             .authorizeRequests()
             .anyRequest().authenticated()
+            .antMatchers("/admin/**").hasAuthority(String.valueOf(Role.ADMIN))
+            .antMatchers("/opponent/**").hasAuthority(String.valueOf(Role.OPPONENT))
+            .antMatchers("/student/**").hasAuthority(String.valueOf(Role.STUDENT))
+            .antMatchers("/supervisor/**").hasAuthority(String.valueOf(Role.SUPERVISOR))
+            .antMatchers("/reader/**").hasAuthority(String.valueOf(Role.READER))
+            .antMatchers("/coordinator/**").hasAuthority(String.valueOf(Role.COORDINATOR))
             .and()
-            .formLogin();
-//            .antMatchers("/admin/**").hasAuthority(String.valueOf(Role.ADMIN))
-//            .antMatchers("/student/**").hasAuthority(String.valueOf(Role.STUDENT))
-//            .antMatchers("/opponent/**").hasAuthority(String.valueOf(Role.OPPONENT))
-//            .antMatchers("/reader/**").hasAuthority(String.valueOf(Role.READER))
-//            .antMatchers("/supervisor/**").hasAuthority(String.valueOf(Role.SUPERVISOR))
-//            .antMatchers("/coordinator/**").hasAuthority(String.valueOf(Role.COORDINATOR))
-//        	.invalidateHttpSession(true)
-//        	.deleteCookies("JSESSIONID");
+            .formLogin()
+            .and()
+            .logout()
+        	.invalidateHttpSession(true)
+        	.deleteCookies("JSESSIONID");
 
     }
 
