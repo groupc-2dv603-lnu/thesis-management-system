@@ -11,7 +11,8 @@ class ReportPopup extends Component {
       readers: [],
       availableOpponents: [],
       assignedOpponents: [],
-      loading: true
+      loading: true,
+      alreadyAssignedReaderNames: null
     }
   }
 
@@ -20,14 +21,17 @@ class ReportPopup extends Component {
     const readers = await func.getUsers(this.props.report.assignedReaders)
     const availableOpponents = await func.getAvailableOpponents()
     const assignedOpponents = await func.getUsers(this.props.report.assignedOpponents)
-
+    const alreadyAssignedReaderNames = await func.getAlreadyAssignedReaderNames(this.props.report.assignedReaders)
+    
     this.setState({
       bidders: bidders,
       readers: readers,
       availableOpponents: availableOpponents,
       assignedOpponents: assignedOpponents,
+      alreadyAssignedReaderNames: alreadyAssignedReaderNames,
       loading: false
     })
+
   }
   render() { 
     return (
@@ -55,6 +59,7 @@ class ReportPopup extends Component {
                   availableOpponents={this.state.availableOpponents}
                   assignedOpponents={this.state.assignedOpponents}
                   report={this.props.report}
+                  alreadyAssignedReaderNames={this.state.alreadyAssignedReaderNames}
                 ></ReportPopupBody>
               </div>
             </div>

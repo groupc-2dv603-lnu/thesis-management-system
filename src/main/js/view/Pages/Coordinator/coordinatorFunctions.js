@@ -114,5 +114,5 @@ export const updateReader = async (readerId, initialReportID) => {
 // /coordinator/updateOpponent?opponentID={opponentID}&initialReportID={initialReportID}
 export const updateOpponent = async (opponentID, initialReportID) => {
   const request = await generalFunctions.postToAPI(`/coordinator/updateOpponent?opponentID=${opponentID}&initialReportID=${initialReportID}`)
-  console.log('REQUEST')
+  return request
 }

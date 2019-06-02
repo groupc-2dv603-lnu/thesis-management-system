@@ -2,14 +2,13 @@ import React, { Component } from "react";
 import * as Style from "../Styles/ReportStyles";
 import * as PopupStyle from "../Styles/PopupStyles";
 import * as corFunc from '../coordinatorFunctions'
-import { dbSubmissionTypes } from '../../../enums'
 
 class ReportPopupBody extends Component {
   constructor(props) {
     super(props);
     this.state = {
       bidders: this.props.bidders,
-      assignedReaders: [],
+      assignedReader: [],
       availableOpponents: this.props.availableOpponents,
       assignedOpponents: this.props.assignedOpponents,
       showMessage: false,
@@ -20,11 +19,10 @@ class ReportPopupBody extends Component {
     this.getReaders = this.getReaders.bind(this);
     this.getAvailableOpponents = this.getAvailableOpponents.bind(this);
     console.log('PROPS', this.props)
-
   }
 
   assignReader(user) {
-    if (this.state.assignedReaders.length === 1) {
+    if (this.state.assignedReader.length === 1) {
       this.toggleMessage("One at a time pls");
       this.resetMessage()
       return;
@@ -32,21 +30,21 @@ class ReportPopupBody extends Component {
     let bidders = this.state.bidders.filter(
       bidder => bidder.userId !== user.userId
     );
-    this.state.assignedReaders.push(user);
+    this.state.assignedReader.push(user);
     this.setState({
       bidders: bidders,
-      assignedReaders: this.state.assignedReaders
+      assignedReader: this.state.assignedReader
     });
   }
 
   removeReader(user) {
-    let readers = this.state.assignedReaders.filter(
+    let readers = this.state.assignedReader.filter(
       reader => reader.userId !== user.userId
     );
     this.state.bidders.push(user);
     this.setState({
       bidders: this.state.bidders,
-      assignedReaders: readers
+      assignedReader: readers
     });
   }
 
@@ -95,7 +93,7 @@ class ReportPopupBody extends Component {
 
   getReaders(readers) {
     if (readers.length === 0) {
-      return <div style={Style.reportBoxRow}>No assigned readers</div>;
+      return <div style={Style.reportBoxRow}>Choose a reader from bids</div>;
     }
     let i = 0;
     return readers.map(reader => {
@@ -174,22 +172,20 @@ class ReportPopupBody extends Component {
   }
 
   async submitAssignedOpponent() {
-
+    if(this.state.assignedOpponents.length === 0) {
+      this.toggleMessage("Choose an opponent");
+      this.resetMessage()
+    }
     this.props.report.assignedOpponents = this.removeNames(
       this.state.assignedOpponents
     );
     let initialReport = Object.assign({}, this.props.report);
     delete initialReport.name;
 
-    
+
     const assignedOpponentId = this.state.assignedOpponents[0].userId
     const request = await corFunc.updateOpponent(assignedOpponentId, this.state.reportId)
 
-   /*
-    const request = await corFunc.updateSubmission(
-      dbSubmissionTypes.initialReport,
-      initialReport
-    );
     if (request.status === 200) {
       this.toggleMessage("Updated successfully");
       this.resetMessage()
@@ -197,15 +193,14 @@ class ReportPopupBody extends Component {
       this.toggleMessage("Something went wrong");
       this.resetMessage()
     }
-    */
   }
 
   submitAssignedReader() {
     this.props.report.bids = this.removeNames(this.state.bidders);
-    this.props.report.assignedReaders = this.removeNames(
-      this.state.assignedReaders
+    this.props.report.assignedReader = this.removeNames(
+      this.state.assignedReader
     );
-    const userId = this.state.assignedReaders[0].userId
+    const userId = this.state.assignedReader[0].userId
     const request = corFunc.updateReader(userId, this.state.reportId)
     }
     
@@ -232,6 +227,23 @@ class ReportPopupBody extends Component {
   }
 
 
+
+  getAlreadyAssignedReaders(readers) {
+    console.log('READERS', readers)
+  
+    if (readers.length === 0) {
+      return <div style={Style.reportBoxRow}>No assigned readers</div>;
+    }
+    let i = 0;
+    return readers.map(reader => {
+      return (
+        <div style={Style.reportBoxRow} key={i++}>
+          {reader}
+        </div>
+      );
+    });
+  }
+
   getMessage() {
     return <div style={PopupStyle.message}>{this.state.message}</div>;
   }
@@ -245,11 +257,17 @@ class ReportPopupBody extends Component {
           <div style={Style.reportBoxHeader}>Bids</div>
           {this.getBidders(this.state.bidders)}
         </div>
-
+      
         {/* ---- ASSIGNED READERS ---- */}
         <div style={Style.reportBox}>
           <div style={Style.reportBoxHeader}>Assign Reader</div>
-          {this.getReaders(this.state.assignedReaders)}
+          {this.getReaders(this.state.assignedReader)}
+        </div>
+
+        {/* ---- ALREADY ASSIGNED READERS ---- */}
+        <div style={Style.reportBox}>
+          <div style={Style.reportBoxHeader}>Already assigned readers</div>
+          {this.getAlreadyAssignedReaders(this.props.alreadyAssignedReaderNames)}
         </div>
              {/* ---- SUBMIT ---- */}
             <div style={PopupStyle.reportSubmitDiv}>

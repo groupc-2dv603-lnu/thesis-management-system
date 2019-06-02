@@ -44,3 +44,14 @@ export const getAvailableOpponents = async () => {
   return availableOpponents;
 };
 
+export const getAlreadyAssignedReaderNames = async (readers) =>  {
+  const names = []
+ 
+  for (const readerId of readers) {
+    let request = await generalFunctions.getUser(readerId)
+    let name = request.entity.name
+    names.push(name)
+  }
+  console.log('NAMES', names)
+  return names
+}
