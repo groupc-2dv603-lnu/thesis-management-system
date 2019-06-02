@@ -51,6 +51,25 @@ public class SupervisorController {
 		Submission submission = submissionRepository.findFirstById(feedback.getDocumentId());
 		Supervisor supervisor = getLoggedInSupervisor();
 		if(supervisor.isAssignedStudent(submission.getUserId())) {
+
+			switch(submission.getSubmissionType())
+			{
+				case FINAL_REPORT:
+					FinalReport fp = finalReportRepository.findFirstBySubmissionId(submission.getId());
+					if(fp.readersSize() < 1 || fp.opponentSize() < 1) { return null;}
+					break;
+				case INITIAL_REPORT:
+					InitialReport ip = initialReportRepository.findFirstBySubmissionId(submission.getId());
+					if(ip.getOpponentsSize() < 1 || ip.getReadersSize() < 1) {
+						return null;}
+					break;
+			}
+			if(submission.getSubmissionType() == INITIAL_REPORT)
+			{
+				InitialReport initialReport = initialReportRepository.findFirstBySubmissionId(submission.getId());
+				initialReport.setSupervisorId(supervisor.getUserId());
+				initialReportRepository.save(initialReport);
+			}
 			return feedbackRepository.save(feedback);
 		}
 		return null;
@@ -67,20 +86,6 @@ public class SupervisorController {
 					.map(feedback -> new Resource<>(feedback,
 							linkTo(methodOn(SupervisorController.class).all2(documentId)).withRel("feedback")))
 					.collect(Collectors.toList());
-
-			switch(submission.getSubmissionType())
-			{
-				case FINAL_REPORT:
-					FinalReport fp = finalReportRepository.findFirstBySubmissionId(submission.getId());
-					if(fp.readersSize() < 1 || fp.opponentSize() < 1) { System.out.println("No opponent");feedbacks = null;}
-					break;
-				case INITIAL_REPORT:
-					InitialReport ip = initialReportRepository.findFirstBySubmissionId(submission.getId());
-					if(ip.getOpponentsSize() < 1 || ip.getReadersSize() < 1) {
-						System.out.println("No opponent");feedbacks = null;}
-					break;
-			}
-
 		}
 
 		return new Resources<>(feedbacks,
@@ -197,6 +202,19 @@ public class SupervisorController {
 	}
 
 
+	//Checks if the supervisor has given feedback on the speicific initial report.
+	@GetMapping(value = "/supervisor/initialFeedback", produces = "application/json; charset=UTF-8")
+	Boolean getInitialReportFeedback(@RequestParam String submissionId) {
+
+		Supervisor supervisor = getLoggedInSupervisor();
+		InitialReport initialReport = initialReportRepository.findFirstBySubmissionId(submissionId);
+
+		if((initialReport != null) && (initialReport.getSupervisorId().equals(supervisor.getUserId()))){
+			return true;
+		}
+
+		return false;
+	}
 
 	private Supervisor getLoggedInSupervisor()
 	{
@@ -211,4 +229,6 @@ public class SupervisorController {
 		}
 		return null;
 	}
+
+
 }

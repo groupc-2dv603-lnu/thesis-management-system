@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @Document(collection = "users")
 public class User {
-	@NotNull
 	@Id
 	private String id;
 	@NotNull
