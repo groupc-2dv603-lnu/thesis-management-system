@@ -12,7 +12,7 @@ import PrivateRoute from "./utils/PrivateRoute";
 import Opponent from "./Pages/Opponent";
 import Supervisor from "./Pages/Supervisor";
 import Admin from "./Pages/Admin";
-
+import { getFromAPI } from "./functions";
 
 class App extends Component {
   constructor(props) {
@@ -32,6 +32,8 @@ class App extends Component {
   }
 
   render() {
+    const { user } = this.state;
+    console.log(user);
     return (
       <div>
         <HashRouter>
