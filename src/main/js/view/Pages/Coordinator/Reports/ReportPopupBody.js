@@ -18,7 +18,6 @@ class ReportPopupBody extends Component {
     this.getBidders = this.getBidders.bind(this);
     this.getReaders = this.getReaders.bind(this);
     this.getAvailableOpponents = this.getAvailableOpponents.bind(this);
-    console.log('STATE', this.state)
   }
 
   assignReader(user) {
