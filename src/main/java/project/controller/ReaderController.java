@@ -131,6 +131,33 @@ public class ReaderController {
 		return new Resource<>(reader,
 				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());
 	}
+	
+	@GetMapping(value = "/reader/initailReportSubmission", produces = "application/json; charset=UTF-8")
+	Resource<Submission> getintialReportSubmission() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Reader reader = readerRepository.findFirstByuserId(user.getId());
+		
+		InitialReport initialReport = initialReportRepository.findFirstById(reader.getInitialReportId());
+		Submission submission = submissionRepository.findFirstById(initialReport.getSubmissionId());
+		return new Resource<>(submission,
+				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());
+	}
+	
+	@GetMapping(value = "/reader/finalReportSubmission", produces = "application/json; charset=UTF-8")
+	Resource<Submission> getfinalReportSubmission() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Reader reader = readerRepository.findFirstByuserId(user.getId());
+		
+		FinalReport finalReport = finalReportRepository.findFirstById(reader.getInitialReportId());
+		Submission submission = submissionRepository.findFirstById(finalReport.getSubmissionId());
+		return new Resource<>(submission,
+				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());
+	}
+
 
 	@GetMapping(value = "/reader/initialReports", produces = "application/json; charset=UTF-8")
 	Resources<Resource<ObjectNode>> getAllInitialReports(){

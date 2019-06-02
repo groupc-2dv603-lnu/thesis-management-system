@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONObject;
 import org.springframework.hateoas.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +24,13 @@ import project.model.entities.Feedback;
 import project.model.entities.InitialReport;
 import project.model.entities.Opponent;
 import project.model.entities.Reader;
+import project.model.entities.Submission;
 import project.model.entities.User;
 import project.model.enums.Role;
 import project.model.repositories.FeedbackRepository;
 import project.model.repositories.InitialReportRepository;
 import project.model.repositories.OpponentRepository;
+import project.model.repositories.SubmissionRepository;
 import project.model.repositories.UserRepository;
 
 @RestController
@@ -36,13 +39,16 @@ public class OpponentController {
 	private final FeedbackRepository feedbackRepository;
 	private final InitialReportRepository initialReportRepository;
 	private final OpponentRepository opponentRepository;
+	private final SubmissionRepository submissionRepository;
 	
 	
-	OpponentController(UserRepository repository, FeedbackRepository feedbackRepository, InitialReportRepository initialReportRepository, OpponentRepository opponentRepository) {
+	OpponentController(UserRepository repository, FeedbackRepository feedbackRepository, InitialReportRepository initialReportRepository, OpponentRepository opponentRepository,
+			SubmissionRepository submissionRepository) {
 		this.feedbackRepository = feedbackRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.repository = repository;
 		this.opponentRepository = opponentRepository;
+		this.submissionRepository = submissionRepository;
 	}
 	
 	@PostMapping("/opponent/feedback")
@@ -78,5 +84,18 @@ public class OpponentController {
 		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
 		return new Resource<>(opponent,
 				linkTo(methodOn(OpponentController.class).one6()).withSelfRel());
+	}
+	
+	@GetMapping(value = "/opponent/initailReportSubmission", produces = "application/json; charset=UTF-8")
+	Resource<Submission> getReaderInfo() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
+		User user = repository.findFirstByEmailAdress(name);
+		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
+		
+		InitialReport initialReport = initialReportRepository.findFirstById(opponent.getInitialReportId());
+		Submission submission = submissionRepository.findFirstById(initialReport.getSubmissionId());
+		return new Resource<>(submission,
+				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());
 	}
 }
