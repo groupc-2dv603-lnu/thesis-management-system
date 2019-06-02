@@ -12,13 +12,13 @@ import PrivateRoute from "./utils/PrivateRoute";
 import Opponent from "./Pages/Opponent";
 import Supervisor from "./Pages/Supervisor";
 import Admin from "./Pages/Admin";
-
+import { getFromAPI } from "./functions";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null
+      user: {}
     };
   }
 
@@ -32,6 +32,12 @@ class App extends Component {
   }
 
   render() {
+    const { user } = this.state;
+    console.log(user);
+    console.log(
+      Boolean(user.roles && user.roles.includes("SUPERVISOR")),
+      "sdfgs"
+    );
     return (
       <div>
         <HashRouter>
@@ -43,28 +49,28 @@ class App extends Component {
               exact
               path="/student"
               component={Student}
-              authenticated={user && user.entity.rules.includes("STUDENT")}
+              authenticated={user.roles && user.roles.includes("STUDENT")}
             />
             <PrivateRoute
               exact
               path="/coordinator"
               component={Coordinator}
-              authenticated={user && user.entity.rules.includes("COORDINATOR")}
+              authenticated={user.roles && user.roles.includes("COORDINATOR")}
             />
             <PrivateRoute
               exact
               path="/supervisor"
               component={Supervisor}
-              authenticated={user && user.entity.rules.includes("SUPERVISOR")}
+              authenticated={user.roles && user.roles.includes("SUPERVISOR")}
             />
             <PrivateRoute
               exact
               path="/admin"
               component={Admin}
-              authenticated={user && user.entity.rules.includes("ADMIN")}
+              authenticated={user.roles && user.roles.includes("ADMIN")}
             />
             <PrivateRoute
-              authenticated={user && user.entity.rules.includes("READER")}
+              authenticated={user.roles && user.roles.includes("READER")}
               exact
               path="/reader"
               component={Reader}
@@ -73,7 +79,7 @@ class App extends Component {
               exact
               path="/opponent"
               component={Opponent}
-              authenticated={user && user.entity.rules.includes("OPPONENT")}
+              authenticated={user.roles && user.roles.includes("OPPONENT")}
             />
           </div>
           {/* </Switch> */}

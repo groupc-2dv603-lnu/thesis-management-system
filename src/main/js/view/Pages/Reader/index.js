@@ -16,10 +16,10 @@ class Reader extends Component {
   }
 
   componentDidMount() {
-    getFromAPI("/submissions").then(result => {
+    getFromAPI("/reader/initialReports").then(result => {
       console.log(result);
       this.setState({
-        reports: result.entity._embedded.submissions
+        reports: result.entity
       });
     });
     getFromAPI("/loginUser").then(user => {
@@ -27,12 +27,16 @@ class Reader extends Component {
         user: user.entity
       });
     });
-    getFromAPI("/reader/readerInfo").then(info => {
-      this.setState({
-        finalReport: info.entity.finalReportId
-      });
+    getFromAPI("/reader/initailReportSubmission").then(info => {
+      console.log(info);
       this.setState({
         initialReport: info.entity.initialReportId
+      });
+    });
+    getFromAPI("/reader/finalReportSubmission").then(info => {
+      console.log(info);
+      this.setState({
+        finalReport: info.entity.finalReportId
       });
     });
   }
@@ -88,7 +92,9 @@ class Reader extends Component {
   }
 
   render() {
-    console.log(this.state);
+    if (this.state.reports.length) {
+      console.log(this.state.reports);
+    }
     return (
       <div>
         {!!this.state.reports.length && (
@@ -104,14 +110,14 @@ class Reader extends Component {
                 </tr>
                 {this.state.reports.map((report, index) => (
                   <tr key={index}>
-                    <td key={report.name} style={styles.td}>
-                      {report.name}
+                    <td key={report.filename} style={styles.td}>
+                      {report.filename}
                     </td>
                     <td key={report.author} style={styles.td}>
                       {report.author}
                     </td>
-                    <td key={report.downloadUrl} style={styles.td}>
-                      <a href={report.downloadUrl} style={{ display: "block" }}>
+                    <td key={report.fileUrl} style={styles.td}>
+                      <a href={report.fileUrl} style={{ display: "block" }}>
                         ladda ner
                       </a>
                     </td>
@@ -145,8 +151,8 @@ class Reader extends Component {
                       <td style={styles.td} key={index}>
                         {index + 1}
                       </td>
-                      <td style={styles.td} key={report.name}>
-                        {report.name}
+                      <td style={styles.td} key={report.filename}>
+                        {report.filename}
                       </td>
                       <td style={styles.td} key={report.author}>
                         {report.author}
@@ -165,7 +171,7 @@ class Reader extends Component {
               Initial report: <span>Download</span>
             </p>
             <p>
-              {`${this.state.initialReport.name}, ${
+              {`${this.state.initialReport.filename}, ${
                 this.state.initialReport.author
               }`}
             </p>
@@ -183,7 +189,7 @@ class Reader extends Component {
               Final report: <span>Download</span>
             </p>
             <p>
-              {`${this.state.finalReport.name}, ${
+              {`${this.state.finalReport.filename}, ${
                 this.state.finalReport.author
               }`}
             </p>

@@ -6,18 +6,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import project.model.entities.*;
+import project.model.enums.Role;
 import project.model.enums.SubmissionType;
 import project.model.repositories.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-import static project.model.enums.SubmissionType.FINAL_REPORT;
-import static project.model.enums.SubmissionType.INITIAL_REPORT;
+import static project.model.enums.SubmissionType.*;
 
 @RestController
 public class SupervisorController {
@@ -47,28 +48,40 @@ public class SupervisorController {
 
 
 	@PostMapping("/supervisor/feedback")
-	Feedback newFeedback(@RequestBody Feedback feedback) {
-		Submission submission = submissionRepository.findFirstById(feedback.getDocumentId());
+	Feedback newFeedback(@RequestParam("documentId") String documentId, @RequestParam("text") String text) {
+		Submission submission = submissionRepository.findFirstById(documentId);
 		Supervisor supervisor = getLoggedInSupervisor();
 		if(supervisor.isAssignedStudent(submission.getUserId())) {
+			Feedback feedback = new Feedback(supervisor.getUserId(), documentId, text, Role.SUPERVISOR, new Date());
 
 			switch(submission.getSubmissionType())
 			{
 				case FINAL_REPORT:
 					FinalReport fp = finalReportRepository.findFirstBySubmissionId(submission.getId());
 					if(fp.readersSize() < 1 || fp.opponentSize() < 1) { return null;}
+					fp.getFeedBackIds().add(feedback.getId());
+					finalReportRepository.save(fp);
 					break;
 				case INITIAL_REPORT:
 					InitialReport ip = initialReportRepository.findFirstBySubmissionId(submission.getId());
 					if(ip.getOpponentsSize() < 1 || ip.getReadersSize() < 1) {
 						return null;}
+					ip.setSupervisorId(supervisor.getUserId());
+					ip.getFeedBackIds().add(feedback.getId());
+					initialReportRepository.save(ip);
 					break;
-			}
-			if(submission.getSubmissionType() == INITIAL_REPORT)
-			{
-				InitialReport initialReport = initialReportRepository.findFirstBySubmissionId(submission.getId());
-				initialReport.setSupervisorId(supervisor.getUserId());
-				initialReportRepository.save(initialReport);
+				case PRJ_PLAN:
+					ProjectPlan prj = projectPlanRepository.findFirstBySubmissionId(submission.getId());
+					if(prj.getFeedBackId() == "")
+					{
+						prj.setFeedBackId(feedback.getId());
+						projectPlanRepository.save(prj);
+					}
+					else
+					{
+						return null;
+					}
+					break;
 			}
 			return feedbackRepository.save(feedback);
 		}
@@ -98,19 +111,29 @@ public class SupervisorController {
 		return supervisorRepository.save(supervisor);
 	}
 
+	@PutMapping("/supervisor/setAvailability")
+	Supervisor supervisorAvailability(@RequestParam("state") Boolean state) {
+		Supervisor supervisor = getLoggedInSupervisor();
+		if(supervisor != null) {
+			supervisor.setAvailableForSupervisor(state);
+			return supervisorRepository.save(supervisor);
+		}
+		return null;
+	}
+
 	//Add denied list or something for students.
-	@PutMapping("/supervisor/assignStudent/{studentId}")
-	Student assignStudent(@PathVariable String studentId, @RequestParam("state") Boolean state) {
+	@PutMapping("/supervisor/assignStudent/{userId}")
+	Student assignStudent(@PathVariable String userId, @RequestParam("state") Boolean state) {
 
 		Supervisor supervisor = getLoggedInSupervisor();
 
-		Student student = studentRepository.findFirstByuserId(studentId);
+		Student student = studentRepository.findFirstByuserId(userId);
 		if(student != null && supervisor != null) {
 			if (supervisor.isAvailable()) {
 				if (state) {
-					supervisor.assignStudent(studentId);
+					supervisor.assignStudent(userId);
 				} else {
-					supervisor.denyStudent(studentId);
+					supervisor.denyStudent(userId);
 				}
 				student.setSupervisor(state);
 				supervisorRepository.save(supervisor);
@@ -121,14 +144,14 @@ public class SupervisorController {
 
 	}
 
-	@PutMapping("/supervisor/approvePlan/{planId}")
-	ProjectPlan approvePlan(@PathVariable String planId, @RequestParam("state") Boolean state) {
+	@PutMapping("/supervisor/approvePlan/{userId}")
+	ProjectPlan approvePlan(@PathVariable String userId, @RequestParam("state") Boolean state) {
 
 		Supervisor supervisor = getLoggedInSupervisor();
 
-		ProjectPlan plan = projectPlanRepository.findFirstById(planId);
+		ProjectPlan plan = projectPlanRepository.findFirstByuserId(userId);
 
-		Student student = studentRepository.findFirstByuserId(plan.getUserId());
+		Student student = studentRepository.findFirstByuserId(userId);
 
 
 		if(supervisor.isAssignedStudent(student.getUserId())) {
@@ -216,6 +239,13 @@ public class SupervisorController {
 		return false;
 	}
 
+	@GetMapping(value = "/supervisor/isAvailable", produces = "application/json; charset=UTF-8")
+	Boolean isAvailable() {
+
+		Supervisor supervisor = getLoggedInSupervisor();
+
+		return supervisor.isAvailable();
+	}
 	private Supervisor getLoggedInSupervisor()
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
