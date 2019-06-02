@@ -7,15 +7,15 @@ import { getUser } from './../../functions';
 import * as enums from './../../enums';
 
 export class Submission extends Component {
-    
+
     constructor(props) {
         super(props);
     }
 
     answerReport(answer) {
-        if(confirm("You cannot change your answer. Are you sure you want to " + (answer ? "approve" : "reject") + " this plan?")) {
-            console.log("accepting plan") // TODO debug
-            if(answer) {
+        if (confirm("You cannot change your answer. Are you sure you want to " + (answer ? "approve" : "reject") + " this plan?")) {
+            
+            if (answer) {
                 func.approvePlan(this.props.reportData);
             }
             else {
@@ -24,10 +24,10 @@ export class Submission extends Component {
             location.href = "/#/supervisor";
         }
     }
-    
-    
+
+
     sendAssessment() {
-        if(confirm("You cannot change your assessment. Are you sure you want to submit?")) {
+        if (confirm("You cannot change your assessment. Are you sure you want to submit?")) {
             func.sendFeedback(document.getElementById("feedbackBox").value);
             document.getElementById("feedbackBox").value = "";
             location.href = "/#/supervisor";
@@ -39,10 +39,10 @@ export class Submission extends Component {
             <div>
                 <h2>
                     {console.log(this.props.submissionData.submissionType)}
-                    {this.props.submissionData.submissionType == enums.dbSubmissionTypes.projectPlan 
-                    ?
+                    {this.props.submissionData.submissionType == enums.dbSubmissionTypes.projectPlan
+                        ?
                         <span >Approve/Reject Project Plan</span>
-                    :
+                        :
                         <span>Assess report</span>
                     }
                 </h2>
@@ -67,18 +67,18 @@ export class Submission extends Component {
                     </tbody>
                 </table>
 
-                <br/>
+                <br />
                 {this.props.submissionData.submissionType == enums.dbSubmissionTypes.projectPlan
-                ? // Submission is a Project plan
+                    ? // Submission is a Project plan
                     <div>
                         <button onClick={() => this.answerReport(true)}>Approve</button>
                         <button onClick={() => this.answerReport(false)}>Reject</button>
                     </div>
-                : // else (submissions is an Initial Report)
+                    : // else (submissions is an Initial Report)
                     <div>
                         Write Assessment
                         <textarea className="feedbackBox" id="feedbackBox"></textarea>
-                        <br/>
+                        <br />
                         <button type="submit" onClick={() => this.sendAssessment()}>Submit</button>
                     </div>
                 }

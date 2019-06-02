@@ -22,7 +22,7 @@ export function rejectRequest(student) {
 }
 
 function modifyPlan(report, state) {
-    putToAPI("/supervisor/approvePlan/" + report.id + "?state=" + state)
+    putToAPI("/supervisor/approvePlan/" + report.submissionId + "?state=" + state) // TODO måste få ut id på rapporterna
     //temp
     .then(() => console.log((state == true ? "approving" : "rejecting") + " project plan"))
     .catch((error) => console.log("error", error))
@@ -52,9 +52,9 @@ export function getSubmission(submissionId) {
 // }
 
 export function getUserProjectPlan(userId) {
-    let mock = new Mock.ProjectPlanMock().entity._embedded.reports.find(report => report.userId == userId);
-    return new Promise(resolve => resolve(mock));
-    // return getFromAPI("/supervisor/projectPlan/" + userId);
+    // let mock = new Mock.ProjectPlanMock().entity._embedded.reports.find(report => report.userId == userId);
+    // return new Promise(resolve => resolve(mock));
+    return getFromAPI("/supervisor/projectPlan/" + userId);
 }
 
 export function getUserInitialReport(userId) {

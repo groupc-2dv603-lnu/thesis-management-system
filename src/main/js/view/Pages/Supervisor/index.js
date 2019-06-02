@@ -1,4 +1,6 @@
 //TODO använd inte lokal tid
+//TODO sidan ska uppdateras efter man svarat på en request
+
 
 'use strict';
 
@@ -9,10 +11,6 @@ import * as func from './functions'
 import * as enums from './../../enums';
 import { getUser } from './../../functions';
 import './style.css';
-
-// static class Popup {
-
-// }
 
 export default class Supervisor extends Component {
 
@@ -149,12 +147,12 @@ class SupervisedStudent extends Component {
         func.getUserProjectPlan(this.props.student.userId).then(planResponse => {
             if (planResponse) {
                 this.setState({ projectPlan: planResponse.entity });
-                func.getSubmission(planResponse.submissionId).then(submissionResponse => {
+                func.getSubmission(planResponse.entity.submissionId).then(submissionResponse => {
                     this.setState({ projectPlanSubmission: submissionResponse.entity });
                 });
             }
         });
-        
+
         func.getUserInitialReport(this.props.student.userId).then(reportResponse => {
             if (reportResponse) {
                 this.setState({ initialReport: reportResponse.entity });
@@ -175,8 +173,6 @@ class SupervisedStudent extends Component {
     }
 
     render() {
-        let currentDate = new Date().toISOString();
-
         return (
             <tr>
                 <td>
@@ -184,13 +180,13 @@ class SupervisedStudent extends Component {
                 </td>
                 <td>
                     {/* Student has a Project Plan available for review */}
-                    {this.state.projectPlan.grade != enums.grades.NOGRADE && this.state.projectPlan.approved != enums.projectPlanApprovedStatus.approved
+                    {this.state.projectPlan.grade == enums.grades.PASS && this.state.projectPlan.approved != enums.projectPlanApprovedStatus.approved
                         ?
                         <div className="link underscored" onClick={() => this.setProjectPlanPopup(true)}>
                             Project Plan
                         </div>
                         :
-                        <div>Project Plan</div>
+                        <div className="unavailable">Project Plan</div>
                         // null
                     }
                     {/* Popup Project Plan */}
@@ -206,7 +202,7 @@ class SupervisedStudent extends Component {
                         null
                     }
                     {/* Student has an Initial Report available for review */}
-                    {this.state.initialReport.submissionId && this.state.initialReport.supervisorId
+                    {this.state.initialReport.submissionId && !this.state.initialReport.supervisorId
                         ?
                         <div className="link underscored" onClick={() => this.setInitialReportPopup(true)}>
                             Initial Report
