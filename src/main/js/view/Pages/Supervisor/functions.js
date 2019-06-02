@@ -1,12 +1,11 @@
-import * as Mock from './mocks';
 import { getFromAPI, postToAPI, putToAPI } from './../../functions';
 
 export function getAppliedStudents() {
-    return getFromAPI("/supervisor/appliedStudents")
+    return getFromAPI("/supervisor/appliedStudents");
 }
 
 export function getAssignedStudents() {
-    return getFromAPI("/supervisor/assignedStudents")
+    return getFromAPI("/supervisor/assignedStudents");
 }
 
 function modifyRequest(student, state) {
@@ -22,7 +21,7 @@ export function rejectRequest(student) {
 }
 
 function modifyPlan(userId, state) {
-    return putToAPI("/supervisor/approvePlan/" + userId + "?state=" + state)
+    return putToAPI("/supervisor/approvePlan/" + userId + "?state=" + state);
 }
 
 export function approvePlan(userId) {
@@ -31,7 +30,6 @@ export function approvePlan(userId) {
 
 export function rejectPlan(userId) {
     return modifyPlan(userId, false);
-
 }
 
 export function getSubmission(submissionId) {
@@ -47,13 +45,13 @@ export function getUserInitialReport(userId) {
 }
 
 export function sendFeedback(text, report) {
-    return postToAPI("/supervisor/feedback/" + report.submissionId + "?text=" + text)
+    return postToAPI("/supervisor/feedback/" + report.submissionId + "?text=" + text);
 }
 
 export function getCurrentAvailability() {
-    return getFromAPI("/supervisor/isAvailable")
+    return getFromAPI("/supervisor/isAvailable");
 }
 
 export function setAvailability(state) {
-    return putToAPI("/supervisor/setAvailability?state=" + state)
+    return putToAPI("/supervisor/setAvailability?state=" + state);
 }

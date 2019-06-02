@@ -62,7 +62,7 @@ class Header extends Component {
                     </div>
                     {/* default menu */}
                     <div className="menu">
-                        <Link to={"/"  + this.state.currentRole.toLowerCase()}>temp navigation</Link>
+                        <Link to={"/"  + this.state.currentRole.toLowerCase()}>{this.state.currentRole.toLowerCase()}</Link>
                         {this.state.currentUser ? 
                             <Link to="" onClick={() => this.logout()}>log out</Link>
                         :

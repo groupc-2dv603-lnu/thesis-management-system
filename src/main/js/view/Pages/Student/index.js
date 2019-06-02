@@ -1,11 +1,5 @@
-// TODO
-// separera css-fil - eller ha alla styles som konstanter i js-filerna
-// implementera db-hämtning
 // ½ sidan renderas inte om efter supervisor request - fixat, men fullösning. passar referens till supervisorbox och kör en uppdateringsmetod på den
-// hur få hela addressen till filen vid uppladdning? - eventuellt löser backend det på ett annat sätt
 // ½ sidan uppdateras inte efter filuppladdning
-// datumformat +2h , icke lokalt
-// se till att sidan återrenderas vid alla uppdateringar, t.ex. efter rapport-inskick
 
 'use strict';
 
@@ -23,22 +17,26 @@ class Student extends Component {
     }
 
     componentDidMount() {
+        this.updateAll();
+    }
+
+    updateAll() {
         const reportCalls = ["projectDescription", "projectPlan", "initialReport", "finalReport"];
 
-        let reports = new Array(4);
-        let count = 0;
+            let reports = new Array(4);
+            let count = 0;
 
-        for (let i = 0; i < reportCalls.length; i++) {
-            common.getFromAPI("/student/" + reportCalls[i]).then(report => {
-                reports[i] = <Submission key={reportCalls[i]} reportData={report.entity} type={reportCalls[i]} />
-            })
-                .then(() => {
-                    count++;
-                    if (count == 4) {
-                        this.setState({ submissions: reports });
-                    }
+            for (let i = 0; i < reportCalls.length; i++) {
+                common.getFromAPI("/student/" + reportCalls[i]).then(report => {
+                    reports[i] = <Submission reference={this} key={reportCalls[i]} reportData={report.entity} type={reportCalls[i]} />
                 })
-        };
+                    .then(() => {
+                        count++;
+                        if (count == 4) {
+                            this.setState({ submissions: reports });
+                        }
+                    })
+            };
     }
 
     render() {

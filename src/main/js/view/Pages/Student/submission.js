@@ -18,9 +18,9 @@ export default class Submission extends Component {
 
     onFormSubmit(e) {
         e.preventDefault(); // Stop form submit
-        // console.log(dbSubmissionTypeMap.get(this.props.type));
-        fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type)).then(response => { console.log("file uploaded", response); })
-            .catch(error => console.log("upload error", error))
+        fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type)).then(() => {
+            this.props.reference.updateAll();
+        });
     }
     onChangeFile(e) {
         this.setState({ file: e.target.files[0] })
@@ -32,7 +32,6 @@ export default class Submission extends Component {
 
     updateSubmissionData() {
         if (this.props.reportData.submissionId) { // the report will only have a submission tied to it if a file has been uploaded
-            console.log("updating submission data")
             func.getSubmissionData(this.props.reportData.submissionId).then(response => {
                 this.setState({ submissionData: response.entity })
             })
@@ -83,7 +82,7 @@ export default class Submission extends Component {
                                 {line2}
 
                                 {/* has feedback */}
-                                {this.state.submissionData && this.state.submissionData.feedBackId || (this.state.submissionData.feedBackIds && this.state.submissionData.feedBackIds.length > 0)
+                                {this.props.reportData.feedBackId || (this.props.reportData.feedBackIds && this.props.reportData.feedBackIds.length > 0)
                                     ?
                                     <i style={{ fontSize: "24px" }} className="far fa-comment-alt right link" onClick={() => this.setFeedbackPopup(true)} title="This report has got feedback (click to show)" />
                                     :
