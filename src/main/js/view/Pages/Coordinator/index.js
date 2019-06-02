@@ -51,7 +51,7 @@ class Coordinator extends Component {
       </div>
     ) : (
       <div style={Style.isActive} onClick={() => this.toggleStudentsTable()}>
-        Hide students stable
+        Hide students table
       </div>
     );
   }

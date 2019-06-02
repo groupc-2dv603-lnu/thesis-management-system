@@ -170,28 +170,6 @@ class InitialReportBox extends Component {
                   : "No file uploaded"}
               </span>
             </div>
-            {/* ----- GRADE ----- */}
-            <div style={Style.submissionRow}>
-              <span style={Style.submissionLeftColumn}>Grade</span>
-              <span style={Style.submissionRightColumn}>
-                {this.state.finalReport !== null
-                  ? func.getGrade(this.state.initialReport.grade)
-                  : "Not set"}
-              </span>
-              <div>
-                {this.state.submission !== undefined ? (
-                  <span style={Style.submissionEditColumn}>
-                    <select
-                      style={Style.select}
-                      onChange={() => this.setGrade(event)}
-                    >
-                      {func.getGrades(1)}
-                    </select>
-                  </span>
-                ) : null}
-              </div>
-            </div>
-
             {/* ----- BIDS ----- */}
             <div style={Style.submissionRow}>
               <span style={Style.submissionLeftColumn}>Bids</span>
