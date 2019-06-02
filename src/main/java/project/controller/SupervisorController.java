@@ -51,6 +51,13 @@ public class SupervisorController {
 		Submission submission = submissionRepository.findFirstById(feedback.getDocumentId());
 		Supervisor supervisor = getLoggedInSupervisor();
 		if(supervisor.isAssignedStudent(submission.getUserId())) {
+
+			if(submission.getSubmissionType() == INITIAL_REPORT)
+			{
+				InitialReport initialReport = initialReportRepository.findFirstBySubmissionId(submission.getId());
+				initialReport.setSupervisorId(supervisor.getUserId());
+				initialReportRepository.save(initialReport);
+			}
 			return feedbackRepository.save(feedback);
 		}
 		return null;
@@ -197,6 +204,19 @@ public class SupervisorController {
 	}
 
 
+	//Checks if the supervisor has given feedback on the speicific initial report.
+	@GetMapping(value = "/supervisor/initialFeedback", produces = "application/json; charset=UTF-8")
+	Boolean getInitialReportFeedback(@RequestParam String submissionId) {
+
+		Supervisor supervisor = getLoggedInSupervisor();
+		InitialReport initialReport = initialReportRepository.findFirstBySubmissionId(submissionId);
+
+		if((initialReport != null) && (initialReport.getSupervisorId().equals(supervisor.getUserId()))){
+			return true;
+		}
+
+		return false;
+	}
 
 	private Supervisor getLoggedInSupervisor()
 	{
@@ -211,4 +231,6 @@ public class SupervisorController {
 		}
 		return null;
 	}
+
+
 }
