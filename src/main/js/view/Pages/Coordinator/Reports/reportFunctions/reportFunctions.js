@@ -11,7 +11,8 @@ export const getInitialReports = async () => {
        const user = await generalFunctions.getUser(report.userId)
        report.name = generalFunctions.capitalizeFirstLetter(user.entity.name)
      }
-    
+     uploadedReports.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)); 
+     console.log(uploadedReports)
     return uploadedReports
 };
 

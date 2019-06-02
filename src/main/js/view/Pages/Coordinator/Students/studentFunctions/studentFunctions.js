@@ -36,6 +36,8 @@ export const getStudentTableData = async () => {
       };
       studentsList.push(studentObject);
     }
+    studentsList.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)); 
+
     return studentsList;
   } catch (e) {
     console.log(e);
