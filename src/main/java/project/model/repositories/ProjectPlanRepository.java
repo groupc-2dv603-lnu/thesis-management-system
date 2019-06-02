@@ -10,5 +10,6 @@ import java.util.List;
 public interface ProjectPlanRepository extends MongoRepository<ProjectPlan, String>  {
 	ProjectPlan findFirstByuserId(String id);
 	ProjectPlan findFirstById(String id);
+	ProjectPlan findFirstBySubmissionId(String id);
 	List<ProjectPlan> findAllByuserId(String id);
 }
