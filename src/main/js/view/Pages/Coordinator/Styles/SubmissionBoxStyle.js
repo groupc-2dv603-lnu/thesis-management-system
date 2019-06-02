@@ -136,12 +136,12 @@ export const textArea = {
 
 /* ---- feedback ---- */
 export const feedbackBox = {
-  border: standardBorder,
+  border:standardBorder,
   margin: '0 auto',
   width: '80%',
   marginTop: '10px',
 }
-
+/*
 export const feedbackHeader = {
   height: '20px',
   lineHeight: '20px',
@@ -150,6 +150,7 @@ export const feedbackHeader = {
   borderRight: standardBorder,
   background: lightgrey
 }
+*/
 
 export const feedbackText = {
   margin: '5px'
