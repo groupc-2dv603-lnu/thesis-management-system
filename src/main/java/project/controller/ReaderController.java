@@ -151,7 +151,7 @@ public class ReaderController {
 		User user = repository.findFirstByEmailAdress(name);
 		Reader reader = readerRepository.findFirstByuserId(user.getId());
 		
-		FinalReport finalReport = finalReportRepository.findFirstById(reader.getInitialReportId());
+		FinalReport finalReport = finalReportRepository.findFirstById(reader.getFinalReportId());
 		Submission submission = submissionRepository.findFirstById(finalReport.getSubmissionId());
 		return new Resource<>(submission,
 				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());

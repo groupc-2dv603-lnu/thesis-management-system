@@ -34,10 +34,11 @@ public class StudentController {
 	private final StudentRepository studentRepository;
 	private final SubmissionRepository submissionRepository;
 	private final DataFileRepository dataFileRepository;
+	private final ReaderRepository readerRepository;
 	
 	StudentController(UserRepository repository,SupervisorRepository supervisorRepository, ProjectPlanRepository projectPlanRepository, FeedbackRepository feebackRepository,
 			InitialReportRepository initialReportRepository, FinalReportRepository finalReportRepository, ProjectDescriptionRepository projectDescriptionRepository,
-			StudentRepository studentRepository, SubmissionRepository submissionRepository, DataFileRepository dataFileRepository) {
+			StudentRepository studentRepository, SubmissionRepository submissionRepository, DataFileRepository dataFileRepository, ReaderRepository readerRepository) {
 		this.repository = repository;
 		this.supervisorRepository = supervisorRepository;
 		this.projectPlanRepository = projectPlanRepository;
@@ -48,6 +49,7 @@ public class StudentController {
 		this.studentRepository = studentRepository;
 		this.submissionRepository = submissionRepository;
 		this.dataFileRepository = dataFileRepository;
+		this.readerRepository = readerRepository;
 	}
 	
 	@GetMapping(value = "/student/getAvailableSupervisors", produces = "application/json; charset=UTF-8")
@@ -130,7 +132,6 @@ public class StudentController {
 		return new Resource<>(projectDescription,
 				linkTo(methodOn(StudentController.class).one5()).withSelfRel());
 	}
-	
 	@GetMapping(value = "/student/feedback/{id}", produces = "application/json; charset=UTF-8")
 	Resource<Feedback> one2(@PathVariable String id) {
 		Feedback feedback = feedbackRepository.findFirstById(id);
@@ -205,13 +206,20 @@ public class StudentController {
 			return new UploadFileResponse(null, null, "Error: Unable to create DataFile", null, 0);
 		}
 		dataFileRepository.save(df);
-
+		
 		/* Upload new submission */
 		Submission newSubmission = new Submission();
 		newSubmission.setSubmissionType(type);
 		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
         newSubmission.setUserId(user.getId());
         newSubmission.setAuthor(user.getName());
+        if(newSubmission.getSubmissionType().equals(SubmissionType.FINAL_REPORT)) {
+        	InitialReport report = initialReportRepository.findFirstByuserId(user.getId());
+    		Reader reader = readerRepository.findFirstByinitialReportId(report.getId());
+    		FinalReport finalReport = finalReportRepository.findFirstByuserId(user.getId());
+    		reader.setFinalReportId(finalReport.getId());
+        	readerRepository.save(reader);
+        }
         submissionRepository.save(newSubmission);
 		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
 		submissionRepository.save(newSubmission);		//Saved twice since setFileUrl requires submission id which is created at first save
