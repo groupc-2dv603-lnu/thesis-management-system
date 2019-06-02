@@ -55,7 +55,7 @@ public class ReaderController {
 		this.submissionRepository = submissionRepository;
 		this.mapper = mapper;
 	}
-	
+ 
 	@PostMapping("/reader/feedbackInitialReport")
 	Feedback newFeedback(@RequestParam String text) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
