@@ -52,6 +52,18 @@ public class SupervisorController {
 		Supervisor supervisor = getLoggedInSupervisor();
 		if(supervisor.isAssignedStudent(submission.getUserId())) {
 
+			switch(submission.getSubmissionType())
+			{
+				case FINAL_REPORT:
+					FinalReport fp = finalReportRepository.findFirstBySubmissionId(submission.getId());
+					if(fp.readersSize() < 1 || fp.opponentSize() < 1) { return null;}
+					break;
+				case INITIAL_REPORT:
+					InitialReport ip = initialReportRepository.findFirstBySubmissionId(submission.getId());
+					if(ip.getOpponentsSize() < 1 || ip.getReadersSize() < 1) {
+						return null;}
+					break;
+			}
 			if(submission.getSubmissionType() == INITIAL_REPORT)
 			{
 				InitialReport initialReport = initialReportRepository.findFirstBySubmissionId(submission.getId());
@@ -74,20 +86,6 @@ public class SupervisorController {
 					.map(feedback -> new Resource<>(feedback,
 							linkTo(methodOn(SupervisorController.class).all2(documentId)).withRel("feedback")))
 					.collect(Collectors.toList());
-
-			switch(submission.getSubmissionType())
-			{
-				case FINAL_REPORT:
-					FinalReport fp = finalReportRepository.findFirstBySubmissionId(submission.getId());
-					if(fp.readersSize() < 1 || fp.opponentSize() < 1) { System.out.println("No opponent");feedbacks = null;}
-					break;
-				case INITIAL_REPORT:
-					InitialReport ip = initialReportRepository.findFirstBySubmissionId(submission.getId());
-					if(ip.getOpponentsSize() < 1 || ip.getReadersSize() < 1) {
-						System.out.println("No opponent");feedbacks = null;}
-					break;
-			}
-
 		}
 
 		return new Resources<>(feedbacks,
