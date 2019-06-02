@@ -21,7 +21,9 @@ class Header extends Component {
 
     logout() {
         getFromAPI("/logout").then(() => {
+            localStorage.removeItem(this.state.currentUser);
             this.setState({ currentUser: null });
+            window.location.href = '/login';
         });
     }
 
@@ -64,7 +66,7 @@ class Header extends Component {
                         {this.state.currentUser ? 
                             <Link to="" onClick={() => this.logout()}>log out</Link>
                         :
-                            <a href="/login">log in</a>
+                            <a href="/">log in</a>
                         }
                     </div>
                 </div>

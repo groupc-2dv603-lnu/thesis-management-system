@@ -19,7 +19,7 @@ class Reader extends Component {
     getFromAPI("/reader/initialReports").then(result => {
       console.log(result);
       this.setState({
-        reports: result.entity
+        reports: result.entity._embedded.objectNodes
       });
     });
     getFromAPI("/loginUser").then(user => {
@@ -28,16 +28,22 @@ class Reader extends Component {
       });
     });
     getFromAPI("/reader/initailReportSubmission").then(info => {
-      console.log(info);
       this.setState({
-        initialReport: info.entity.initialReportId
+        initialReport: info.entity
       });
     });
     getFromAPI("/reader/finalReportSubmission").then(info => {
-      console.log(info);
       this.setState({
-        finalReport: info.entity.finalReportId
+        finalReport: info.entity
       });
+    });
+    getFromAPI("/loginUser").then(user => {
+      this.setState({
+        user: user.entity
+      });
+    });
+    getFromAPI("/reader/readerInfo").then(info => {
+      console.log(info, "uhigu");
     });
   }
 
@@ -71,7 +77,8 @@ class Reader extends Component {
 
   sendBiddedReports() {
     this.state.selectedReports.map(report => {
-      postToAPI(`/reader/requestBidding?text=${report.id}`);
+      console.log(report);
+      putToAPI(`/reader/requestBidding?initialReportId=${report}`);
     });
   }
 
@@ -92,9 +99,7 @@ class Reader extends Component {
   }
 
   render() {
-    if (this.state.reports.length) {
-      console.log(this.state.reports);
-    }
+    console.log(this.state);
     return (
       <div>
         {!!this.state.reports.length && (
@@ -110,22 +115,25 @@ class Reader extends Component {
                 </tr>
                 {this.state.reports.map((report, index) => (
                   <tr key={index}>
-                    <td key={report.filename} style={styles.td}>
-                      {report.filename}
+                    <td key={report.content.filename} style={styles.td}>
+                      {report.content.filename}
                     </td>
-                    <td key={report.author} style={styles.td}>
-                      {report.author}
+                    <td key={report.content.author} style={styles.td}>
+                      {report.content.author}
                     </td>
-                    <td key={report.fileUrl} style={styles.td}>
-                      <a href={report.fileUrl} style={{ display: "block" }}>
+                    <td key={report.content.fileUrl} style={styles.td}>
+                      <a
+                        href={report.content.fileUrl}
+                        style={{ display: "block" }}
+                      >
                         ladda ner
                       </a>
                     </td>
-                    <td key={report.id} style={styles.td}>
+                    <td key={report.content.id} style={styles.td}>
                       <input
                         type="checkbox"
                         name="selected"
-                        value={report.id}
+                        value={report.content.id}
                         onClick={this.getChosenReports.bind(this)}
                       />
                     </td>
@@ -144,18 +152,18 @@ class Reader extends Component {
                 </tr>
                 {this.state.selectedReports.map((reportId, index) => {
                   const report = this.state.reports.filter(
-                    rep => rep.id === reportId
+                    rep => rep.content.id === reportId
                   )[0];
                   return (
                     <tr key={index}>
                       <td style={styles.td} key={index}>
                         {index + 1}
                       </td>
-                      <td style={styles.td} key={report.filename}>
-                        {report.filename}
+                      <td style={styles.td} key={report.content.filename}>
+                        {report.content.filename}
                       </td>
-                      <td style={styles.td} key={report.author}>
-                        {report.author}
+                      <td style={styles.td} key={report.content.author}>
+                        {report.content.author}
                       </td>
                     </tr>
                   );

@@ -33,11 +33,7 @@ class App extends Component {
 
   render() {
     const { user } = this.state;
-    console.log(user);
-    console.log(
-      Boolean(user.roles && user.roles.includes("SUPERVISOR")),
-      "sdfgs"
-    );
+
     return (
       <div>
         <HashRouter>
