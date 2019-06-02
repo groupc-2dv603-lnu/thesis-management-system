@@ -32,11 +32,13 @@ public class InitialReport {
 	private Grade grade;
 	@NotNull
 	private String deadLine;
+
+	private String supervisorId;
 	
 	
 	
 	public InitialReport(String userId, String submissionId, ArrayList<String> bids, ArrayList<String> assignedReaders, ArrayList<String> assignedOpponents, 
-			ArrayList<String> feedBackIds, Grade grade, String deadLine) {
+			ArrayList<String> feedBackIds, Grade grade, String deadLine, String supervisorId) {
 		this.userId = userId;
 		this.submissionId = submissionId;
 		this.feedBackIds = feedBackIds;
@@ -45,6 +47,19 @@ public class InitialReport {
 		this.assignedOpponents = assignedOpponents;
 		this.grade = grade;
 		this.deadLine = deadLine;
+		this.supervisorId = supervisorId;
 	}
+
+	public int getOpponentsSize()
+	{
+		return assignedOpponents.size();
+	}
+
+	public int getReadersSize()
+	{
+		return assignedReaders.size();
+	}
+
+
 }
 

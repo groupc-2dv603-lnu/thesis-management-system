@@ -40,4 +40,13 @@ public class FinalReport {
 		this.deadLine = deadLine;
 		this.feedBackIds = feedBackIds;
 	}
+
+	public int opponentSize()
+	{
+		return opponents.size();
+	}
+	public int readersSize()
+	{
+		return readers.size();
+	}
 }
