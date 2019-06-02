@@ -13,7 +13,6 @@ import Opponent from "./Pages/Opponent";
 import Supervisor from "./Pages/Supervisor";
 import Admin from "./Pages/Admin";
 
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -43,28 +42,28 @@ class App extends Component {
               exact
               path="/student"
               component={Student}
-              authenticated={user && user.entity.rules.includes("STUDENT")}
+              authenticated={true}
             />
             <PrivateRoute
               exact
               path="/coordinator"
               component={Coordinator}
-              authenticated={user && user.entity.rules.includes("COORDINATOR")}
+              authenticated={true}
             />
             <PrivateRoute
               exact
               path="/supervisor"
               component={Supervisor}
-              authenticated={user && user.entity.rules.includes("SUPERVISOR")}
+              authenticated={true}
             />
             <PrivateRoute
               exact
               path="/admin"
               component={Admin}
-              authenticated={user && user.entity.rules.includes("ADMIN")}
+              authenticated={true}
             />
             <PrivateRoute
-              authenticated={user && user.entity.rules.includes("READER")}
+              authenticated={true}
               exact
               path="/reader"
               component={Reader}
@@ -73,7 +72,7 @@ class App extends Component {
               exact
               path="/opponent"
               component={Opponent}
-              authenticated={user && user.entity.rules.includes("OPPONENT")}
+              authenticated={true}
             />
           </div>
           {/* </Switch> */}
