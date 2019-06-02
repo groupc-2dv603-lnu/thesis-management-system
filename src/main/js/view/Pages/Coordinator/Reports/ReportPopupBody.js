@@ -18,7 +18,6 @@ class ReportPopupBody extends Component {
     this.getBidders = this.getBidders.bind(this);
     this.getReaders = this.getReaders.bind(this);
     this.getAvailableOpponents = this.getAvailableOpponents.bind(this);
-    console.log('PROPS', this.props)
   }
 
   assignReader(user) {
@@ -229,7 +228,6 @@ class ReportPopupBody extends Component {
 
 
   getAlreadyAssignedReaders(readers) {
-    console.log('READERS', readers)
   
     if (readers.length === 0) {
       return <div style={Style.reportBoxRow}>No assigned readers</div>;
