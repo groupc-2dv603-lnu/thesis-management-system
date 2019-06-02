@@ -12,19 +12,32 @@ import PrivateRoute from "./utils/PrivateRoute";
 import Opponent from "./Pages/Opponent";
 import Supervisor from "./Pages/Supervisor";
 import Admin from "./Pages/Admin";
+import { getFromAPI } from "./functions";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null
+      user: {}
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    getFromAPI("/loginUser").then(user => {
+      this.setState({
+        user: user.entity,
+        roles: user.entity.rules
+      });
+    });
+  }
 
   render() {
     const { user } = this.state;
+    console.log(user);
+    console.log(
+      Boolean(user.roles && user.roles.includes("SUPERVISOR")),
+      "sdfgs"
+    );
     return (
       <div>
         <HashRouter>
@@ -36,28 +49,28 @@ class App extends Component {
               exact
               path="/student"
               component={Student}
-              authenticated={true}
+              authenticated={user.roles && user.roles.includes("STUDENT")}
             />
             <PrivateRoute
               exact
               path="/coordinator"
               component={Coordinator}
-              authenticated={true}
+              authenticated={user.roles && user.roles.includes("COORDINATOR")}
             />
             <PrivateRoute
               exact
               path="/supervisor"
               component={Supervisor}
-              authenticated={true}
+              authenticated={user.roles && user.roles.includes("SUPERVISOR")}
             />
             <PrivateRoute
               exact
               path="/admin"
               component={Admin}
-              authenticated={true}
+              authenticated={user.roles && user.roles.includes("ADMIN")}
             />
             <PrivateRoute
-              authenticated={true}
+              authenticated={user.roles && user.roles.includes("READER")}
               exact
               path="/reader"
               component={Reader}
@@ -66,7 +79,7 @@ class App extends Component {
               exact
               path="/opponent"
               component={Opponent}
-              authenticated={true}
+              authenticated={user.roles && user.roles.includes("OPPONENT")}
             />
           </div>
           {/* </Switch> */}
