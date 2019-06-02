@@ -99,7 +99,7 @@ public class CoordinatorController {
         }
     }
 
-    @PutMapping(value = "/coordinator/updateReader")
+    @PostMapping(value = "/coordinator/updateReader")
     void updateReader(@RequestParam String readerID, @RequestParam String initialReportID) {
         Reader reader = readerRepository.findFirstByuserId(readerID);
         if (reader == null) return;
@@ -110,7 +110,7 @@ public class CoordinatorController {
         readerRepository.save(reader);
     }
 
-    @PutMapping(value = "/coordinator/updateOpponent")
+    @PostMapping(value = "/coordinator/updateOpponent")
     void updateOpponent(@RequestParam String opponentID, @RequestParam String initialReportID) {
         Opponent opponent = opponentRepository.findFirstByuserId(opponentID);
         if (opponent == null) return;
