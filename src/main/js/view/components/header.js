@@ -16,6 +16,7 @@ class Header extends Component {
         getFromAPI("/loginUser").then(user => {
             this.setState({ currentUser: user.entity, currentRole: user.entity.roles[0] });
         })
+
     }
 
     logout() {

@@ -11,7 +11,7 @@ class Admin extends Component {
       <div>
         <CreateUser />
         <UpdateUser />
-        <DeleteUser />
+        {/*<DeleteUser />*/}
       </div>
     );
   }

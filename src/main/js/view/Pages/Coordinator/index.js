@@ -1,48 +1,111 @@
-"use strict";
-
 import React, { Component } from "react";
-import CorNav from "./CorNav";
-import Submissions from '../Coordinator/Submissions/Submissions'
-import Students from '../Coordinator/Students/Students'
-import Reports from '../Coordinator/Reports/Reports'
-import * as Style from './Styles'
+import StudentsTable from "./Students/StudentsTable";
+import SubmissionDeadlines from "./Submissions/SubmissionDeadlines";
+import ReportsTable from "./Reports/ReportsTable";
+import * as Style from "./Styles/Styles";
 
 class Coordinator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: "submissions"
+      showSetDeadline: false,
+      showStudentsTable: false,
+      showReportsTable: false
     };
-    console.log("propsIndex", this.props);
-    console.log("stateIndex", this.state);
-    this.handleChange = this.handleChange.bind(this)
   }
 
-  handleChange(page) {
-    console.log(page)
-    this.setState({ page: page });
+  toggleSetDeadline() {
+    this.setState({
+      showSetDeadline: !this.state.showSetDeadline
+    });
   }
 
-  renderPage() {
-    if(this.state.page === 'submissions') {
-      return <Submissions></Submissions>
-    } else if (this.state.page === 'students') {
-      return <Students></Students>
-    } else if (this.state.page === 'reports') {
-      return <Reports></Reports>
+  toggleStudentsTable() {
+    this.setState({
+      showStudentsTable: !this.state.showStudentsTable
+    });
+    //bugfix
+    if (this.state.showReportsTable === true) {
+      this.setState({
+        showReportsTable: false
+      });
     }
+  }
+
+  toggleReportsTable() {
+    this.setState({
+      showReportsTable: !this.state.showReportsTable
+    });
+    //bugfix
+    if (this.state.showStudentsTable === true) {
+      this.setState({
+        showStudentsTable: false
+      });
+    }
+  }
+
+  getStudentsTable(boolean) {
+    return boolean === false ? (
+      <div style={Style.dropDown} onClick={() => this.toggleStudentsTable()}>
+        Show students table
+      </div>
+    ) : (
+      <div style={Style.isActive} onClick={() => this.toggleStudentsTable()}>
+        Hide students stable
+      </div>
+    );
+  }
+
+  getReportsTable (boolean) {
+    return boolean === false ? (
+      <div style={Style.dropDown} onClick={() => this.toggleReportsTable()}>
+        Show Initial reports
+       </div>
+    ) : (
+      <div style={Style.isActive} onClick={() => this.toggleReportsTable()}>
+        Hide Initial reports
+      </div>
+    );
+  }
+
+  getSetDeadlines (boolean) {
+    return boolean === false ? (
+      <div style={Style.dropDown} onClick={() => this.toggleSetDeadline()}>
+      Set deadlines
+    </div>
+    ) : (
+      <div style={Style.isActive} onClick={() => this.toggleSetDeadline()}>
+      Hide Set deadlines      
+      </div>
+    );
   }
   render() {
     return (
-      <div style={Style.body}>
-        <CorNav
-          handleChange={this.handleChange}
-          key={this.state.page}
-          page={this.state.page}
-        />
-        {this.renderPage()}
+      <div>
+        {/* ---- SET DEADLINES ---- */}
+        {this.getSetDeadlines(this.state.showSetDeadline)}
+        {this.state.showSetDeadline ? (
+          <div>
+            <SubmissionDeadlines
+              toggleSetDeadline={() => this.toggleSetDeadline()}
+            />
+          </div>
+        ) : null}
+        {/* ---- STUDENTS TABLE ---- */}
+        {this.getStudentsTable(this.state.showStudentsTable)}
+        {this.state.showStudentsTable ? (
+          <div>
+            <StudentsTable />
+          </div>
+        ) : null}
+        {/* ---- INITIAL REPORT TABLE ---- */}
+        {this.getReportsTable(this.state.showReportsTable)}
+        {this.state.showReportsTable ? (
+          <div>
+            <ReportsTable />
+          </div>
+        ) : null}
       </div>
-      
     );
   }
 }
