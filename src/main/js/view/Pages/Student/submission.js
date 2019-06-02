@@ -5,6 +5,7 @@ import FeedbackList from './feedback';
 import * as func from './functions';
 import { getUser, putToAPI, fileUpload, formatCamelCaseToText } from './../../functions';
 import { grades, dbSubmissionTypeMap } from './../../enums';
+import moment from "moment";
 
 export default class Submission extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ export default class Submission extends Component {
     onFormSubmit(e) {
         e.preventDefault(); // Stop form submit
         fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type)).then(() => {
-            this.props.reference.updateAll();
+            this.updateSubmissionData();
         });
     }
     onChangeFile(e) {
@@ -48,7 +49,7 @@ export default class Submission extends Component {
     render() {
         let line1, line2, styleClass;
 
-        let currentDate = new Date().toISOString(); // TODO get date from server
+        let currentDate = moment(); // TODO get date from server
 
         // report graded - counted as finished
         if (this.props.reportData.grade != grades.NOGRADE) {
@@ -59,7 +60,7 @@ export default class Submission extends Component {
         // deadline is set (but not graded) == report counted as active
         else if (this.props.reportData.deadLine) {
             line1 = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
-            line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
+            line2 = "Deadline: " + moment(this.props.reportData.deadLine).format("MMMM Do YYYY, hh:mm:ss a");;
             styleClass = "active";
         }
         else {
@@ -90,7 +91,7 @@ export default class Submission extends Component {
                                 }
 
                                 {/* show file upload for active submission */}
-                                {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE
+                                {currentDate < moment(this.props.reportData.deadLine) && this.props.reportData.grade == grades.NOGRADE
                                     ?
                                     <div>
                                         <p style={{ fontSize: "12px" }}>

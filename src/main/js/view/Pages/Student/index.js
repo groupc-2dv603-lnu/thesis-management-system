@@ -17,26 +17,22 @@ class Student extends Component {
     }
 
     componentDidMount() {
-        this.updateAll();
-    }
-
-    updateAll() {
         const reportCalls = ["projectDescription", "projectPlan", "initialReport", "finalReport"];
 
-            let reports = new Array(4);
-            let count = 0;
+        let reports = new Array(4);
+        let count = 0;
 
-            for (let i = 0; i < reportCalls.length; i++) {
-                common.getFromAPI("/student/" + reportCalls[i]).then(report => {
-                    reports[i] = <Submission reference={this} key={reportCalls[i]} reportData={report.entity} type={reportCalls[i]} />
+        for (let i = 0; i < reportCalls.length; i++) {
+            common.getFromAPI("/student/" + reportCalls[i]).then(report => {
+                reports[i] = <Submission reference={this} key={reportCalls[i]} reportData={report.entity} type={reportCalls[i]} />
+            })
+                .then(() => {
+                    count++;
+                    if (count == 4) {
+                        this.setState({ submissions: reports });
+                    }
                 })
-                    .then(() => {
-                        count++;
-                        if (count == 4) {
-                            this.setState({ submissions: reports });
-                        }
-                    })
-            };
+        };
     }
 
     render() {
