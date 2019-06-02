@@ -45,11 +45,13 @@ class ReportPopupBody extends Component {
   assignOpponent(user) {
     if (this.state.assignedOpponents.length === 1) {
       this.toggleMessage("Max one opponent can be assigned");
+      this.resetMessage()
       return;
     }
     for (const opponent of this.state.assignedOpponents) {
       if (opponent.userId === user.userId) {
         this.toggleMessage(`${user.name} is already assigned as opponent`);
+        this.resetMessage()
         return;
       } else {
         let opponents = this.state.availableOpponents.filter(
@@ -179,9 +181,11 @@ class ReportPopupBody extends Component {
       initialReport
     );
     if (request.status === 200) {
-      this.toggleMessage("Submission updated successfully");
+      this.toggleMessage("Updated successfully");
+      this.resetMessage()
     } else {
       this.toggleMessage("Something went wrong");
+      this.resetMessage()
     }
   }
 
@@ -199,6 +203,13 @@ class ReportPopupBody extends Component {
       showMessage: !this.state.showMessage
     });
   }
+
+  resetMessage() {
+    setTimeout(() => {
+      this.toggleMessage("");
+    }, 2000);
+  }
+
 
   getMessage() {
     return <div style={PopupStyle.message}>{this.state.message}</div>;

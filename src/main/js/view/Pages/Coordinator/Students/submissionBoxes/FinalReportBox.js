@@ -89,6 +89,10 @@ class FinalReportBox extends Component {
       this.toggleMessage("Deadline is not valid");
       return;
     }
+    if (this.state.comment === "") {
+      this.toggleMessage("Please provide feedback");
+      return;
+    }
     const submissionRequest = await corFunc.updateSubmission(
       dbSubmissionTypes.finalReport,
       this.state.finalReport
@@ -110,10 +114,8 @@ class FinalReportBox extends Component {
 
     return (
       <div>
+        <div>{this.state.showMessage === true ? this.getMessage() : null}</div>
         <div style={Style.subBoxDiv}>
-          <div>
-            {this.state.showMessage === true ? this.getMessage() : null}
-          </div>
           {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
           <div style={Style.subBoxHeader}>
             Final Report
@@ -192,31 +194,31 @@ class FinalReportBox extends Component {
                   : "Not set"}
               </span>
               <div>
-                {this.state.submission !== undefined ? 
-              <span style={Style.submissionEditColumn}>
-                <select
-                  style={Style.select}
-                  onChange={() => this.setGrade(event)}
-                >
-                  {func.getGrades(2)}
-                </select>
-              </span>
-              : null}
+                {this.state.submission !== undefined ? (
+                  <span style={Style.submissionEditColumn}>
+                    <select
+                      style={Style.select}
+                      onChange={() => this.setGrade(event)}
+                    >
+                      {func.getGrades(2)}
+                    </select>
+                  </span>
+                ) : null}
               </div>
             </div>
             {/* ----- GIVE FEEDBACK ----- */}
             <div>
-            {this.state.submission !== undefined ? 
-            <div style={Style.commentRow}>
-              <span style={Style.commentLeftColumn}>Comment</span>
-              <span style={Style.commentRightColumn}>
-                <textarea
-                  style={Style.textArea}
-                  onChange={() => this.handleFeedbackChange(event)}
-                />
-              </span>
-            </div>
-            : null}
+              {this.state.submission !== undefined ? (
+                <div style={Style.commentRow}>
+                  <span style={Style.commentLeftColumn}>Comment</span>
+                  <span style={Style.commentRightColumn}>
+                    <textarea
+                      style={Style.textArea}
+                      onChange={() => this.handleFeedbackChange(event)}
+                    />
+                  </span>
+                </div>
+              ) : null}
             </div>
             {/* ----- SUBMIT ----- */}
             <div onClick={() => this.handleSubmit()} style={Style.submitRow}>
@@ -226,17 +228,17 @@ class FinalReportBox extends Component {
 
           {/* ----- FEEDBACK ----- */}
           <div>
-          {this.state.feedbacks.length === 0 ||
-          this.state.submission === undefined ? (
-            <div style={Style.showFeedback}>No feedback provided</div>
-          ) : (
-            <div
-              style={Style.showFeedback}
-              onClick={() => this.toggleFeedback()}
-            >
-              Show feedback
-            </div>
-          )}
+            {this.state.feedbacks.length === 0 ||
+            this.state.submission === undefined ? (
+              <div style={Style.showFeedback}>No feedback provided</div>
+            ) : (
+              <div
+                style={Style.showFeedback}
+                onClick={() => this.toggleFeedback()}
+              >
+                Show feedback
+              </div>
+            )}
           </div>
         </div>
         <div style={Style.feedbackBody}>

@@ -88,10 +88,8 @@ class ProjectPlanBox extends Component {
   render() {
     return (
       <div>
+        <div>{this.state.showMessage === true ? this.getMessage() : null}</div>
         <div style={Style.subBoxDiv}>
-          <div>
-            {this.state.showMessage === true ? this.getMessage() : null}
-          </div>
           {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
           <div style={Style.subBoxHeader}>
             Project Plan

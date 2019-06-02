@@ -23,7 +23,6 @@ class InitialReportBox extends Component {
       showFeedback: false
     };
     this.getMessage = this.getMessage.bind(this);
-    console.log("IRSTATE", this.state);
   }
 
   toggleMessage(message) {
@@ -100,10 +99,8 @@ class InitialReportBox extends Component {
 
     return (
       <div>
+        <div>{this.state.showMessage === true ? this.getMessage() : null}</div>
         <div style={Style.subBoxDiv}>
-          <div>
-            {this.state.showMessage === true ? this.getMessage() : null}
-          </div>
           {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
           <div style={Style.subBoxHeader}>
             Initial Report
@@ -172,6 +169,27 @@ class InitialReportBox extends Component {
                   ? func.getDate(this.state.submission.submissionDate)
                   : "No file uploaded"}
               </span>
+            </div>
+            {/* ----- GRADE ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Grade</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.finalReport !== null
+                  ? func.getGrade(this.state.initialReport.grade)
+                  : "Not set"}
+              </span>
+              <div>
+                {this.state.submission !== undefined ? (
+                  <span style={Style.submissionEditColumn}>
+                    <select
+                      style={Style.select}
+                      onChange={() => this.setGrade(event)}
+                    >
+                      {func.getGrades(1)}
+                    </select>
+                  </span>
+                ) : null}
+              </div>
             </div>
 
             {/* ----- BIDS ----- */}

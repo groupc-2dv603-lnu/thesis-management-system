@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import ReactTable from "react-table";
-import { ReactTableDefaults } from "react-table";
 import { Link } from "react-router-dom";
 import * as Style from "../Styles/TableStyles";
 import ReportPopup from "./ReportPopup";
 import * as func from './reportFunctions/reportFunctions'
-
-const client = require("../../../../client");
 
 class ReportsTable extends Component {
   constructor(props) {
@@ -39,8 +36,7 @@ class ReportsTable extends Component {
         headerStyle: Style.headerNameCellStyle,
         style: Style.nameColumnStyle,
         accessor: "submitter",
-        resizable: true,
-        filterable: false, // ugly but good, case sensitive...
+        sortable: true,
         Cell: props => (
           <span
             onClick={() => {
@@ -97,7 +93,10 @@ class ReportsTable extends Component {
           data={this.state.initialReports} 
           pages={this.state.pages}
           loading={this.state.loading}
-          manual // ??
+          showPagination={false}
+          minRows={0}
+          resizable={false}
+          sortable={false}
           onFetchData={async (state, instance) => {
             this.setState({ loading: true });
             const initialReports = await func.getInitialReports();
@@ -120,14 +119,6 @@ class ReportsTable extends Component {
     );
   }
 }
-/* ---- Table configs ---- */
-Object.assign(ReactTableDefaults, {
-  defaultPageSize: 1,
-  minRows: 0,
-  showPagination: false,
-  resizable: false,
-  showPageSizeOptions: false
-});
 
 
 export default ReportsTable;
