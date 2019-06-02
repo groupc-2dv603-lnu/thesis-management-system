@@ -5,13 +5,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Document(collection = "readers")
 public class Reader {
+	@NotNull
 	@Id
 	private String id;
+	@NotNull
 	private String userId;
+	@NotNull
 	private String initialReportId;
+	@NotNull
 	private String finalReportId;
 	
 	

@@ -48,6 +48,8 @@ import project.model.repositories.SupervisorRepository;
 import project.model.repositories.UserRepository;
 import project.model.services.EncryptionService;
 
+import javax.validation.Valid;
+
 @RestController
 class UserController {
 
@@ -114,7 +116,7 @@ class UserController {
 	}
 
 	@PostMapping("/admin/createUser")
-	User newUser2(@RequestBody User user) {
+	User newUser2(@Valid @RequestBody User user) {
 		User findUser = repository.findFirstByEmailAdress(user.getEmailAdress());
 		if(findUser == null) {
 			user.setPassword(enrypt.hash(user.getPassword()));
@@ -124,7 +126,7 @@ class UserController {
 					studentRepository.save(new Student(user.getId(), "", PendingSupervisor.NONE));
 					projectDescriptionRepository.save(new ProjectDescription(user.getId(), "", Grade.NOGRADE, ""));
 					projectPlanRepository.save(new ProjectPlan(user.getId(), "", "", Grade.NOGRADE, "", ApprovedStatus.PENDING));
-					initialReportRepository.save(new InitialReport(user.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
+					initialReportRepository.save(new InitialReport(user.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, "", ""));
 					finalReportRepository.save(new FinalReport(user.getId(), "", GradeAF.NOGRADE, "", new ArrayList<String>()));
 
 				} else if(user.getRoles()[i].equals(Role.SUPERVISOR)) {
@@ -162,7 +164,7 @@ class UserController {
 			if(oldRoleStudent.equals(false) && newRoleStudent.equals(true)) {
 				projectDescriptionRepository.save(new ProjectDescription(finduser.getId(), "", Grade.NOGRADE, ""));
 				projectPlanRepository.save(new ProjectPlan(finduser.getId(), "", "", Grade.NOGRADE, "", ApprovedStatus.PENDING));
-				initialReportRepository.save(new InitialReport(finduser.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, ""));
+				initialReportRepository.save(new InitialReport(finduser.getId(), "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), Grade.NOGRADE, "", ""));
 				finalReportRepository.save(new FinalReport(finduser.getId(), "", GradeAF.NOGRADE, "", new ArrayList<String>()));
 
 			} else if(oldRoleStudent.equals(true) && newRoleStudent.equals(false)) {
