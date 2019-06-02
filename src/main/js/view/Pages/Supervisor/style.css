@@ -1,6 +1,7 @@
-table {
+.innerPopup table {
     width: 100%;
-    border-spacing: 0;
+    border-spacing: 1px;
+    /* background-color: black; */
     padding: 5px;
 }
 
@@ -37,13 +38,13 @@ table.studentList {
 }
 
 .feedbackBox {
-    width: 100%;
+    width: 95%;
     height: 300px;
     resize: none;
 }
 
 
-.link {
+.underscored {
     text-decoration: underline;
 }
 

@@ -37,6 +37,14 @@ class Reader extends Component {
         finalReport: info.entity
       });
     });
+    getFromAPI("/loginUser").then(user => {
+      this.setState({
+        user: user.entity
+      });
+    });
+    getFromAPI("/reader/readerInfo").then(info => {
+      console.log(info, "uhigu");
+    });
   }
 
   getChosenReports(event) {

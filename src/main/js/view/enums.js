@@ -7,6 +7,8 @@ export const submissionTypes = [ "PRJ_DESCRIPTION", "PRJ_PLAN", "INITIAL_REPORT"
 
 export const grades = { NOGRADE: "NOGRADE", PASS: "PASS", FAIL: "FAIL" };
 
+export const gradesAF = { A: "A", B: "B", C: "C", D: "D", E: "E", F: "F" };
+
 export const roles = { ADMIN: "ADMIN", STUDENT: "STUDENT", COORDINATOR: "COORDINATOR", SUPERVISOR: "SUPERVISOR", READER: "READER", OPPONENT: "OPPONENT" }
 
-export const submissionStatus = { ACTIVE: "ACTIVE", FINISHED: "FINISHED", DISABLED: "DISABLED" };
+export const projectPlanApprovedStatus = { pending: "PENDING", approved: "APPROVED", failed: "FAILED" };
