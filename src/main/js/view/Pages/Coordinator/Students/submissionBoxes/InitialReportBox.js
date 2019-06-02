@@ -23,6 +23,7 @@ class InitialReportBox extends Component {
       showFeedback: false
     };
     this.getMessage = this.getMessage.bind(this);
+    console.log("IRSTATE", this.state);
   }
 
   toggleMessage(message) {
@@ -99,121 +100,122 @@ class InitialReportBox extends Component {
 
     return (
       <div>
-        {/* ----- ERROR NO SUBMISSION ----- */}
-        {this.props.initialReport === undefined ||
-        this.props.submission === undefined ? (
-          <div style={Style.noSubFound}>No submission found</div>
-        ) : (
-          <div style={Style.subBoxDiv}>
-            <div>
-              {this.state.showMessage === true ? this.getMessage() : null}
-            </div>
-            {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
-            <div style={Style.subBoxHeader}>
-              Initial Report
-              {this.state.submission.fileUrl !== "" ? (
-                <span
-                  onClick={() =>
-                    generalFunctions.downloadFile(this.state.submission.fileUrl)
-                  }
-                  style={Style.downloadSpan}
-                >
-                  <i className="fas fa-download" />
-                </span>
-              ) : null}
-            </div>
+        <div style={Style.subBoxDiv}>
+          <div>
+            {this.state.showMessage === true ? this.getMessage() : null}
+          </div>
+          {/* ----- SUBMISSION HEADER AND DOWNLOAD ----- */}
+          <div style={Style.subBoxHeader}>
+            Initial Report
+            {this.state.submission !== undefined ? (
+              <span
+                onClick={() =>
+                  generalFunctions.downloadFile(this.state.submission.fileUrl)
+                }
+                style={Style.downloadSpan}
+              >
+                <i className="fas fa-download" />
+              </span>
+            ) : null}
+          </div>
 
-            {/* ----- STATUS ----- */}
-            <div style={Style.submissionBody}>
+          {/* ----- STATUS ----- */}
+          <div style={Style.submissionBody}>
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Status</span>
+              <span style={Style.submissionRightColumn}>
+                {func.getStatus(this.state.initialReport.deadLine)}
+              </span>
+            </div>
+            {/* ----- DEADLINE ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Deadline</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.initialReport !== null
+                  ? func.getDeadline(this.state.initialReport.deadLine)
+                  : "not set"}
+              </span>
+              <span style={Style.submissionEditColumn}>
+                <i
+                  onClick={() => this.toggleDeadlineChange()}
+                  className="fas fa-edit"
+                />
+              </span>
+            </div>
+            {/* ----- CHANGE DEADLINE ----- */}
+            {this.state.showChangeDeadline ? (
               <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Status</span>
-                <span style={Style.submissionRightColumn}>
-                  {func.getStatus(this.state.initialReport.deadLine)}
-                </span>
+                <span style={Style.submissionLeftColumn}>Set deadline</span>
+                <span style={Style.submissionInputColumn} />
+                <input
+                  type="date"
+                  value={this.state.newDeadlineDate}
+                  onChange={() => this.handleDeadlineDate(event)}
+                />
+                <input
+                  type="time"
+                  value={this.state.newDeadlineTime}
+                  onChange={() => this.handleDeadlineTime(event)}
+                />
+                <i
+                  className="fas fa-check"
+                  style={Style.submissionEditColumn}
+                  onClick={() => this.setDeadline()}
+                />
               </div>
-              {/* ----- DEADLINE ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Deadline</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.initialReport !== null
-                    ? func.getDeadline(this.state.initialReport.deadLine)
-                    : "not set"}
-                </span>
-                <span style={Style.submissionEditColumn}>
-                  <i
-                    onClick={() => this.toggleDeadlineChange()}
-                    className="fas fa-edit"
-                  />
-                </span>
-              </div>
-              {/* ----- CHANGE DEADLINE ----- */}
-              {this.state.showChangeDeadline ? (
-                <div style={Style.submissionRow}>
-                  <span style={Style.submissionLeftColumn}>Set deadline</span>
-                  <span style={Style.submissionInputColumn} />
-                  <input
-                    type="date"
-                    value={this.state.newDeadlineDate}
-                    onChange={() => this.handleDeadlineDate(event)}
-                  />
-                  <input
-                    type="time"
-                    value={this.state.newDeadlineTime}
-                    onChange={() => this.handleDeadlineTime(event)}
-                  />
-                  <i
-                    className="fas fa-check"
-                    style={Style.submissionEditColumn}
-                    onClick={() => this.setDeadline()}
-                  />
-                </div>
-              ) : null}
-              {/* ----- File uploaded ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>File uploaded</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.submission.submissionDate
-                    ? func.getDate(this.state.submission.submissionDate)
-                    : "No file uploaded"}
-                </span>
-              </div>
-
-              {/* ----- BIDS ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Bids</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.initialReport.bids.length}
-                </span>
-              </div>
-              {/* ----- ASSIGNED READERS ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Readers</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.initialReport.assignedReaders.length}
-                </span>
-              </div>
-              {/* ----- ASSIGNED OPPONENT ----- */}
-              <div style={Style.submissionRow}>
-                <span style={Style.submissionLeftColumn}>Opponent</span>
-                <span style={Style.submissionRightColumn}>
-                  {this.state.initialReport.assignedOpponents.length}
-                </span>
-              </div>
-              {/* ----- SUBMIT ----- */}
-              <div onClick={() => this.handleSubmit()} style={Style.submitRow}>
-                Submit changes
-              </div>
+            ) : null}
+            {/* ----- File uploaded ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>File uploaded</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.submission !== undefined
+                  ? func.getDate(this.state.submission.submissionDate)
+                  : "No file uploaded"}
+              </span>
             </div>
 
-            {/* ----- FEEDBACK ----- */}
-            <div
-              style={Style.showFeedback}
-              onClick={() => this.toggleFeedback()}
-            >
-              Show Feedback
+            {/* ----- BIDS ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Bids</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.initialReport.bids.length}
+              </span>
+            </div>
+            {/* ----- ASSIGNED READERS ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Readers</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.initialReport.assignedReaders.length}
+              </span>
+            </div>
+            {/* ----- ASSIGNED OPPONENT ----- */}
+            <div style={Style.submissionRow}>
+              <span style={Style.submissionLeftColumn}>Opponent</span>
+              <span style={Style.submissionRightColumn}>
+                {this.state.initialReport.assignedOpponents.length}
+              </span>
+            </div>
+            {/* ----- SUBMIT ----- */}
+            <div onClick={() => this.handleSubmit()} style={Style.submitRow}>
+              Submit changes
             </div>
           </div>
-        )}
+
+          {/* ----- FEEDBACK ----- */}
+          <div>
+            {this.state.feedbacks.length === 0 ||
+            this.state.submission === undefined ? (
+              <div style={Style.showFeedback}>No feedback provided</div>
+            ) : (
+              <div
+                style={Style.showFeedback}
+                onClick={() => this.toggleFeedback()}
+              >
+                Show feedback
+              </div>
+            )}
+          </div>
+        </div>
         <div style={Style.feedbackBody}>
           {this.props.feedbacks !== undefined &&
           this.state.showFeedback !== false
