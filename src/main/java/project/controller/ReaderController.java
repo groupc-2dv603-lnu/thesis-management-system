@@ -10,10 +10,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,15 +42,18 @@ public class ReaderController {
 	private final UserRepository repository;
 	private final ReaderRepository readerRepository;
 	private final SubmissionRepository submissionRepository;
+	@Autowired
+	private final ObjectMapper mapper;
 	
 	ReaderController(UserRepository repository, FeedbackRepository feedbackRepository, InitialReportRepository initialReportRepository,FinalReportRepository finalReportRepository,
-			ReaderRepository readerRepository, SubmissionRepository submissionRepository) {
+			ReaderRepository readerRepository, SubmissionRepository submissionRepository, ObjectMapper mapper) {
 		this.repository = repository;
 		this.feedbackRepository = feedbackRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
 		this.readerRepository = readerRepository;
 		this.submissionRepository = submissionRepository;
+		this.mapper = mapper;
 	}
 	
 	@PostMapping("/reader/feedbackInitialReport")
@@ -125,44 +133,24 @@ public class ReaderController {
 	}
 
 	@GetMapping(value = "/reader/initialReports", produces = "application/json; charset=UTF-8")
-	String getAllInitialReports(){
-		List<InitialReport> reports = initialReportRepository.findAll();
+	Resources<Resource<ObjectNode>> getAllInitialReports(){
+		List<InitialReport> fetchedReports = initialReportRepository.findAll();
+        ArrayList<Resource<ObjectNode>> initialReports = new ArrayList<>();
 
-		List<JSONObject> myJSONObjects = new ArrayList<JSONObject>(reports.size());
-
-		//TODO: ta bort int variabel
-		int numberOfReportsWithoutLinkedSubmission = 0;
-		for (InitialReport report : reports){
-			JSONObject obj = new JSONObject();
-			obj.put("id:", report.getId());
-
-			//TODO: kolla om submission id blir null
+		for (InitialReport report : fetchedReports){
 			Submission submission = submissionRepository.findFirstById(report.getSubmissionId());
-			if (submission == null){
-				numberOfReportsWithoutLinkedSubmission++;
 
+			if (submission != null){
+				ObjectNode obj = mapper.createObjectNode();
+				obj.put("id", report.getId());
+				obj.put("filename", submission.getFilename());
+				obj.put("author", submission.getAuthor());
+				obj.put("fileUrl", submission.getFileUrl());
+
+				initialReports.add(new Resource<>(obj));
 			}
-			else {
-				//TODO: ta bort if-sats. filename är satt på alla nya uploads
-				String filename = submission.getFilename();
-				if (filename == null){
-					filename = "No filename";
-				}
-				obj.put("filename:", filename);
-
-				String fileUrl = submission.getFileUrl();
-				obj.put("fileUrl", fileUrl);
-
-				String author = submission.getAuthor();
-				obj.put("author", author);
-
-				myJSONObjects.add(obj);
-
-			}
-
-		}
-
-		return myJSONObjects.toString();
+        }
+		return new Resources<>(initialReports);
 	}
 	
 
