@@ -10,10 +10,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,15 +42,18 @@ public class ReaderController {
 	private final UserRepository repository;
 	private final ReaderRepository readerRepository;
 	private final SubmissionRepository submissionRepository;
+	@Autowired
+	private final ObjectMapper mapper;
 	
 	ReaderController(UserRepository repository, FeedbackRepository feedbackRepository, InitialReportRepository initialReportRepository,FinalReportRepository finalReportRepository,
-			ReaderRepository readerRepository, SubmissionRepository submissionRepository) {
+			ReaderRepository readerRepository, SubmissionRepository submissionRepository, ObjectMapper mapper) {
 		this.repository = repository;
 		this.feedbackRepository = feedbackRepository;
 		this.initialReportRepository = initialReportRepository;
 		this.finalReportRepository = finalReportRepository;
 		this.readerRepository = readerRepository;
 		this.submissionRepository = submissionRepository;
+		this.mapper = mapper;
 	}
 	
 	@PostMapping("/reader/feedbackInitialReport")
@@ -124,60 +132,70 @@ public class ReaderController {
 				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());
 	}
 
-	@GetMapping(value = "/reader/initialReports", produces = "application/json; charset=UTF-8")
-	String getAllInitialReports(){
-		List<InitialReport> reports = initialReportRepository.findAll();
+	@GetMapping(value = "/reader/initialReport", produces = "application/json; charset=UTF-8")
+	Resources<Resource<ObjectNode>> getAllInitialReports(){
 
-		List<JSONObject> myJSONObjects = new ArrayList<JSONObject>(reports.size());
+		ObjectNode initialReport = mapper.createObjectNode();
+		initialReport.put("key", "value");
+		initialReport.put("foo", "bar");
+		initialReport.put("number", 42);
 
-		//TODO: ta bort int variabel
-		int numberOfReportsWithoutLinkedSubmission = 0;
-		for (InitialReport report : reports){
-			JSONObject obj = new JSONObject();
-			obj.put("id:", report.getId());
+		Resource<ObjectNode> resource = new Resource<>(initialReport);
 
-			//TODO: kolla om submission id blir null
-			Submission submission = submissionRepository.findFirstById(report.getSubmissionId());
-			if (submission == null){
-				numberOfReportsWithoutLinkedSubmission++;
+		ArrayList<Resource<ObjectNode>> initialReports = new ArrayList<>();
+		initialReports.add(resource);
 
-			}
-			else {
-				//TODO: ta bort if-sats. filename är satt på alla nya uploads
-				String filename = submission.getFilename();
-				if (filename == null){
-					filename = "No filename";
-				}
-				obj.put("filename:", filename);
+		initialReport = mapper.createObjectNode();
+		initialReport.put("id", "this is a initialReport id");
+		initialReport.put("filename", "fancy title");
+		initialReport.put("fileUrl", "datafiles/{fileId}");
+		initialReport.put("author", "Author McFly");
 
-				String fileUrl = submission.getFileUrl();
-				obj.put("fileUrl", fileUrl);
+		resource = new Resource<>(initialReport
+		);
+		initialReports.add(resource);
 
-				String author = submission.getAuthor();
-				obj.put("author", author);
 
-				myJSONObjects.add(obj);
-
-			}
-
-		}
-
-		return myJSONObjects.toString();
-	}
-	
-
-	/* TA INTE BORT KOMMENTERADE METODER NEDANFÖR, ANVÄNDS VID TESTNING OCH FELSÖKNING */
-
-//	@GetMapping(value = "/reader/initialReport/{id}", produces = "application/json; charset=UTF-8")
-//	Resource<InitialReport> one(@PathVariable String id) {
-//		InitialReport initialReport = initialReportRepository.findFirstById(id);
-//		return new Resource<>(initialReport,
-//				linkTo(methodOn(ReaderController.class).one(id)).withSelfRel(),
-//				linkTo(methodOn(ReaderController.class).all()).withRel("initialReport"));
-//	}
+		return new Resources<Resource<ObjectNode>>(initialReports);
+//		List<InitialReport> reports = initialReportRepository.findAll();
 //
-//	@GetMapping(value = "/reader/initialReports/all", produces = "application/json; charset=UTF-8")
-//	Resources<Resource<InitialReport>> all() {
+//		List<JSONObject> myJSONObjects = new ArrayList<JSONObject>(reports.size());
+//
+//
+//		//TODO: ta bort int variabel
+//		int numberOfReportsWithoutLinkedSubmission = 0;
+//		for (InitialReport report : reports){
+//			JSONObject obj = new JSONObject();
+//			obj.put("id:", report.getId());
+//
+//			//TODO: kolla om submission id blir null
+//			Submission submission = submissionRepository.findFirstById(report.getSubmissionId());
+//			if (submission == null){
+//				numberOfReportsWithoutLinkedSubmission++;
+//
+//			}
+//			else {
+//				//TODO: ta bort if-sats. filename är satt på alla nya uploads
+//				String filename = submission.getFilename();
+//				if (filename == null){
+//					filename = "No filename";
+//				}
+//				obj.put("filename:", filename);
+//
+//				String fileUrl = submission.getFileUrl();
+//				obj.put("fileUrl", fileUrl);
+//
+//				String author = submission.getAuthor();
+//				obj.put("author", author);
+//
+//				myJSONObjects.add(obj);
+//
+//			}
+//
+//		}
+//		System.out.println("number of nulls: " + numberOfReportsWithoutLinkedSubmission);
+//		System.out.println(myJSONObjects);
+//		return new ResponseEntity<>(myJSONObjects, HttpStatus.OK);
 //		List<Resource<InitialReport>> initialReports = initialReportRepository.findAll().stream()
 //			    .map(initialReport -> new Resource<>(initialReport,
 //			    		linkTo(methodOn(ReaderController.class).one(initialReport.getId())).withSelfRel(),
@@ -186,6 +204,32 @@ public class ReaderController {
 //
 //		return new Resources<>(initialReports,
 //				linkTo(methodOn(ReaderController.class).all()).withSelfRel());
-//	}
+
+
+//		return myJSONObjects.toString();
+	}
+	
+
+	/* TA INTE BORT KOMMENTERADE METODER NEDANFÖR, ANVÄNDS VID TESTNING OCH FELSÖKNING */
+
+	@GetMapping(value = "/reader/initialReport/{id}", produces = "application/json; charset=UTF-8")
+	Resource<InitialReport> one(@PathVariable String id) {
+		InitialReport initialReport = initialReportRepository.findFirstById(id);
+		return new Resource<>(initialReport,
+				linkTo(methodOn(ReaderController.class).one(id)).withSelfRel(),
+				linkTo(methodOn(ReaderController.class).all()).withRel("initialReport"));
+	}
+
+	@GetMapping(value = "/reader/initialReports/all", produces = "application/json; charset=UTF-8")
+	Resources<Resource<InitialReport>> all() {
+		List<Resource<InitialReport>> initialReports = initialReportRepository.findAll().stream()
+			    .map(initialReport -> new Resource<>(initialReport,
+			    		linkTo(methodOn(ReaderController.class).one(initialReport.getId())).withSelfRel(),
+			    		linkTo(methodOn(ReaderController.class).all()).withRel("initialReports")))
+			    	    .collect(Collectors.toList());
+
+		return new Resources<>(initialReports,
+				linkTo(methodOn(ReaderController.class).all()).withSelfRel());
+	}
 
 }
