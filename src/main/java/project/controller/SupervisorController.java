@@ -59,7 +59,7 @@ public class SupervisorController {
 				case FINAL_REPORT:
 					FinalReport fp = finalReportRepository.findFirstBySubmissionId(submission.getId());
 					if(fp.readersSize() < 1 || fp.opponentSize() < 1) { return null;}
-					feedbackRepository.save(feedback);
+					feedback = feedbackRepository.save(feedback);
 					fp.getFeedBackIds().add(feedback.getId());
 					finalReportRepository.save(fp);
 					break;
@@ -67,7 +67,7 @@ public class SupervisorController {
 					InitialReport ip = initialReportRepository.findFirstBySubmissionId(submission.getId());
 					if(ip.getOpponentsSize() < 1 || ip.getReadersSize() < 1) {
 						return null;}
-					feedbackRepository.save(feedback);
+					feedback = feedbackRepository.save(feedback);
 					ip.setSupervisorId(supervisor.getUserId());
 					ip.getFeedBackIds().add(feedback.getId());
 					initialReportRepository.save(ip);
@@ -76,7 +76,7 @@ public class SupervisorController {
 					ProjectPlan prj = projectPlanRepository.findFirstBySubmissionId(submission.getId());
 					if(prj.getFeedBackId() == "")
 					{
-						feedbackRepository.save(feedback);
+						feedback = feedbackRepository.save(feedback);
 						prj.setFeedBackId(feedback.getId());
 						projectPlanRepository.save(prj);
 					}

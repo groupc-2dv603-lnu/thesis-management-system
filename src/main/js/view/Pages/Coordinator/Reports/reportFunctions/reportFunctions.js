@@ -37,13 +37,10 @@ export const getAvailableOpponents = async () => {
   );
   let opponents = response.entity;
   for (const opponent of opponents) {
-    const user = await generalFunctions.getUser(opponent.userId);
-    let obj = {
-      name: generalFunctions.capitalizeFirstLetter(user.entity.name),
-      userId: opponent.userId
-    };
-    availableOpponents.push(obj);
+    const user = await generalFunctions.getUser(opponent.userId)
+    opponent.name = user.entity.name
+    availableOpponents.push(opponent);
   }
-
   return availableOpponents;
 };
+

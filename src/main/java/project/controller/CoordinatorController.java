@@ -95,19 +95,30 @@ public class CoordinatorController {
     @PutMapping(value = "/coordinator/updateInitialReport", consumes = {"application/json"})
     void updateInitialReport(@Valid @RequestBody InitialReport initialReport) {
         if (initialReportRepository.findById(initialReport.getId()).isPresent()) {
-    		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    		String name = auth.getName();
-    		User user = repository.findFirstByEmailAdress(name);
-    		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
-    		opponent.setInitialReportId(initialReport.getId());
-        	opponentRepository.save(opponent);
-        	
-    		Reader reader = readerRepository.findFirstByuserId(user.getId());
-    		reader.setInitialReportId(initialReport.getId());
-        	readerRepository.save(reader);
-        	
-            initialReportRepository.save(initialReport);
+    		initialReportRepository.save(initialReport);
         }
+    }
+
+    @PostMapping(value = "/coordinator/updateReader")
+    void updateReader(@RequestParam String readerID, @RequestParam String initialReportID) {
+        Reader reader = readerRepository.findFirstByuserId(readerID);
+        if (reader == null) return;
+
+        System.out.println("Reader: " + reader);
+
+        reader.setInitialReportId(initialReportID);
+        readerRepository.save(reader);
+    }
+
+    @PostMapping(value = "/coordinator/updateOpponent")
+    void updateOpponent(@RequestParam String opponentID, @RequestParam String initialReportID) {
+        Opponent opponent = opponentRepository.findFirstByuserId(opponentID);
+        if (opponent == null) return;
+
+        System.out.println("Opponent: " + opponent);
+
+        opponent.setInitialReportId(initialReportID);
+        opponentRepository.save(opponent);
     }
 
     @GetMapping("/coordinator/getAllStudents")
