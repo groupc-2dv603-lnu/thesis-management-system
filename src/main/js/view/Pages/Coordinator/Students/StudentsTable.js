@@ -15,7 +15,6 @@ class StudentsTable extends Component {
       loading: true,
       selectedStudent: null,
       assignedSupervisorName: null
-      // pages: -1
     };
   }
 

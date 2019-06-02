@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import moment from "moment";
 import { dbSubmissionTypes } from '../../../../enums'
 import * as generalFunctions from "../../../../functions";
 
