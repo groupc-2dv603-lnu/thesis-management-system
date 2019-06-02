@@ -17,7 +17,6 @@ class Reader extends Component {
 
   componentDidMount() {
     getFromAPI("/reader/initialReports").then(result => {
-      console.log(result);
       this.setState({
         reports: result.entity
       });
@@ -28,15 +27,13 @@ class Reader extends Component {
       });
     });
     getFromAPI("/reader/initailReportSubmission").then(info => {
-      console.log(info);
       this.setState({
-        initialReport: info.entity.initialReportId
+        initialReport: info.entity
       });
     });
     getFromAPI("/reader/finalReportSubmission").then(info => {
-      console.log(info);
       this.setState({
-        finalReport: info.entity.finalReportId
+        finalReport: info.entity
       });
     });
   }

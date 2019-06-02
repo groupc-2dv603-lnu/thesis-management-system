@@ -22,14 +22,7 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {
-    getFromAPI("/loginUser").then(user => {
-      this.setState({
-        user: user.entity,
-        roles: user.entity.rules
-      });
-    });
-  }
+  componentDidMount() {}
 
   render() {
     const { user } = this.state;
@@ -70,7 +63,7 @@ class App extends Component {
               authenticated={user.roles && user.roles.includes("ADMIN")}
             />
             <PrivateRoute
-              authenticated={user.roles && user.roles.includes("READER")}
+              authenticated={true}
               exact
               path="/reader"
               component={Reader}
