@@ -106,40 +106,35 @@ export class SubmissionsMock {
                     {
                         id: 20,
                         userId: 11,
-                        type: "PRJ_PLAN",
-                        submissionStatus: "FINISHED",
+                        submissionType: "PRJ_PLAN",
                         fileUrl: 'some_url',
                         submissionDate: "2019-04-30T14:53"
                     },
                     {
                         id: 21,
                         userId: 11,
-                        type: "INITIAL_REPORT",
-                        submissionStatus: "FINISHED",
+                        submissionType: "INITIAL_REPORT",
                         fileUrl: 'some_url',
                         submissionDate: "2019-05-30T23:12"
                     },
                     {
                         id: 30,
                         userId: 13,
-                        type: "PRJ_PLAN",
-                        submissionStatus: "ACTIVE",
+                        submissionType: "PRJ_PLAN",
                         fileUrl: '',
                         submissionDate: "2019-04-31T12:05"
                     },
                     {
                         id: 31,
                         userId: 13,
-                        type: "INITIAL_REPORT",
-                        submissionStatus: "ACTIVE",
+                        submissionType: "INITIAL_REPORT",
                         fileUrl: '',
                         submissionDate: "2019-05-22T16:35"
                     },
                     {
                         id: 40,
                         userId: 12,
-                        type: "PRJ_PLAN",
-                        submissionStatus: "ACTIVE",
+                        submissionType: "PRJ_PLAN",
                         fileUrl: '',
                         submissionDate: "2019-05-22T16:35"
                     },
