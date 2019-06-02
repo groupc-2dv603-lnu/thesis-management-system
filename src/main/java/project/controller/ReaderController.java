@@ -157,8 +157,6 @@ public class ReaderController {
 		return new Resource<>(submission,
 				linkTo(methodOn(ReaderController.class).one6()).withSelfRel());
 	}
-
-
 	@GetMapping(value = "/reader/initialReports", produces = "application/json; charset=UTF-8")
 	Resources<Resource<ObjectNode>> getAllInitialReports(){
 		List<InitialReport> fetchedReports = initialReportRepository.findAll();
