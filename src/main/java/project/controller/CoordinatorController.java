@@ -95,6 +95,17 @@ public class CoordinatorController {
     @PutMapping(value = "/coordinator/updateInitialReport", consumes = {"application/json"})
     void updateInitialReport(@Valid @RequestBody InitialReport initialReport) {
         if (initialReportRepository.findById(initialReport.getId()).isPresent()) {
+    		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    		String name = auth.getName();
+    		User user = repository.findFirstByEmailAdress(name);
+    		Opponent opponent = opponentRepository.findFirstByuserId(user.getId());
+    		opponent.setInitialReportId(initialReport.getId());
+        	opponentRepository.save(opponent);
+        	
+    		Reader reader = readerRepository.findFirstByuserId(user.getId());
+    		reader.setInitialReportId(initialReport.getId());
+        	readerRepository.save(reader);
+        	
             initialReportRepository.save(initialReport);
         }
     }
