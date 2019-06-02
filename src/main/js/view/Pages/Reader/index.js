@@ -71,7 +71,8 @@ class Reader extends Component {
 
   sendBiddedReports() {
     this.state.selectedReports.map(report => {
-      postToAPI(`/reader/requestBidding?text=${report.id}`);
+      console.log(report);
+      postToAPI(`/reader/requestBidding?initialReportId=${report}`);
     });
   }
 
@@ -92,9 +93,7 @@ class Reader extends Component {
   }
 
   render() {
-    if (this.state.reports.length) {
-      console.log(this.state.reports);
-    }
+    console.log(this.state);
     return (
       <div>
         {!!this.state.reports.length && (
@@ -110,8 +109,8 @@ class Reader extends Component {
                 </tr>
                 {this.state.reports.map((report, index) => (
                   <tr key={index}>
-                    <td key={report.filename} style={styles.td}>
-                      {report.filename}
+                    <td key={report["filename:"]} style={styles.td}>
+                      {report["filename:"]}
                     </td>
                     <td key={report.author} style={styles.td}>
                       {report.author}
@@ -125,7 +124,7 @@ class Reader extends Component {
                       <input
                         type="checkbox"
                         name="selected"
-                        value={report.id}
+                        value={report["id:"]}
                         onClick={this.getChosenReports.bind(this)}
                       />
                     </td>
@@ -144,15 +143,15 @@ class Reader extends Component {
                 </tr>
                 {this.state.selectedReports.map((reportId, index) => {
                   const report = this.state.reports.filter(
-                    rep => rep.id === reportId
+                    rep => rep["id:"] === reportId
                   )[0];
                   return (
                     <tr key={index}>
                       <td style={styles.td} key={index}>
                         {index + 1}
                       </td>
-                      <td style={styles.td} key={report.filename}>
-                        {report.filename}
+                      <td style={styles.td} key={report["filename:"]}>
+                        {report["filename:"]}
                       </td>
                       <td style={styles.td} key={report.author}>
                         {report.author}
