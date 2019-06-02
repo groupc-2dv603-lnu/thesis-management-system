@@ -176,7 +176,7 @@ class ProjectPlanBox extends Component {
                       style={Style.select}
                       onChange={() => this.setGrade(event)}
                     >
-                      {func.getGrades(2)}
+                      {func.getGrades(1)}
                     </select>
                   </span>
                 ) : null}

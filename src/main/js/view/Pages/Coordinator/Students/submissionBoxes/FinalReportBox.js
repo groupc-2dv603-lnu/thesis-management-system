@@ -205,6 +205,8 @@ class FinalReportBox extends Component {
               </div>
             </div>
             {/* ----- GIVE FEEDBACK ----- */}
+            <div>
+            {this.state.submission !== undefined ? 
             <div style={Style.commentRow}>
               <span style={Style.commentLeftColumn}>Comment</span>
               <span style={Style.commentRightColumn}>
@@ -213,6 +215,8 @@ class FinalReportBox extends Component {
                   onChange={() => this.handleFeedbackChange(event)}
                 />
               </span>
+            </div>
+            : null}
             </div>
             {/* ----- SUBMIT ----- */}
             <div onClick={() => this.handleSubmit()} style={Style.submitRow}>

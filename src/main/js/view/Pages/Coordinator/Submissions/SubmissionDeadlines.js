@@ -48,6 +48,7 @@ class SubmissionDeadlines extends Component {
       this.resetMessage();
       return;
     }
+
     const deadline = `${this.state.newDeadlineDate}T${
       this.state.newDeadlineTime
     }:00`;
@@ -57,23 +58,21 @@ class SubmissionDeadlines extends Component {
       this.resetMessage();
       return;
     }
+    this.toggleMessage('Loading...')
 
-    this.toggleMessage("Loading");
-
-    const response = await generalFunctions.getFromAPI(`/submissions`);
-    const allSubmissions = response.entity._embedded.submissions;
-    const submissions = allSubmissions.filter(
-      sub => sub.submissionType !== this.state.submissionType
+    const response = await corFunc.setDeadlineForAll(
+      this.state.submissionType,
+      deadline
     );
-
-    for (const submission of submissions) {
-      submission.deadLine = deadline;
-      await corFunc.updateSubmission(this.state.submissionType, submission);
+    if(response === true) {
+      this.toggleMessage('')
+      this.toggleMessage('Updated successfully')
+      this.resetMessage()
+    } else {
+      this.toggleMessage('')
+      this.toggleMessage('Something went wrong')
+      this.resetMessage()
     }
-
-    this.toggleMessage("");
-    this.toggleMessage("Updated successfully");
-    this.resetMessage();
   }
 
   render() {
