@@ -29,7 +29,9 @@ export class Submission extends Component {
 
     sendAssessment() {
         if (confirm("You cannot change your assessment. Are you sure you want to submit?")) {
+
             func.sendFeedback(document.getElementById("feedbackBox").value, this.props.reportData).then(() => {
+                console.log("feedback sent")
             });
         }
     }
@@ -82,7 +84,7 @@ export class Submission extends Component {
                         ?
                         <div>
                             Write Assessment
-                                        <textarea className="feedbackBox" id="feedbackBox"></textarea>
+                            <textarea className="feedbackBox" id="feedbackBox"></textarea>
                             <br />
                             <button type="submit" onClick={() => this.sendAssessment()}>Submit</button>
                         </div>

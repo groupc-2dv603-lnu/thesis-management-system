@@ -10,6 +10,7 @@ import * as func from './functions'
 import * as enums from './../../enums';
 import { getUser } from './../../functions';
 import './style.css';
+import moment from "moment";
 
 export default class Supervisor extends Component {
 
@@ -45,13 +46,11 @@ export default class Supervisor extends Component {
         });
     }
 
-
     toggleAvailability() {
         func.setAvailability(!this.state.availableAsSupervisor).then(() => {
             this.updateAvailabilityStatus();
         })
     }
-
 
     render() {
         const studentRequests = this.state.appliedStudents.map(student =>
@@ -200,7 +199,10 @@ class SupervisedStudent extends Component {
     }
 
     render() {
-        const currentDate = new Date().toISOString();
+        const currentDate = moment().format("MMMM Do YYYY, hh:mm:ss a");
+        // const ppDeadline = moment(this.state.projectPlan.deadLine).format("MMMM Do YYYY, hh:mm:ss a");
+        const irDeadline = moment(this.state.initialReport.deadLine).format("MMMM Do YYYY, hh:mm:ss a");
+                        
 
         return (
             <tr>
@@ -231,7 +233,7 @@ class SupervisedStudent extends Component {
                         null
                     }
                     {/* Student has an Initial Report available for review, deadline has passed, and at least one reader and one opponent has been assigned */}
-                    {this.state.initialReport.submissionId && currentDate > this.state.initialReport.deadLine //&& this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
+                    {this.state.initialReport.submissionId && currentDate > irDeadline && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
                         ?
                         <div className="link underscored" onClick={() => this.setInitialReportPopup(true)}>
                             Initial Report
@@ -270,7 +272,7 @@ class SupervisedStudent extends Component {
                     }
                     <br/>
                     {/* There is an initial report uploaded, deadline for it has passed, and at least one reader and one opponent has been assigned */}
-                    {this.state.initialReport.submissionId && currentDate > this.state.initialReport.deadLine //&& this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
+                    {this.state.initialReport.submissionId && currentDate > irDeadline && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
                         ?
                         // Supervisor has written assessment
                         this.state.initialReport.supervisorId
