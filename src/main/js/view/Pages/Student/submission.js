@@ -19,8 +19,7 @@ export default class Submission extends Component {
     onFormSubmit(e) {
         e.preventDefault(); // Stop form submit
         fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type)).then(() => {
-            // console.log(this.props.reference)
-            // this.props.reference.updateAll();
+            this.props.reference.updateAll();
         });
     }
     onChangeFile(e) {

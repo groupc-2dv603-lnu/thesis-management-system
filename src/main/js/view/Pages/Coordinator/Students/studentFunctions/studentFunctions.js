@@ -7,6 +7,7 @@ export const getStudentTableData = async () => {
     const getAllStudents = await generalFunctions.getFromAPI(
       `/coordinator/getAllStudents`
     );
+    
     const getAllSubmissions = await generalFunctions.getFromAPI(`/submissions`);
     const allStudents = getAllStudents.entity;
     const allSubmissions = getAllSubmissions.entity._embedded.submissions;

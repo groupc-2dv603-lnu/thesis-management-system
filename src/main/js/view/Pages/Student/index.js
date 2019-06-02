@@ -17,7 +17,7 @@ class Student extends Component {
     }
 
     componentDidMount() {
-        updateAll();
+        this.updateAll();
     }
 
     updateAll() {
