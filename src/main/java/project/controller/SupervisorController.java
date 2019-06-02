@@ -131,14 +131,14 @@ public class SupervisorController {
 
 	}
 
-	@PutMapping("/supervisor/approvePlan/{planId}")
-	ProjectPlan approvePlan(@PathVariable String planId, @RequestParam("state") Boolean state) {
+	@PutMapping("/supervisor/approvePlan/{userId}")
+	ProjectPlan approvePlan(@PathVariable String userId, @RequestParam("state") Boolean state) {
 
 		Supervisor supervisor = getLoggedInSupervisor();
 
-		ProjectPlan plan = projectPlanRepository.findFirstById(planId);
+		ProjectPlan plan = projectPlanRepository.findFirstByuserId(userId);
 
-		Student student = studentRepository.findFirstByuserId(plan.getUserId());
+		Student student = studentRepository.findFirstByuserId(userId);
 
 
 		if(supervisor.isAssignedStudent(student.getUserId())) {
