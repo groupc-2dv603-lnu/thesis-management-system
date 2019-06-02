@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import moment from "moment";
+
 export function statusOptions() {
-  //Shall match enums for submissionStatus -> backend
   const status = ["DISABLED", "ACTIVE", "FINISHED"];
   let i = 0;
   return status.map(value => (
@@ -11,18 +11,14 @@ export function statusOptions() {
   ));
 }
 
-/**
- * 1 for Pass fail
- * 2 for a-f
- * @param {number} type
- */
+// 1 for Pass fail , 2 for AF
 export function getGrades(type) {
   let grades = [];
   let i = 0;
   if (type === 1) {
-    grades = ["NOGRADE", "PASS", "FAIL" ];
+    grades = ["NOGRADE", "PASS", "FAIL"];
   } else if (type === 2) {
-    grades = ["A", "B", "C", "D", "E", "F"];
+    grades = ["NOGRADE", "A", "B", "C", "D", "E", "F"];
   }
 
   return grades.map(value => (
@@ -47,16 +43,12 @@ export const getDate = date => {
   return moment(date).format("MMMM Do YYYY, hh:mm:ss a");
 };
 
-
 /**
  * DUBLETT, finns i generalFunctions
- * @param {*} url 
- * @param {*} object 
+ * @param {*} url
+ * @param {*} object
  */
 export const updateSubmission = async (url, object) => {
-  console.log("url", url);
-  console.log("object", object);
-
   const request = await fetch(url, {
     method: "PUT",
     headers: {
@@ -85,4 +77,3 @@ export const getStatus = deadline => {
     return "Open";
   }
 };
-

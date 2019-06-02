@@ -15,7 +15,6 @@ class ReportPopupBody extends Component {
       showMessage: false,
       message: ""
     };
-    console.log(this.props);
     this.getBidders = this.getBidders.bind(this);
     this.getReaders = this.getReaders.bind(this);
     this.getAvailableOpponents = this.getAvailableOpponents.bind(this);
@@ -30,7 +29,6 @@ class ReportPopupBody extends Component {
       bidders: bidders,
       assignedReaders: this.state.assignedReaders
     });
-    console.log(this.state);
   }
 
   removeReader(user) {

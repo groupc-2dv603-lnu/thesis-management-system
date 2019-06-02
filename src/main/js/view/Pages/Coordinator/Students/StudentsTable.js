@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import ReactTable from "react-table";
 import { ReactTableDefaults } from "react-table";
 import StudentPopup from "./StudentPopup";
@@ -117,9 +118,8 @@ class StudentsTable extends Component {
           data={this.state.students}
           pages={this.state.pages}
           loading={this.state.loading}
-          manual // ??
+          manual 
           onFetchData={async (state, instance) => {
-            // console.log('tableState', state)
             this.setState({ loading: true });
             const students = await func.getStudentTableData();
 
@@ -151,5 +151,6 @@ Object.assign(ReactTableDefaults, {
   resizable: false,
   showPageSizeOptions: false
 });
+
 
 export default StudentsTable;

@@ -36,8 +36,6 @@ class StudentPopup extends React.Component {
         initialReport: submissions.initialReports[0],
         finalReport: submissions.finalReports[0]
       });
-      console.log(this.state)
-      console.log('PRPOS', this.props)
       const initialReportFeedback = await func.getFeedbacks(
         this.state.initialReport.feedBackIds
       );

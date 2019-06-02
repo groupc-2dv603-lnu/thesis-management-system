@@ -19,7 +19,6 @@ class ProjectDescriptionBox extends Component {
       showMessage: false,
       message: ""
     };
-    console.log('PDPROPS', this.props)
   }
 
   toggleMessage(message) {
@@ -63,7 +62,6 @@ class ProjectDescriptionBox extends Component {
   setGrade(event) {
     this.state.projectDescription.grade = event.target.value;
     this.setState({ projectDescription: this.state.projectDescription });
-    console.log(`grade set to ${this.state.projectDescription.grade}`);
   }
 
   async handleSubmit() {
@@ -78,7 +76,6 @@ class ProjectDescriptionBox extends Component {
       dbSubmissionTypes.projectDescription,
       this.state.projectDescription
     );
-    console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {

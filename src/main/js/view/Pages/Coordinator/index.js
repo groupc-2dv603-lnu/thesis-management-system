@@ -47,11 +47,11 @@ class Coordinator extends Component {
   getStudentsTable(boolean) {
     return boolean === false ? (
       <div style={Style.dropDown} onClick={() => this.toggleStudentsTable()}>
-        Show studentstable
+        Show students table
       </div>
     ) : (
       <div style={Style.isActive} onClick={() => this.toggleStudentsTable()}>
-        Hide Studentstable
+        Hide students stable
       </div>
     );
   }

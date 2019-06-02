@@ -5,7 +5,7 @@ import * as PopupStyle from "../../Styles/PopupStyles";
 import Feedback from "./ShowFeedback";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
-import { dbSubmissionTypes } from '../../../../enums'
+import { dbSubmissionTypes } from "../../../../enums";
 
 class FinalReportBox extends Component {
   constructor(props) {
@@ -23,7 +23,6 @@ class FinalReportBox extends Component {
       showFeedback: false,
       comment: ""
     };
-
     this.getMessage = this.getMessage.bind(this);
   }
 
@@ -69,14 +68,12 @@ class FinalReportBox extends Component {
 
     this.state.finalReport.deadLine = deadline;
     this.setState({ finalReport: this.state.finalReport });
-    console.log(`Deadline set to ${this.state.finalReport.deadLine}`);
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
     this.state.finalReport.grade = event.target.value;
     this.setState({ finalReport: this.state.finalReport });
-    console.log(`grade set to ${this.state.finalReport.grade}`);
   }
 
   handleFeedbackChange(event) {
@@ -91,13 +88,16 @@ class FinalReportBox extends Component {
       this.toggleMessage("Deadline is not valid");
       return;
     }
-    const request = await corFunc.updateSubmission(
+    const submissionRequest = await corFunc.updateSubmission(
       dbSubmissionTypes.finalReport,
       this.state.finalReport
     );
+    const feedbackRequest = await corFunc.postCoordinatorFeedback(
+      this.state.comment,
+      this.state.finalReport.id
+    );
 
-    console.log("REQUEST", request);
-    if (request.status === 200) {
+    if (submissionRequest.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
       this.toggleMessage("Update failed");
@@ -112,9 +112,7 @@ class FinalReportBox extends Component {
         {/* ----- ERROR NO SUBMISSION ----- */}
         {this.props.finalReport === undefined ||
         this.props.submission === undefined ? (
-          <div style={Style.noSubFound}>
-            No submission found
-          </div>
+          <div style={Style.noSubFound}>No submission found</div>
         ) : (
           <div style={Style.subBoxDiv}>
             <div>
@@ -232,12 +230,14 @@ class FinalReportBox extends Component {
             </div>
           </div>
         )}
-
-        {this.props.feedbacks !== undefined && this.state.showFeedback !== false
-          ? this.props.feedbacks.map(feedback => {
-              return <Feedback feedback={feedback} key={i++} />;
-            })
-          : null}
+        <div style={Style.feedbackBody}>
+          {this.props.feedbacks !== undefined &&
+          this.state.showFeedback !== false
+            ? this.props.feedbacks.map(feedback => {
+                return <Feedback feedback={feedback} key={i++} />;
+              })
+            : null}
+        </div>
       </div>
     );
   }

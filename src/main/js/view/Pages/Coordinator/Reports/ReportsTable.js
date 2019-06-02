@@ -122,10 +122,12 @@ class ReportsTable extends Component {
 }
 /* ---- Table configs ---- */
 Object.assign(ReactTableDefaults, {
-  defaultPageSize: 25,
+  defaultPageSize: 1,
   minRows: 0,
   showPagination: false,
   resizable: false,
   showPageSizeOptions: false
 });
+
+
 export default ReportsTable;

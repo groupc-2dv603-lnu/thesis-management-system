@@ -44,7 +44,18 @@ export const updateSubmission = async (dbType, object) => {
     },
     body: submissionObject
   });
-  console.log("REQUEST", request);
   return request;
 };
 
+export const postCoordinatorFeedback = async (text, reportId) => {
+  const request = await fetch(`http://localhost:8080/coordinator/feedback?text=${text}&FinalReportId=${reportId}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+  });
+  
+  return request;
+
+} 

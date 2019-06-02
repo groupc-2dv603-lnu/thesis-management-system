@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import * as generalFunctions from "../../../functions";
-import * as Style from '../Styles/Styles'
-import * as corFunc from '../coordinatorFunctions'
+import * as Style from "../Styles/Styles";
+import * as corFunc from "../coordinatorFunctions";
 
 class SubmissionDeadlines extends Component {
   constructor(props) {
@@ -13,8 +13,8 @@ class SubmissionDeadlines extends Component {
       showMessage: false,
       message: ""
     };
-   
-    this.resetMessage = this.resetMessage.bind(this)
+
+    this.resetMessage = this.resetMessage.bind(this);
   }
 
   toggleMessage(message) {
@@ -26,59 +26,54 @@ class SubmissionDeadlines extends Component {
 
   handleDeadlineDate(event) {
     this.setState({ newDeadlineDate: event.target.value });
-    console.log(this.state);
   }
 
   handleDeadlineTime(event) {
     this.setState({ newDeadlineTime: event.target.value });
-    console.log(this.state);
   }
 
   handleSubmissionChange(event) {
     this.setState({ submissionType: event.target.value });
-    console.log(this.state);
   }
-  
-  resetMessage(){
+
+  resetMessage() {
     setTimeout(() => {
-      this.toggleMessage('')
-    }, 2000)
+      this.toggleMessage("");
+    }, 2000);
   }
 
   async handleSubmit() {
-
-    if(this.state.submission === "cs" ) {
-      this.toggleMessage('You must choose a submission')
-      this.resetMessage()
-      return
+    if (this.state.submission === "cs") {
+      this.toggleMessage("You must choose a submission");
+      this.resetMessage();
+      return;
     }
     const deadline = `${this.state.newDeadlineDate}T${
       this.state.newDeadlineTime
     }:00`;
 
-    console.log('DEADLINE', deadline)
-    console.log('LENGTh', deadline.length)
-
     if (corFunc.validDeadline(deadline) === false) {
-      this.toggleMessage('Date is not valid')
-      this.resetMessage()
-      return
+      this.toggleMessage("Date is not valid");
+      this.resetMessage();
+      return;
     }
-    
+
     this.toggleMessage("Loading");
 
-    const response = await generalFunctions.getFromAPI(`/submissions`)
-    const allSubmissions = response.entity._embedded.submissions
-    const submissions = allSubmissions.filter(sub => sub.submissionType !== this.state.submissionType)
-  
+    const response = await generalFunctions.getFromAPI(`/submissions`);
+    const allSubmissions = response.entity._embedded.submissions;
+    const submissions = allSubmissions.filter(
+      sub => sub.submissionType !== this.state.submissionType
+    );
+
     for (const submission of submissions) {
-      submission.deadLine = deadline
-      await corFunc.updateSubmission(this.state.submissionType, submission)
+      submission.deadLine = deadline;
+      await corFunc.updateSubmission(this.state.submissionType, submission);
     }
 
     this.toggleMessage("");
     this.toggleMessage("Updated successfully");
-    this.resetMessage()
+    this.resetMessage();
   }
 
   render() {
@@ -152,4 +147,3 @@ class SubmissionDeadlines extends Component {
 }
 
 export default SubmissionDeadlines;
-

@@ -5,8 +5,7 @@ import * as func from "../studentFunctions/SubmissionBoxFunctions";
 import Feedback from "./ShowFeedback";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
-import { dbSubmissionTypes } from '../../../../enums'
-
+import { dbSubmissionTypes } from "../../../../enums";
 
 class InitialReportBox extends Component {
   constructor(props) {
@@ -74,7 +73,6 @@ class InitialReportBox extends Component {
   setGrade(event) {
     this.state.initialReport.grade = event.target.value;
     this.setState({ initialReport: this.state.initialReport });
-    console.log(`grade set to ${this.state.initialReport.grade}`);
   }
 
   async handleSubmit() {
@@ -89,7 +87,6 @@ class InitialReportBox extends Component {
       dbSubmissionTypes.initialReport,
       this.state.initialReport
     );
-    console.log("REQUEST", request);
     if (request.status === 200) {
       this.toggleMessage("Submission updated successfully");
     } else {
@@ -207,7 +204,7 @@ class InitialReportBox extends Component {
                 Submit changes
               </div>
             </div>
-            
+
             {/* ----- FEEDBACK ----- */}
             <div
               style={Style.showFeedback}
@@ -217,12 +214,14 @@ class InitialReportBox extends Component {
             </div>
           </div>
         )}
-
-        {this.props.feedbacks !== undefined && this.state.showFeedback !== false
-          ? this.props.feedbacks.map(feedback => {
-              return <Feedback feedback={feedback} key={i++} />;
-            })
-          : null}
+        <div style={Style.feedbackBody}>
+          {this.props.feedbacks !== undefined &&
+          this.state.showFeedback !== false
+            ? this.props.feedbacks.map(feedback => {
+                return <Feedback feedback={feedback} key={i++} />;
+              })
+            : null}
+        </div>
       </div>
     );
   }

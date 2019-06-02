@@ -171,3 +171,7 @@ export const showFeedback = {
   marginTop: rowHeight,
   borderTop: standardBorder
 }
+
+export const feedbackBody = {
+  marginBottom: '30px',
+}
