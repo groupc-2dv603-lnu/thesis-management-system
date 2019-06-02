@@ -196,8 +196,8 @@ public class StudentController {
 			deleteSubmission(getAlreadyUploadedSubmission(user.getId(), type).getId());
 		}
 
-
-		DataFile df = null;
+		 /* Upload new datafile */
+		DataFile df;
 		try {
 			df = new DataFile(file.getBytes());
 		} catch (IOException e) {
@@ -206,17 +206,15 @@ public class StudentController {
 		}
 		dataFileRepository.save(df);
 
-
+		/* Upload new submission */
 		Submission newSubmission = new Submission();
 		newSubmission.setSubmissionType(type);
 		newSubmission.setFilename(StringUtils.cleanPath(file.getOriginalFilename()));
         newSubmission.setUserId(user.getId());
         newSubmission.setAuthor(user.getName());
         submissionRepository.save(newSubmission);
-        
 		newSubmission.setFileUrl("/submissions/datafiles/" + newSubmission.getId() +"+" + df.getId());
-		//TODO: subId is generated with save and in order to inlude its id in fileUrl we have to save again. Workaround?
-		submissionRepository.save(newSubmission);
+		submissionRepository.save(newSubmission);		//Saved twice since setFileUrl requires submission id which is created at first save
 
         updateSubmissionIds(type, newSubmission.getId(), user.getId());
 
@@ -231,6 +229,9 @@ public class StudentController {
 				file.getContentType(), file.getSize());
 	}
 
+
+
+	 /* PRIVATE HELP METHODS */
 	private boolean submissionAlreadyExist(String userId, SubmissionType type){
 		List<Submission> submissions = submissionRepository.findAllByUserId(userId);
 
@@ -290,6 +291,7 @@ public class StudentController {
 
 
 
+	/* TEMPORARY DELETE METHODS*/
 
 	@DeleteMapping("/student/mySubmissions/delete/{id}")
 	String deleteSubmission(@PathVariable String id) {
@@ -305,8 +307,6 @@ public class StudentController {
 	}
 
 
-
-	/* TEMPORARY DELETE METHODS*/
 	//TODO: ska vara deletemapping men använder get under utveckling
 	@GetMapping("student/mySubmissions/deleteAll")
 	void deleteMySubmissions() {
@@ -323,8 +323,3 @@ public class StudentController {
 
 
 }
-
-
-
-
-

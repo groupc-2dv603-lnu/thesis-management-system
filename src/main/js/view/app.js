@@ -14,7 +14,17 @@ import Supervisor from "./Pages/Supervisor";
 import Admin from "./Pages/Admin";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null
+    };
+  }
+
+  componentDidMount() {}
+
   render() {
+    const { user } = this.state;
     return (
       <div>
         <HashRouter>
@@ -22,17 +32,42 @@ class App extends Component {
           {/* <Switch> */}
           <div className="fluid-container content">
             <Route exact path="/" component={FrontPage} />
-            <Route exact path="/student" component={Student} />
-            <Route exact path="/coordinator" component={Coordinator} />
-            <Route exact path="/supervisor" component={Supervisor} />
-            <Route exact path="/admin" component={Admin} />
+            <PrivateRoute
+              exact
+              path="/student"
+              component={Student}
+              authenticated={true}
+            />
+            <PrivateRoute
+              exact
+              path="/coordinator"
+              component={Coordinator}
+              authenticated={true}
+            />
+            <PrivateRoute
+              exact
+              path="/supervisor"
+              component={Supervisor}
+              authenticated={true}
+            />
+            <PrivateRoute
+              exact
+              path="/admin"
+              component={Admin}
+              authenticated={true}
+            />
             <PrivateRoute
               authenticated={true}
               exact
               path="/reader"
               component={Reader}
             />
-            <Route exact path="/opponent" component={Opponent} />
+            <PrivateRoute
+              exact
+              path="/opponent"
+              component={Opponent}
+              authenticated={true}
+            />
           </div>
           {/* </Switch> */}
         </HashRouter>

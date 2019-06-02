@@ -3,19 +3,12 @@
 import React, { Component } from "react";
 import { postToAPI, getFromAPI, putToAPI } from "../../functions";
 
-const mockState = {
-  finalReport: {
-    id: "1253457",
-    name: "report5",
-    author: "Örjan Carlsson",
-    downloadUrl: "www.test433.se"
-  }
-};
-
 class Opponent extends Component {
   constructor(props) {
     super(props);
-    this.state = mockState;
+    this.state = {
+      finalReport: null
+    };
   }
 
   componentDidMount() {
@@ -26,6 +19,9 @@ class Opponent extends Component {
     });
     getFromAPI("/opponent/opponentInfo").then(info => {
       console.log(info, "uhigu");
+      this.setState({
+        finalReport: info.entity.finalReportId
+      });
     });
   }
 
@@ -40,7 +36,7 @@ class Opponent extends Component {
   render() {
     return (
       <div>
-        {this.state.finalReport && (
+        {!!this.state.finalReport && (
           <div>
             <p>
               Final report: <span>Download</span>

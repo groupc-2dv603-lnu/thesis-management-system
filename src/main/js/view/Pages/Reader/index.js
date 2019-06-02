@@ -11,14 +11,28 @@ class Reader extends Component {
       reports: [],
       selectedReports: [],
       initialReport: null,
-      finalreport: null
+      finalReport: null
     };
   }
 
   componentDidMount() {
-    getFromAPI("/reader/initialReport").then(result => {
+    getFromAPI("/submissions").then(result => {
+      console.log(result);
       this.setState({
-        reports: result.entity._embedded.initialReports
+        reports: result.entity._embedded.submissions
+      });
+    });
+    getFromAPI("/loginUser").then(user => {
+      this.setState({
+        user: user.entity
+      });
+    });
+    getFromAPI("/reader/readerInfo").then(info => {
+      this.setState({
+        finalReport: info.entity.finalReportId
+      });
+      this.setState({
+        initialReport: info.entity.initialReportId
       });
     });
     getFromAPI("/loginUser").then(user => {
@@ -85,7 +99,7 @@ class Reader extends Component {
     console.log(this.state);
     return (
       <div>
-        {this.state.reports.length && (
+        {!!this.state.reports.length && (
           <div>
             <p>Välj rapporter</p>
             <table>
@@ -105,7 +119,9 @@ class Reader extends Component {
                       {report.author}
                     </td>
                     <td key={report.downloadUrl} style={styles.td}>
-                      ladda ner
+                      <a href={report.downloadUrl} style={{ display: "block" }}>
+                        ladda ner
+                      </a>
                     </td>
                     <td key={report.id} style={styles.td}>
                       <input
@@ -151,7 +167,7 @@ class Reader extends Component {
             <button onClick={this.sendBiddedReports.bind(this)}>Skicka</button>
           </div>
         )}
-        {this.state.initialReport && (
+        {!!this.state.initialReport && (
           <div>
             <p>
               Initial report: <span>Download</span>
@@ -169,7 +185,7 @@ class Reader extends Component {
             </div>
           </div>
         )}
-        {this.state.finalReport && (
+        {!!this.state.finalReport && (
           <div>
             <p>
               Final report: <span>Download</span>
