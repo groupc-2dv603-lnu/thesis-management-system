@@ -63,7 +63,7 @@ export default class FeedbackList extends Component {
     render() {
         return (
             <div>
-                {this.props.reportData.feedBackIds && this.props.reportData.feedBackIds.length > 0
+                {this.props.reportData.feedBackIds && this.props.reportData.feedBackIds.length > 1
                     ?
                     <div>
                         <p className="smallText">

@@ -5,6 +5,7 @@ import FeedbackList from './feedback';
 import * as func from './functions';
 import { getUser, putToAPI, fileUpload, formatCamelCaseToText } from './../../functions';
 import { grades, dbSubmissionTypeMap } from './../../enums';
+import moment from "moment";
 
 export default class Submission extends Component {
     constructor(props) {
@@ -18,9 +19,9 @@ export default class Submission extends Component {
 
     onFormSubmit(e) {
         e.preventDefault(); // Stop form submit
-        // console.log(dbSubmissionTypeMap.get(this.props.type));
-        fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type)).then(response => { console.log("file uploaded", response); })
-            .catch(error => console.log("upload error", error))
+        fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type)).then(() => {
+            this.updateSubmissionData();
+        });
     }
     onChangeFile(e) {
         this.setState({ file: e.target.files[0] })
@@ -32,7 +33,6 @@ export default class Submission extends Component {
 
     updateSubmissionData() {
         if (this.props.reportData.submissionId) { // the report will only have a submission tied to it if a file has been uploaded
-            console.log("updating submission data")
             func.getSubmissionData(this.props.reportData.submissionId).then(response => {
                 this.setState({ submissionData: response.entity })
             })
@@ -49,7 +49,7 @@ export default class Submission extends Component {
     render() {
         let line1, line2, styleClass;
 
-        let currentDate = new Date().toISOString(); // TODO get date from server
+        let currentDate = moment(); // TODO get date from server
 
         // report graded - counted as finished
         if (this.props.reportData.grade != grades.NOGRADE) {
@@ -60,7 +60,7 @@ export default class Submission extends Component {
         // deadline is set (but not graded) == report counted as active
         else if (this.props.reportData.deadLine) {
             line1 = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
-            line2 = "Deadline: " + new Date(this.props.reportData.deadLine).toUTCString();
+            line2 = "Deadline: " + moment(this.props.reportData.deadLine).format("MMMM Do YYYY, hh:mm:ss a");;
             styleClass = "active";
         }
         else {
@@ -83,7 +83,7 @@ export default class Submission extends Component {
                                 {line2}
 
                                 {/* has feedback */}
-                                {this.state.submissionData && this.state.submissionData.feedBackId || (this.state.submissionData.feedBackIds && this.state.submissionData.feedBackIds.length > 0)
+                                {this.props.reportData.feedBackId || (this.props.reportData.feedBackIds && this.props.reportData.feedBackIds.length > 0)
                                     ?
                                     <i style={{ fontSize: "24px" }} className="far fa-comment-alt right link" onClick={() => this.setFeedbackPopup(true)} title="This report has got feedback (click to show)" />
                                     :
@@ -91,7 +91,7 @@ export default class Submission extends Component {
                                 }
 
                                 {/* show file upload for active submission */}
-                                {currentDate < this.props.reportData.deadLine && this.props.reportData.grade == grades.NOGRADE
+                                {currentDate < moment(this.props.reportData.deadLine) && this.props.reportData.grade == grades.NOGRADE
                                     ?
                                     <div>
                                         <p style={{ fontSize: "12px" }}>

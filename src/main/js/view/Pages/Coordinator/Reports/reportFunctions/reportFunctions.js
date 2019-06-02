@@ -12,7 +12,6 @@ export const getInitialReports = async () => {
        report.name = generalFunctions.capitalizeFirstLetter(user.entity.name)
      }
      uploadedReports.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)); 
-     console.log(uploadedReports)
     return uploadedReports
 };
 
@@ -52,6 +51,5 @@ export const getAlreadyAssignedReaderNames = async (readers) =>  {
     let name = request.entity.name
     names.push(name)
   }
-  console.log('NAMES', names)
   return names
 }
