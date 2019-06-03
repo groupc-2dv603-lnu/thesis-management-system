@@ -10,7 +10,7 @@ import moment from "moment";
 export default class Submission extends Component {
     constructor(props) {
         super(props);
-        this.state = { reportData: {}, submissionData: {}, feedbackPopup: false, file: null, notificationMsg: null, actionInProgress: false };
+        this.state = { reportData: {}, submissionData: {}, feedbackPopup: false, file: null, notificationMsg: null, errorMsg: null, actionInProgress: false };
 
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChangeFile = this.onChangeFile.bind(this);
@@ -22,12 +22,13 @@ export default class Submission extends Component {
 
         fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type))
             .then(() => {
-                this.setState({ actionInProgress: false })
+                this.setState({ actionInProgress: false, file: null })
                 this.getReportData();
+                this.setMsg("File " + document.getElementById("file").files[0].name + " uploaded", false)
             })
             .catch(error => {
                 this.setState({ actionInProgress: false })
-                this.setNotificationMsg(error.toString())
+                this.setMsg(error.toString(), true)
             });
     }
     onChangeFile(e) {
@@ -38,10 +39,10 @@ export default class Submission extends Component {
         this.getReportData();
     }
 
-    setNotificationMsg(text) {
-        this.setState({ notificationMsg: text })
+    setMsg(text, isError) {
+        isError ? this.setState({ errorMsg: text }) : this.setState({ notificationMsg: text })
         setTimeout(() => {
-            this.setState({ notificationMsg: null })
+            this.setState({ notificationMsg: null, errorMsg: null })
         }, 5000);
     }
 
@@ -133,7 +134,7 @@ export default class Submission extends Component {
                                             <br />
                                             <button type="submit" disabled={this.state.actionInProgress}>
                                                 {this.state.actionInProgress
-                                                    ? <i className="fa fa-spinner fa-spin" />
+                                                    ? <div>Uploading <i className="fa fa-spinner fa-spin" /></div>
                                                     : "Upload"
                                                 }
                                             </button>
@@ -156,8 +157,12 @@ export default class Submission extends Component {
                             statusPrint
                         }
                         <br />
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "green" }}>
                             {this.state.notificationMsg}
+                        </div>
+                        
+                        <div style={{ color: "red" }}>
+                            {this.state.errorMsg}
                         </div>
 
                     </div>
