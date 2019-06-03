@@ -1,6 +1,7 @@
 'use strict'
 
 import React, { Component } from 'react';
+import { formatDate } from './../../functions';
 import * as func from './functions';
 import { capitalizeFirstLetter, formatCamelCaseToText, getUser } from './../../functions';
 import './style.css';
@@ -132,7 +133,7 @@ class Feedback extends Component {
                                 Date
                             </td>
                             <td>
-                                Some date {/* TODO include this.props.date */}
+                                {formatDate(this.props.submittedDate)}
                             </td>
                         </tr>
                     </tbody>

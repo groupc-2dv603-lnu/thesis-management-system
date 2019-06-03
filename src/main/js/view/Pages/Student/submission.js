@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import FeedbackList from './feedback';
 import * as func from './functions';
-import { fileUpload, formatCamelCaseToText, getFromAPI } from './../../functions';
+import { fileUpload, formatCamelCaseToText, formatDate, getFromAPI } from './../../functions';
 import { grades, dbSubmissionTypeMap } from './../../enums';
 import moment from "moment";
 
@@ -82,12 +82,12 @@ export default class Submission extends Component {
             }
             if (currentDate > moment(this.state.reportData.deadLine) && this.state.submissionData.fileUrl) {
                 statusPrint = "Status: Submitted. Awaiting response";
-                deadlinePrint = "Deadline: " + moment(this.state.reportData.deadLine).format("MMMM Do YYYY HH:mm");
+                deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
                 styleClass = "active";
             }
             else {
                 statusPrint = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
-                deadlinePrint = "Deadline: " + moment(this.state.reportData.deadLine).format("MMMM Do YYYY HH:mm");
+                deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
                 styleClass = "active";
             }
         }

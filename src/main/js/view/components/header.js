@@ -4,8 +4,10 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { getFromAPI, capitalizeFirstLetter } from './../functions';
 
+const availableRoles = ["student", "coordinator", "supervisor", "reader", "opponent", "admin"];
+
 class Header extends Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -14,79 +16,73 @@ class Header extends Component {
 
     componentDidMount() {
         getFromAPI("/loginUser").then(user => {
-            this.setState({ currentUser: user.entity, currentRole: user.entity.roles[0] });
-        })
+            const roleFromUrl = this.getRoleFromUrl();
+            let role;
+            availableRoles.find(role => role == roleFromUrl)
+                ? role = roleFromUrl
+                : role = user.entity.roles[0]
 
+            this.setState({ currentUser: user.entity, currentRole: role });
+            this.navigate(this.state.currentRole);
+        })
+    }
+
+    getRoleFromUrl() {
+        const arr = location.href.split("/");
+        if (arr.length == 0)
+            return null;
+        return arr[arr.length - 1];
     }
 
     logout() {
         getFromAPI("/logout").then(() => {
             localStorage.removeItem(this.state.currentUser);
             this.setState({ currentUser: null });
-            window.location.href = '/login';
+            location.href = '/login';
         });
     }
 
-    navigate(url) {
-        window.location.href = '/#/' + url;
-        this.setState({ currentRole: url });
+    navigate(roleUrl) {
+        window.location.href = '/#/' + roleUrl.toLowerCase();
+        this.setState({ currentRole: roleUrl });
     }
     render() {
         let roles;
 
-        if(this.state.currentUser) {
+        if (this.state.currentUser) {
             roles = this.state.currentUser.roles.map(role =>
                 <option key={role} value={role.toLowerCase()}>Role: {capitalizeFirstLetter(role)}</option>
-                );
+            );
         }
 
-        return(
+        return (
             <div className="topbar">
                 {/* dropdown menu (normally hidden) */}
                 <div className="dropdown-button">
                     <i className="fa fa-bars"></i>
                     <div className="dropdown-menu">
-                    {this.state.currentUser ? 
                         <Link to="" onClick={() => this.logout()}>log out</Link>
-                    :
-                        <a href="/login">log in</a>
-                    }
                     </div>
                 </div>
                 <div className="fluid-container">
                     <div className="logo">
-                        {/* <Link to="/#"> */}
-                            <i className="fas fa-feather"></i>
+                        <Link to={this.state.currentRole.toLowerCase()}>
+                            <i className="fas fa-feather" />
                             thesis mgmt
-                        {/* </Link> */}
+                        </Link>
                     </div>
                     {/* default menu */}
                     <div className="menu">
-                        <Link to={"/"  + this.state.currentRole.toLowerCase()}>{this.state.currentRole.toLowerCase()}</Link>
-                        {this.state.currentUser ? 
-                            <Link to="" onClick={() => this.logout()}>log out</Link>
-                        :
-                            <a href="/">log in</a>
-                        }
+                        <Link to="" onClick={() => this.logout()}>log out</Link>
                     </div>
                 </div>
 
                 <div className="role">
-                    {/* User logged in, show role dropdown */}
-                    {this.state.currentUser ? 
-                        <form>
-                            <select id="dropdown" onChange={() => this.navigate(document.getElementById("dropdown").value)}>
-                                {roles}
-                                {/* <option value="student">Role: Student</option>
-                                <option value="coordinator">Role: Coordinator</option>
-                                <option value="supervisor">Role: Supervisor</option>
-                                <option value="reader">Role: Reader</option>
-                                <option value="opponent">Role: Opponent</option> */}
-                            </select>
-                        </form>
-                    :
-                        null
-                    }
+                    <form>
+                        <select id="dropdown" value={this.state.currentRole} onChange={() => this.navigate(document.getElementById("dropdown").value)}>
+                            {roles}
+                        </select>
+                    </form>
                 </div>
             </div>
         )
