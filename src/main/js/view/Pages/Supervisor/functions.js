@@ -20,16 +20,8 @@ export function rejectRequest(student) {
     return modifyRequest(student, false);
 }
 
-function modifyPlan(userId, state) {
+export function modifyPlan(userId, state) {
     return putToAPI("/supervisor/approvePlan/" + userId + "?state=" + state);
-}
-
-export function approvePlan(userId) {
-    return modifyPlan(userId, true);
-}
-
-export function rejectPlan(userId) {
-    return modifyPlan(userId, false);
 }
 
 export function getSubmission(submissionId) {
@@ -46,6 +38,10 @@ export function getUserInitialReport(userId) {
 
 export function sendFeedback(text, report) {
     return postToAPI("/supervisor/feedback/" + report.submissionId + "?text=" + text);
+}
+
+export function getFeedback(reportId) {
+    return getFromAPI("/supervisor/feedback?documentId=" + reportId);
 }
 
 export function getCurrentAvailability() {

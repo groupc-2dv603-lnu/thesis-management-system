@@ -4,61 +4,73 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Submission } from './submission'
 import * as func from './functions'
 import * as enums from './../../enums';
 import { getUser } from './../../functions';
-import './style.css';
 import moment from "moment";
+import './style.css';
 
 export default class Supervisor extends Component {
 
     constructor(props) {
         super(props);
 
-        this.state = { appliedStudents: [], assignedStudents: [], availableAsSupervisor: false };
+        this.state = { appliedStudents: [], assignedStudents: [], availableAsSupervisor: false, isLoaded: false };
+
+        this.getAvailabilityStatus = this.getAvailabilityStatus.bind(this);
+        this.getAppliedStudents = this.getAppliedStudents.bind(this);
+        this.getAssignedStudents = this.getAssignedStudents.bind(this);
     }
 
     componentDidMount() {
-        this.updateAvailabilityStatus();
-        this.updateAppliedStudents();
-        this.updateAssignedStudents();
+        this.getAvailabilityStatus();
+        this.getAppliedStudents();
+        this.getAssignedStudents();
     }
 
-    updateAvailabilityStatus() {
+    getAvailabilityStatus() {
         func.getCurrentAvailability().then(response => {
-            this.setState({ availableAsSupervisor: response.entity })
+            this.setState({ availableAsSupervisor: response.entity });
         })
     }
-    updateAppliedStudents() {
+
+    getAppliedStudents() {
         func.getAppliedStudents().then(response => {
             if (response.entity._embedded) {
-                this.setState({ appliedStudents: response.entity._embedded.students })
+                this.setState({ appliedStudents: response.entity._embedded.students });
+            }
+            else {
+                this.setState({ appliedStudents: [] });
             }
         });
     }
-    updateAssignedStudents() {
+
+    getAssignedStudents() {
         func.getAssignedStudents().then(response => {
             if (response.entity._embedded) {
-                this.setState({ assignedStudents: response.entity._embedded.students })
+                this.setState({ assignedStudents: response.entity._embedded.students });
+            }
+            else {
+                this.setState({ assignedStudents: [] });
             }
         });
     }
 
     toggleAvailability() {
         func.setAvailability(!this.state.availableAsSupervisor).then(() => {
-            this.updateAvailabilityStatus();
+            this.getAvailabilityStatus();
         })
     }
 
     render() {
+        // new Map([["appliedStudents", this.getAppliedStudents], ["assignedStudents", this.getAssignedStudents]]
         const studentRequests = this.state.appliedStudents.map(student =>
-            <StudentRequest reference={this} key={student.userId} student={student} />
+            <StudentRequest onUpdate={[this.getAppliedStudents, this.getAssignedStudents]} key={student.userId} student={student} />
         )
 
         const assignedStudents = this.state.assignedStudents.map(student =>
-            <SupervisedStudent reference={this} key={student.userId} student={student} />
+            <SupervisedStudent key={student.userId} student={student} />
         )
 
         return (
@@ -104,7 +116,16 @@ export default class Supervisor extends Component {
                                 Deadline
                             </th>
                         </tr>
-                        {assignedStudents}
+                        {/* {!this.state.isLoaded
+                            ?
+                            <tr>
+                                <td colSpan="4">
+                                    Loading <i className="fa fa-spinner fa-spin" />
+                                </td>
+                            </tr> */}
+                            {/* :  */}
+                            {assignedStudents}
+                        {/* } */}
                     </tbody>
                 </table>
             </div>
@@ -124,20 +145,19 @@ class StudentRequest extends Component {
     answerRequest(answer) {
         if (answer) {
             func.acceptRequest(this.props.student).then(() => {
-                this.props.reference.updateAppliedStudents();
+                this.props.onUpdate.forEach(callback => callback());
             });
         }
         else {
             func.rejectRequest(this.props.student).then(() => {
-                this.props.reference.updateAppliedStudents();
+                this.props.onUpdate[0]();
             });
         }
-        this.props.reference.updateAppliedStudents();
     }
 
     componentDidMount() {
         getUser(this.props.student.userId).then(response => {
-            this.setState({ user: response.entity })
+            this.setState({ user: response.entity });
         });
     }
 
@@ -162,7 +182,10 @@ class SupervisedStudent extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { user: {}, projectPlan: {}, projectPlanSubmission: {}, initialReport: {}, initialReportSubmission: {}, projectPlanPopup: false, initialReportPopup: false };
+        this.state = { user: {}, projectPlan: {}, initialReport: {}, projectPlanPopup: false, initialReportPopup: false };
+
+        this.getProjectPlan = this.getProjectPlan.bind(this);
+        this.getInitialReport = this.getInitialReport.bind(this);
     }
 
     componentDidMount() {
@@ -170,24 +193,24 @@ class SupervisedStudent extends Component {
             this.setState({ user: response.entity })
         });
 
+        this.getProjectPlan();
+        this.getInitialReport();
+    }
+
+    getProjectPlan() {
         func.getUserProjectPlan(this.props.student.userId).then(planResponse => {
             if (planResponse) {
                 this.setState({ projectPlan: planResponse.entity });
-                func.getSubmission(planResponse.entity.submissionId).then(submissionResponse => {
-                    this.setState({ projectPlanSubmission: submissionResponse.entity });
-                });
             }
         });
+    }
 
+    getInitialReport() {
         func.getUserInitialReport(this.props.student.userId).then(reportResponse => {
             if (reportResponse) {
                 this.setState({ initialReport: reportResponse.entity });
-                func.getSubmission(reportResponse.entity.submissionId).then(submissionResponse => {
-                    this.setState({ initialReportSubmission: submissionResponse.entity });
-                });
             }
         });
-
     }
 
     setProjectPlanPopup(state) {
@@ -199,10 +222,9 @@ class SupervisedStudent extends Component {
     }
 
     render() {
-        const currentDate = moment().format("MMMM Do YYYY, hh:mm:ss a");
-        // const ppDeadline = moment(this.state.projectPlan.deadLine).format("MMMM Do YYYY, hh:mm:ss a");
-        const irDeadline = moment(this.state.initialReport.deadLine).format("MMMM Do YYYY, hh:mm:ss a");
-                        
+        const currentDate = moment();
+        const ppDeadline = moment(this.state.projectPlan.deadLine);
+        const irDeadline = moment(this.state.initialReport.deadLine);
 
         return (
             <tr>
@@ -216,9 +238,7 @@ class SupervisedStudent extends Component {
                         <div className="link underscored" onClick={() => this.setProjectPlanPopup(true)}>
                             Project Plan
                         </div>
-                        :
-                        <div className="unavailable">Project Plan</div>
-                        // null
+                        : <div className="unavailable">Project Plan</div>
                     }
                     {/* Popup Project Plan */}
                     {this.state.projectPlanPopup
@@ -226,21 +246,19 @@ class SupervisedStudent extends Component {
                         <div className="popupOverlay">
                             <div className="innerPopup">
                                 <i className="fas fa-window-close link right" onClick={() => this.setProjectPlanPopup(false)} title="Close" />
-                                <Submission reference={this.props.reference} submissionData={this.state.projectPlanSubmission} user={this.state.user} reportData={this.state.projectPlan} />
+                                <Submission onUpdate={[this.getProjectPlan, this.getInitialReport]} userName={this.state.user.name} userId={this.props.student.userId} type="projectPlan" />
                             </div>
                         </div>
-                        :
-                        null
+                        : null
                     }
+
                     {/* Student has an Initial Report available for review, deadline has passed, and at least one reader and one opponent has been assigned */}
                     {this.state.initialReport.submissionId && currentDate > irDeadline && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
                         ?
                         <div className="link underscored" onClick={() => this.setInitialReportPopup(true)}>
                             Initial Report
                         </div>
-                        :
-                        <div className="unavailable">Initial Report</div>
-                        // null
+                        : <div className="unavailable">Initial Report</div>
                     }
                     {/* Popup Initial Report */}
                     {this.state.initialReportPopup
@@ -248,57 +266,50 @@ class SupervisedStudent extends Component {
                         <div className="popupOverlay">
                             <div className="innerPopup">
                                 <i className="fas fa-window-close link right" onClick={() => this.setInitialReportPopup(false)} title="Close" />
-                                <Submission reference={this.props.reference} submissionData={this.state.initialReportSubmission} user={this.state.user} reportData={this.state.initialReport} />
+                                <Submission onUpdate={[this.getProjectPlan, this.getInitialReport]} userName={this.state.user.name} userId={this.props.student.userId} type="initialReport" />
                             </div>
                         </div>
-                        :
-                        null
+                        : null
                     }
                 </td>
                 {/* Status icons */}
                 <td className="center">
                     {/* Project Plan has been graded by coordinator */}
                     {this.state.projectPlan.grade == enums.grades.PASS
-                        ?
-                        // Supervisor has not given an answer on the report
-                        this.state.projectPlan.approved != enums.projectPlanApprovedStatus.pending
-                            ?
-                            <i className="fa fa-check" title="You have given an answer on this report" />
-                            :
-                            <i className="fa fa-exclamation" style={{color: "red"}} title="You have NOT given an answer on this report" />
-                        :
-                        // <i className="fas fa-ban" title="You cannot give answer on this report yet. The student has submitted a report, but it has not yet been graded by the coordinator" />
-                        null
+                        ? this.state.projectPlan.approved != enums.projectPlanApprovedStatus.pending // Supervisor has not given an answer on the report
+                            ? <i className="fa fa-check" title="You have given an answer on this report" />
+                            : <i className="fa fa-exclamation" style={{ color: "red" }} title="You have NOT given an answer on this report" />
+                        : this.state.projectPlan.submissionId // There is a submission, but it has not been graded
+                            ? <i className="fas fa-lock" title="A report has been submitted, but you cannot reply to it before it has been graded by the coordinator" />
+                            : <i className="fas fa-times" style={{ color: "#bbb" }} title="No report has been uploaded yet" />
                     }
-                    <br/>
+
+                    <br />
+
                     {/* There is an initial report uploaded, deadline for it has passed, and at least one reader and one opponent has been assigned */}
-                    {this.state.initialReport.submissionId && currentDate > irDeadline && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
-                        ?
-                        // Supervisor has written assessment
-                        this.state.initialReport.supervisorId
-                            ?
-                            <i className="fa fa-check" title="You have given an answer on this report" />
-                            :
-                            <i className="fa fa-exclamation" style={{color: "red"}} title="You have NOT given an answer on this report" />
-                        :
-                        null
+                    {this.state.initialReport.supervisorId  // Supervisor has written assessment
+                        ? <i className="fa fa-check" title="You have given an answer on this report" />
+                        : this.state.initialReport.submissionId
+                            ? currentDate < irDeadline // deadline has not passed
+                                ? <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before the deadline has passed" />
+                                : this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0 // report has been assigned an opponent and at least one reader
+                                    ? <i className="fa fa-exclamation" style={{ color: "red" }} title="You have NOT given an answer on this report" />
+                                    : <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before an opponent and at least one reader has been assigned to the report" />
+                            : <i className="fas fa-times" style={{ color: "#bbb" }} title="No report has been uploaded yet" />
                     }
 
                 </td>
                 <td>
                     {this.state.projectPlan.deadLine
-                        ?
-                        <div className="nowrap">{this.state.projectPlan.deadLine}</div>
-                        :
-                        <div>Not set</div>
+                        ? <div className="nowrap">{formatDate(ppDeadline)}</div>
+                        : <div>Not set</div>
                     }
                     {this.state.initialReport.deadLine
                         ?
                         <div className="nowrap">
-                            {this.state.initialReport.deadLine}
+                            {formatDate(irDeadline)}
                         </div>
-                        :
-                        <div>Not set</div>
+                        : <div>Not set</div>
                     }
                 </td>
             </tr>

@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import FeedbackList from './feedback';
 import * as func from './functions';
-import { getUser, putToAPI, fileUpload, formatCamelCaseToText } from './../../functions';
+import { fileUpload, formatCamelCaseToText, formatDate } from './../../functions';
 import { grades, dbSubmissionTypeMap } from './../../enums';
 import moment from "moment";
 
@@ -60,7 +60,7 @@ export default class Submission extends Component {
         // deadline is set (but not graded) == report counted as active
         else if (this.props.reportData.deadLine) {
             line1 = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
-            line2 = "Deadline: " + moment(this.props.reportData.deadLine).format("MMMM Do YYYY, hh:mm:ss a");;
+            line2 = "Deadline: " + formatDate(this.props.reportData.deadLine);
             styleClass = "active";
         }
         else {

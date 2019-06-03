@@ -2,19 +2,11 @@
 
 import axios from 'axios';
 const client = require("../client");
+import moment from "moment";
 
 export function getFromAPI(getPath) {
-    // return fetch(getPath, {
-    //     method: "GET",
-    //     mode: 'CORS',
-    //     // headers: {
-    //     //     'Accept': 'application/json',
-    //     //     'Content-Type': 'application/json'
-    //     // }
-    // });
-
-    return client({ 
-        method: "GET", 
+    return client({
+        method: "GET",
         path: getPath,
         headers: {
             'Accept': 'application/json',
@@ -23,9 +15,13 @@ export function getFromAPI(getPath) {
     });
 }
 
+export function getUser(userId) {
+    return getFromAPI("/users/" + userId)
+}
+
 export function putToAPI2(putPath, data) {
-    return client({ 
-        method: "PUT", 
+    return client({
+        method: "PUT",
         path: putPath,
         entity: data,
         headers: {
@@ -35,8 +31,8 @@ export function putToAPI2(putPath, data) {
     });
 }
 export function putToAPI(putPath, data) {
-    return client({ 
-        method: "PUT", 
+    return client({
+        method: "PUT",
         path: putPath,
         body: JSON.stringify(data),
         headers: {
@@ -47,7 +43,7 @@ export function putToAPI(putPath, data) {
 }
 
 export function postToAPI(postPath, object) {
-    return client({ 
+    return client({
         method: "POST",
         path: postPath,
         entity: object,
@@ -58,11 +54,11 @@ export function postToAPI(postPath, object) {
     });
 }
 
-
 export const downloadFile = async (fileUrl) => {
     let win = window.open(fileUrl, '_blank')
     win.focus
-  }
+}
+
 export function fileUpload(file, dbType) {
     const url = '/student/newSubmission?subType=' + dbType;
     const formData = new FormData();
@@ -78,27 +74,28 @@ export function fileUpload(file, dbType) {
 export function deleteFromAPI(delPath) {
     return client({ method: "DELETE", path: delPath });
 }
-  
+
 export function capitalizeFirstLetter(string) {
-    if(string == null)
+    if (string == null)
         return "N/A";
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
 export function formatCamelCaseToText(string) {
-    if(string == null)
+    if (string == null)
         return "N/A";
- 
+
     let text = string.charAt(0).toUpperCase() + string.slice(1);
-    for(let i = 1; i < string.length; i ++) {
-        if(text.charAt(i) == text.charAt(i).toUpperCase()) { //char is upperCase
+    for (let i = 1; i < string.length; i++) {
+        if (text.charAt(i) == text.charAt(i).toUpperCase()) { //char is upperCase
             text = text.slice(0, i) + " " + text.slice(i);
         }
     }
     return text;
 }
 
-export function getUser(userId) {
-    return getFromAPI("/users/" + userId)
+export function formatDate(date) {
+    return moment(date).format("MMMM Do YYYY, HH:mm");
 }
+
 

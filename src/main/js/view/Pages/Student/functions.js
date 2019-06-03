@@ -11,15 +11,6 @@ export function capitalizeFirstLetter(string) {
 
 export function requestSupervisor(supervisor) {
     return putToAPI("/student/requestSupervisor?supervisorUserId=" + supervisor.userId)
-    // temp
-    .then(() => {
-        getUser(supervisor.userId).then(user => {
-            console.log("Requested supervisor " + user.entity.name + " (" + supervisor.userId + ") successfully");
-        });
-    })
-    .catch((error) => {
-        console.log("error", error)
-    });
 }
 
 function getLoggedInUser() {
