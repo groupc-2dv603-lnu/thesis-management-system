@@ -36,7 +36,6 @@ public class InitialReport {
 	private String supervisorId;
 	
 	
-	
 	public InitialReport(String userId, String submissionId, ArrayList<String> bids, ArrayList<String> assignedReaders, ArrayList<String> assignedOpponents, 
 			ArrayList<String> feedBackIds, Grade grade, String deadLine, String supervisorId) {
 		this.userId = userId;
