@@ -1,8 +1,9 @@
 'use strict';
 
 import axios from 'axios';
-const client = require("../client");
 import moment from "moment";
+const client = require("../client");
+const maxFileUploadSize = 10; //MB
 
 export function getFromAPI(getPath) {
     return client({
@@ -60,6 +61,13 @@ export const downloadFile = async (fileUrl) => {
 }
 
 export function fileUpload(file, dbType) {
+    if(isAboveFileUploadSize(file)) {
+        return new Promise(() => {
+            // reject("File size too big. Max file size is " + maxFileUploadSize + " MB")
+            throw new Error("File size too big. Max file size is " + maxFileUploadSize + " MB")
+          });
+    }
+ 
     const url = '/student/newSubmission?subType=' + dbType;
     const formData = new FormData();
     formData.append('file', file);
@@ -69,6 +77,10 @@ export function fileUpload(file, dbType) {
         }
     };
     return axios.post(url, formData, config)
+}
+
+function isAboveFileUploadSize(file) {
+    return file.size / 1024 / 1024 > maxFileUploadSize;
 }
 
 export function deleteFromAPI(delPath) {

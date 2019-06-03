@@ -175,7 +175,7 @@ class Reader extends Component {
         {!!this.state.initialReport && (
           <div>
             <p>
-              Initial report: <span>Download</span>
+            <a href={this.state.initialReport.fileUrl} style={{ display: "block" }}>Initial report: Download</a>
             </p>
             <p>
               {`${this.state.initialReport.filename}, ${
@@ -191,7 +191,7 @@ class Reader extends Component {
         {!!this.state.finalReport && (
           <div>
             <p>
-              Final report: <span>Download</span>
+            <a href={this.state.finalReport.fileUrl} style={{ display: "block" }}>Final report: Download</a>
             </p>
             <p>
               {`${this.state.finalReport.filename}, ${

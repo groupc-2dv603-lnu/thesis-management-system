@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { Submission } from './submission'
 import * as func from './functions'
 import * as enums from './../../enums';
-import { getUser } from './../../functions';
+import { getUser, formatDate } from './../../functions';
 import moment from "moment";
 import './style.css';
 

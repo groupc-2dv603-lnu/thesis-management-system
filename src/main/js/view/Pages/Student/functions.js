@@ -1,6 +1,6 @@
 "use strict"
 
-import { getFromAPI, putToAPI, postToAPI } from './../../functions';
+import { getFromAPI, putToAPI } from './../../functions';
 
 export function capitalizeFirstLetter(string) {
     if(string == null)
