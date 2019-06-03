@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 const client = require("../client");
+const maxFileUploadSize = 10; //MB
 
 export function getFromAPI(getPath) {
     // return fetch(getPath, {
@@ -58,12 +59,19 @@ export function postToAPI(postPath, object) {
     });
 }
 
-
 export const downloadFile = async (fileUrl) => {
     let win = window.open(fileUrl, '_blank')
     win.focus
-  }
+}
+
 export function fileUpload(file, dbType) {
+    if(isAboveFileUploadSize(file)) {
+        return new Promise(() => {
+            // reject("File size too big. Max file size is " + maxFileUploadSize + " MB")
+            throw new Error("File size too big. Max file size is " + maxFileUploadSize + " MB")
+          });
+    }
+ 
     const url = '/student/newSubmission?subType=' + dbType;
     const formData = new FormData();
     formData.append('file', file);
@@ -73,6 +81,10 @@ export function fileUpload(file, dbType) {
         }
     };
     return axios.post(url, formData, config)
+}
+
+function isAboveFileUploadSize(file) {
+    return file.size / 1024 / 1024 > maxFileUploadSize;
 }
 
 export function deleteFromAPI(delPath) {
