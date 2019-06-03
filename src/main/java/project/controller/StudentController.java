@@ -185,7 +185,6 @@ public class StudentController {
 				linkTo(methodOn(StudentController.class).getAllMySubmissions()).withRel("submissions"));
 
 	}
-
 	/* Upload submission and corresponding datafile */
 	@PostMapping("/student/newSubmission")
 	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("subType") SubmissionType type) {
