@@ -145,7 +145,7 @@ export default class Submission extends Component {
                                 }
 
                                 {/* show file upload for active submission */}
-                                {currentDate < moment(this.state.reportData.deadLine) && this.state.reportData.grade == grades.NOGRADE
+                                {currentDate < moment(this.state.reportData.deadLine) && this.state.reportData.grade == grades.NOGRADE && !this.state.initialReportFinished
                                     ?
                                     <div>
                                         <p style={{ fontSize: "12px" }}>
