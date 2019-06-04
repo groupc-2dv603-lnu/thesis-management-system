@@ -4,13 +4,22 @@ import React, { Component } from 'react';
 import FeedbackList from './feedback';
 import * as func from './functions';
 import { fileUpload, formatCamelCaseToText, formatDate, getFromAPI } from './../../functions';
-import { grades, dbSubmissionTypeMap } from './../../enums';
+import { grades, dbSubmissionTypeMap, dbSubmissionTypes } from './../../enums';
 import moment from "moment";
 
 export default class Submission extends Component {
     constructor(props) {
         super(props);
-        this.state = { reportData: {}, submissionData: {}, feedbackPopup: false, file: null, notificationMsg: null, errorMsg: null, actionInProgress: false };
+        this.state = {
+            reportData: {},
+            submissionData: {},
+            feedbackPopup: false,
+            file: null,
+            notificationMsg: null,
+            errorMsg: null,
+            actionInProgress: false,
+            initialReportFinished: false,
+        };
 
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChangeFile = this.onChangeFile.bind(this);
@@ -54,6 +63,13 @@ export default class Submission extends Component {
                     this.setState({ submissionData: submissionResponse.entity })
                 });
             }
+            if (dbSubmissionTypeMap.get(this.props.type) == dbSubmissionTypes.initialReport) {
+                getFromAPI("/student/finalReport").then(response => {
+                    if(response.entity.deadLine) { 
+                        this.setState({ initialReportFinished: true })
+                    }
+                });
+            }
         })
     }
 
@@ -68,18 +84,15 @@ export default class Submission extends Component {
         let statusPrint, deadlinePrint, gradePrint, styleClass, deadlineStyle;
 
         let currentDate = moment();
-        
+
         // report graded - counted as finished
-        if (this.state.reportData.grade != grades.NOGRADE) {
+        if (this.state.reportData.grade != grades.NOGRADE && this.props.type != dbSubmissionTypes.initialReport) {
             statusPrint = "Status: Graded";
             gradePrint = "Grade: " + func.capitalizeFirstLetter(this.state.reportData.grade);
             styleClass = "finished";
         }
         // deadline is set (but not graded) == report counted as active
         else if (this.state.reportData.deadLine) {
-            if (currentDate > moment(this.state.reportData.deadLine)) {
-                deadlineStyle = { color: "#bbb" };
-            }
             if (currentDate > moment(this.state.reportData.deadLine) && this.state.submissionData.fileUrl) {
                 statusPrint = "Status: Submitted. Awaiting response";
                 deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
@@ -89,6 +102,16 @@ export default class Submission extends Component {
                 statusPrint = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
                 deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
                 styleClass = "active";
+            }
+
+            // set status for initial report
+            if (this.state.initialReportFinished && this.state.reportData.submissionId) {
+                statusPrint = "Status: Reviewed";
+                deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
+                styleClass = "finished";
+            }
+            if (currentDate > moment(this.state.reportData.deadLine)) {
+                deadlineStyle = { color: "#bbb" };
             }
         }
         else {
@@ -112,7 +135,7 @@ export default class Submission extends Component {
                                 <div style={deadlineStyle}>
                                     {deadlinePrint}
                                 </div>
-                           
+
                                 {/* has feedback */}
                                 {this.state.reportData.feedBackId || (this.state.reportData.feedBackIds && this.state.reportData.feedBackIds.length > 0)
                                     ?
@@ -160,7 +183,7 @@ export default class Submission extends Component {
                         <div style={{ color: "green" }}>
                             {this.state.notificationMsg}
                         </div>
-                        
+
                         <div style={{ color: "red" }}>
                             {this.state.errorMsg}
                         </div>
