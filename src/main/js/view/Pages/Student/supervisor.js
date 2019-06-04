@@ -1,6 +1,7 @@
 'use strict'
 
 import React, { Component } from 'react';
+import { loader } from './../../functions';
 import * as func from './functions';
 
 const pendingSupervisor = { denied: "DENIED", none: "NONE", awaiting: "AWAITING", accepted: "ACCEPTED" } //enum
@@ -9,27 +10,27 @@ class SupervisorBox extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { supervisorPopup: false, studentData: {}, assignedSupervisor: {} };
+        this.state = { supervisorPopup: false, studentData: {}, assignedSupervisor: {}, isLoaded: false };
         this.openSupervisorPopup = this.openSupervisorPopup.bind(this);
         this.closeSupervisorPopup = this.closeSupervisorPopup.bind(this);
     }
 
     componentDidMount() {
-        this.updateStudentData();
+        this.getStudentData();
     }
 
-    updateStudentData() {
+    getStudentData() {
         func.getStudentData().then(studentResponse => {
             this.setState({ studentData: studentResponse.entity });
             func.getUser(studentResponse.entity.assignedSupervisorId).then(supervisorResponse => {
-                this.setState({ assignedSupervisor: supervisorResponse.entity })
+                this.setState({ assignedSupervisor: supervisorResponse.entity, isLoaded: true })
             })
         });
     }
 
     requestSupervisor(supervisor) {
         func.requestSupervisor(supervisor)
-            .then(() => this.updateStudentData());
+            .then(() => this.getStudentData());
     }
 
     openSupervisorPopup() {
@@ -44,39 +45,39 @@ class SupervisorBox extends Component {
         return (
             <div>
                 <div className="supervisorBox">
-                    {/* No supervisor */}
-                    {!this.state.studentData.assignedSupervisorId
-                        ?
-                        <p>
-                            You have not yet requested a supervisor. You need to be assigned to a supervisor before your plan can be evaluated
-                            <br />
-                            <br />
-                            <button onClick={() => this.openSupervisorPopup()}>Request supervisor</button>
-                        </p>
-                        :
-                        // Previous supervisor request denied
-                        this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == pendingSupervisor.denied
+                    {!this.state.isLoaded
+                        ? loader
+                        : !this.state.studentData.assignedSupervisorId // No supervisor 
                             ?
                             <p>
-                                {this.state.assignedSupervisor.name} denied your request. You need to be assigned to a supervisor before your plan can be evaluated
+                                You have not yet requested a supervisor. You need to be assigned to a supervisor before your plan can be evaluated
+                            <br />
                                 <br />
-                                <br />
-                                <button onClick={() => this.openSupervisorPopup()}>Request new supervisor</button>
+                                <button onClick={() => this.openSupervisorPopup()}>Request supervisor</button>
                             </p>
                             :
-                            // Awaiting supervisor response
-                            this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == pendingSupervisor.awaiting
+                            // Previous supervisor request denied
+                            this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == pendingSupervisor.denied
                                 ?
                                 <p>
-                                    Request for supervisor sent. Awaiting response from {this.state.assignedSupervisor.name}.
+                                    {this.state.assignedSupervisor.name} denied your request. You need to be assigned to a supervisor before your plan can be evaluated
+                                <br />
+                                    <br />
+                                    <button onClick={() => this.openSupervisorPopup()}>Request new supervisor</button>
                                 </p>
                                 :
-                                // Supervisor assigned
-                                <p>
-                                    Supervisor: {this.state.assignedSupervisor.name}
+                                // Awaiting supervisor response
+                                this.state.studentData.assignedSupervisorId && this.state.studentData.pendingSupervisor == pendingSupervisor.awaiting
+                                    ?
+                                    <p>
+                                        Request for supervisor sent. Awaiting response from {this.state.assignedSupervisor.name}.
                                 </p>
+                                    :
+                                    // Supervisor assigned
+                                    <p>
+                                        Supervisor: {this.state.assignedSupervisor.name}
+                                    </p>
                     }
-
                 </div>
 
                 {/* SupervisorPopup */}
@@ -124,7 +125,7 @@ class SupervisorList extends Component {
 
         return (
             <div>
-                <div className="center" style={{fontWeight: "bold"}}>
+                <div className="center" style={{ fontWeight: "bold" }}>
                     Available supervisors
                 </div>
                 <table>

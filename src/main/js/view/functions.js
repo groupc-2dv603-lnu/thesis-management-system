@@ -1,5 +1,6 @@
 'use strict';
 
+import React from 'react';
 import axios from 'axios';
 import moment from "moment";
 const client = require("../client");
@@ -110,4 +111,8 @@ export function formatDate(date) {
     return moment(date).format("MMMM Do YYYY, HH:mm");
 }
 
-
+export const loader = (
+    <span>
+        Loading <i className="fa fa-spinner fa-spin" />
+    </span>
+)
