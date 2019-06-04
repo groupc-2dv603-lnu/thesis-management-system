@@ -27,13 +27,14 @@ export default class Submission extends Component {
 
     onFormSubmit(e) {
         e.preventDefault(); // Stop form submit
-        this.setState({ actionInProgress: true });
 
+        this.setState({ actionInProgress: true });
         fileUpload(this.state.file, dbSubmissionTypeMap.get(this.props.type))
             .then(() => {
+                this.setMsg("File '" + this.state.file.name + "' uploaded", false)
+                document.getElementById(this.props.type).value = "";
                 this.setState({ actionInProgress: false, file: null })
                 this.getReportData();
-                this.setMsg("File " + document.getElementById("file").files[0].name + " uploaded", false)
             })
             .catch(error => {
                 this.setState({ actionInProgress: false })
@@ -65,7 +66,7 @@ export default class Submission extends Component {
             }
             if (dbSubmissionTypeMap.get(this.props.type) == dbSubmissionTypes.initialReport) {
                 getFromAPI("/student/finalReport").then(response => {
-                    if(response.entity.deadLine) { 
+                    if (response.entity.deadLine) {
                         this.setState({ initialReportFinished: true })
                     }
                 });
@@ -82,7 +83,6 @@ export default class Submission extends Component {
 
     render() {
         let statusPrint, deadlinePrint, gradePrint, styleClass, deadlineStyle;
-
         let currentDate = moment();
 
         // report graded - counted as finished
@@ -99,16 +99,16 @@ export default class Submission extends Component {
                 styleClass = "active";
             }
             else {
-                statusPrint = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
-                deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
-                styleClass = "active";
-            }
-
-            // set status for initial report
-            if (this.state.initialReportFinished && this.state.reportData.submissionId) {
-                statusPrint = "Status: Reviewed";
-                deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
-                styleClass = "finished";
+                // set status for initial report
+                if (this.state.initialReportFinished && this.state.reportData.submissionId) {
+                    statusPrint = "Status: Reviewed";
+                    styleClass = "finished";
+                }
+                else {
+                    statusPrint = "Status: " + (this.state.submissionData && this.state.submissionData.fileUrl ? "Submitted" : "Not submitted");
+                    deadlinePrint = "Deadline: " + formatDate(this.state.reportData.deadLine);
+                    styleClass = "active";
+                }
             }
             if (currentDate > moment(this.state.reportData.deadLine)) {
                 deadlineStyle = { color: "#bbb" };
@@ -129,6 +129,14 @@ export default class Submission extends Component {
                         {this.state.reportData.deadLine != null
                             ?
                             <div>
+                                {this.state.submissionData.fileUrl
+                                    ?
+                                    <div>
+                                        Uploaded file: <a href={this.state.submissionData.fileUrl} className="underscored">{this.state.submissionData.filename}</a>
+                                    </div>
+                                    : null
+                                }
+
                                 {statusPrint}
                                 <br />
                                 {gradePrint}
@@ -138,10 +146,8 @@ export default class Submission extends Component {
 
                                 {/* has feedback */}
                                 {this.state.reportData.feedBackId || (this.state.reportData.feedBackIds && this.state.reportData.feedBackIds.length > 0)
-                                    ?
-                                    <i style={{ fontSize: "24px" }} className="far fa-comment-alt right link" onClick={() => this.setFeedbackPopup(true)} title="This report has got feedback (click to show)" />
-                                    :
-                                    null
+                                    ? <i style={{ fontSize: "24px" }} className="far fa-comment-alt right link" onClick={() => this.setFeedbackPopup(true)} title="This report has got feedback (click to show)" />
+                                    : null
                                 }
 
                                 {/* show file upload for active submission */}
@@ -153,9 +159,9 @@ export default class Submission extends Component {
                                         </p>
                                         <br />
                                         <form onSubmit={this.onFormSubmit}>
-                                            <input disabled={this.state.actionInProgress} type="file" id="file" onChange={this.onChangeFile} />
+                                            <input disabled={this.state.actionInProgress} type="file" id={this.props.type} onChange={this.onChangeFile} />
                                             <br />
-                                            <button type="submit" disabled={this.state.actionInProgress}>
+                                            <button type="submit" disabled={this.state.actionInProgress || !this.state.file}>
                                                 {this.state.actionInProgress
                                                     ? <div>Uploading <i className="fa fa-spinner fa-spin" /></div>
                                                     : "Upload"
@@ -171,8 +177,7 @@ export default class Submission extends Component {
                                             <br />
                                             Submission deadline has passed. If you missed it, contact your coordinator to open up the submission again
                                         </div>
-                                        :
-                                        null
+                                        : null
                                 }
                             </div>
                             :
@@ -200,8 +205,7 @@ export default class Submission extends Component {
                             <FeedbackList reportData={this.state.reportData} type={this.props.type} />
                         </div>
                     </div>
-                    :
-                    null
+                    : null
                 }
             </div>
         )
