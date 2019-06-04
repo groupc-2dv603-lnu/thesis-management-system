@@ -1,6 +1,3 @@
-//TODO använd inte lokal tid
-//TODO sidan ska uppdateras efter man svarat på en request
-
 'use strict';
 
 import React, { Component } from 'react';
@@ -18,25 +15,33 @@ export default class Supervisor extends Component {
 
         this.state = { appliedStudents: [], assignedStudents: [], availableAsSupervisor: false, isLoaded: false };
 
-        this.getAvailabilityStatus = this.getAvailabilityStatus.bind(this);
+        // this.getAvailabilityStatus = this.getAvailabilityStatus.bind(this);
         this.getAppliedStudents = this.getAppliedStudents.bind(this);
         this.getAssignedStudents = this.getAssignedStudents.bind(this);
     }
 
     componentDidMount() {
-        this.getAvailabilityStatus();
-        this.getAppliedStudents();
-        this.getAssignedStudents();
+        let loadedData = 0;
+        
+        this.getAvailabilityStatus().then(() => this.checkLoadedState(++ loadedData));
+        this.getAppliedStudents().then(() => this.checkLoadedState(++ loadedData));
+        this.getAssignedStudents().then(() => this.checkLoadedState(++ loadedData));
+    }
+
+    checkLoadedState(counter) {
+        if(counter == 3) {
+            this.setState({ isLoaded: true })
+        }
     }
 
     getAvailabilityStatus() {
-        func.getCurrentAvailability().then(response => {
+        return func.getCurrentAvailability().then(response => {
             this.setState({ availableAsSupervisor: response.entity });
         })
     }
 
     getAppliedStudents() {
-        func.getAppliedStudents().then(response => {
+        return func.getAppliedStudents().then(response => {
             if (response.entity._embedded) {
                 this.setState({ appliedStudents: response.entity._embedded.students });
             }
@@ -45,9 +50,9 @@ export default class Supervisor extends Component {
             }
         });
     }
-
+    
     getAssignedStudents() {
-        func.getAssignedStudents().then(response => {
+        return func.getAssignedStudents().then(response => {
             if (response.entity._embedded) {
                 this.setState({ assignedStudents: response.entity._embedded.students });
             }
@@ -94,13 +99,12 @@ export default class Supervisor extends Component {
                             {studentRequests}
                         </tbody>
                     </table>
-                    :
-                    null
+                    : null
                 }
 
                 {/* List of assigned student */}
                 <h2>Students you supervise</h2>
-                <table className="studentList">
+                <table className="studentList" cellSpacing="0">
                     <tbody>
                         <tr>
                             <th>
@@ -116,16 +120,15 @@ export default class Supervisor extends Component {
                                 Deadline
                             </th>
                         </tr>
-                        {/* {!this.state.isLoaded
+                        {!this.state.isLoaded
                             ?
                             <tr>
                                 <td colSpan="4">
                                     Loading <i className="fa fa-spinner fa-spin" />
                                 </td>
-                            </tr> */}
-                            {/* :  */}
-                            {assignedStudents}
-                        {/* } */}
+                            </tr>
+                            : assignedStudents
+                        }
                     </tbody>
                 </table>
             </div>

@@ -67,8 +67,8 @@ export default class Submission extends Component {
     render() {
         let statusPrint, deadlinePrint, gradePrint, styleClass, deadlineStyle;
 
-        let currentDate = moment(); // TODO get date from server
-
+        let currentDate = moment();
+        
         // report graded - counted as finished
         if (this.state.reportData.grade != grades.NOGRADE) {
             statusPrint = "Status: Graded";
