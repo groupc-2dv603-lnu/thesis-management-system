@@ -18,7 +18,6 @@ class ReportPopupBody extends Component {
     this.getBidders = this.getBidders.bind(this);
     this.getReaders = this.getReaders.bind(this);
     this.getAvailableOpponents = this.getAvailableOpponents.bind(this);
-    console.log('PROPS', this.props)
 
   }
 
@@ -67,20 +66,18 @@ class ReportPopupBody extends Component {
         this.state.assignedOpponents.push(user);
         this.setState({
           availableOpponents: opponents,
-          assignedOpponents: this.state.assignedOpponents
+          assignedOpponents: user
         });
-        console.log('assignedOpponent', this.state.assignedOpponents)
       }
     }
     let opponents = this.state.availableOpponents.filter(
       opponent => opponent.userId !== user.userId
     );
-    this.state.assignedOpponents.push(user.userId);
+    this.state.assignedOpponents.push(user);
     this.setState({
       availableOpponents: opponents,
       assignedOpponents: this.state.assignedOpponents
     });
-    console.log('STATE', this.state)
   }
 
   removeOpponent(user) {
@@ -92,7 +89,6 @@ class ReportPopupBody extends Component {
       assignedOpponents: [],
       availableOpponents: this.state.availableOpponents
     });
-    console.log('Assigned opps', this.state.assignedOpponents)
   }
 
   getReaders(readers) {
@@ -157,13 +153,14 @@ class ReportPopupBody extends Component {
   }
 
   getAssignedOpponents(opponents) {
-    console.log('OPPONENTS', opponents)
+
     if (opponents.length === 0) {
       return <div style={Style.reportBoxRow}>No assigned opponents</div>;
     }
 
     let i = 0;
     return opponents.map(opponent => {
+
       return (
         <div style={Style.reportBoxRow} key={i++}>
           {opponent.name}
@@ -186,10 +183,9 @@ class ReportPopupBody extends Component {
     let initialReport = Object.assign({}, this.props.report);
     delete initialReport.name;
     
-    console.log('subop state', this.state.assignedOpponents)
-    this.props.report.assignedOpponents = this.state.assignedOpponents
-    console.log('PROPSOPP', this.props.report.assignedOpponents )
-    const request = await corFunc.updateOpponent(this.state.assignedOpponents[0], this.props.report.id, this.props.report)
+    const oppId = [this.state.assignedOpponents[0].userId]
+    this.props.report.assignedOpponents = oppId
+    const request = await corFunc.updateOpponent(this.state.assignedOpponents[0].userId, this.props.report.id, this.props.report)
 
   }
 
@@ -199,7 +195,6 @@ class ReportPopupBody extends Component {
       this.state.assignedReaders
     );
 
-    console.log('READERID', this.state.assignedReaders[0], this.props.report.id, this.props.report)
     const request = corFunc.updateReader(this.state.assignedReaders[0].userId, this.props.report.id, this.props.report)
     }
     

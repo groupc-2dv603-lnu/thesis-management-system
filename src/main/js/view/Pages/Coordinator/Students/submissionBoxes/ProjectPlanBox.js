@@ -5,6 +5,7 @@ import * as PopupStyle from "../../Styles/PopupStyles";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
 import { dbSubmissionTypes } from "../../../../enums";
+import {projectPlanApprovedStatus} from "../../../../enums";
 
 class ProjectPlanBox extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class ProjectPlanBox extends Component {
       gradeChanged: false
     };
     this.getMessage = this.getMessage.bind(this);
+    this.planApproved = this.planApproved.bind(this)
   }
 
   toggleMessage(message) {
@@ -93,6 +95,16 @@ class ProjectPlanBox extends Component {
       this.toggleMessage("Submission updated successfully");
     } else {
       this.toggleMessage("Update failed");
+    }
+  }
+
+  planApproved () {
+    if (this.state.projectPlan.approved === projectPlanApprovedStatus.approved) {
+      return 'Plan is approved by a supervisor'
+    } else if (this.state.projectPlan.approved === projectPlanApprovedStatus.pending) {
+      return 'Student is waiting for supervisors approval'
+    } else {
+      return 'Project plan is not approved by a supervisor'
     }
   }
 
@@ -195,9 +207,7 @@ class ProjectPlanBox extends Component {
             <div style={Style.submissionRow}>
               <span style={Style.submissionLeftColumn}>Approved</span>
               <span style={Style.submissionRightColumn}>
-                {this.state.projectPlan.approved === true
-                  ? `Plan is approved by a supervisor`
-                  : `Plan is not approved by a supervisor`}
+                {this.planApproved()}
               </span>
             </div>
             {/* ----- SUBMIT ----- */}
