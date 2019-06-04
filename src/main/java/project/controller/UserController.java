@@ -35,17 +35,7 @@ import project.model.entities.Student;
 import project.model.entities.Submission;
 import project.model.entities.Supervisor;
 import project.model.entities.User;
-import project.model.repositories.FeedbackRepository;
-import project.model.repositories.FinalReportRepository;
-import project.model.repositories.InitialReportRepository;
-import project.model.repositories.OpponentRepository;
-import project.model.repositories.ProjectDescriptionRepository;
-import project.model.repositories.ProjectPlanRepository;
-import project.model.repositories.ReaderRepository;
-import project.model.repositories.StudentRepository;
-import project.model.repositories.SubmissionRepository;
-import project.model.repositories.SupervisorRepository;
-import project.model.repositories.UserRepository;
+import project.model.repositories.*;
 import project.model.services.EncryptionService;
 
 import javax.validation.Valid;
@@ -68,10 +58,12 @@ class UserController {
 	private final FinalReportRepository finalReportRepository;
 	private final SubmissionRepository submissionRepository;
 	private final FeedbackRepository feedbackRepository;
+	private final DataFileRepository dataFileRepository;
 
 	UserController(UserRepository repository,StudentRepository studentRepository, SupervisorRepository supervisorRepository, OpponentRepository opponentRepository,
 			ReaderRepository readerRepository, ProjectDescriptionRepository projectDescriptionRepository, ProjectPlanRepository projectPlanRepository,InitialReportRepository initialReportRepository,
-			FinalReportRepository finalReportRepository, SubmissionRepository submissionRepository, FeedbackRepository feedbackRepository) {
+			FinalReportRepository finalReportRepository, SubmissionRepository submissionRepository, FeedbackRepository feedbackRepository,
+				   DataFileRepository dataFileRepository) {
 		this.repository = repository;
 		this.studentRepository = studentRepository;
 		this.supervisorRepository = supervisorRepository;
@@ -84,6 +76,7 @@ class UserController {
 		this.finalReportRepository = finalReportRepository;
 		this.submissionRepository = submissionRepository;
 		this.feedbackRepository = feedbackRepository;
+		this.dataFileRepository = dataFileRepository;
 	}
 
 	@GetMapping(value = "/users/{id}", produces = "application/json; charset=UTF-8")
@@ -241,5 +234,24 @@ class UserController {
 		}
 		repository.delete(user);
 	}
+
+	/* DEVELOP METHOD. @GetMapping to enable clearing database by simply navigating to url */
+//	@GetMapping("admin/clearDatabase")
+//	String clearDatabase(){
+//		dataFileRepository.deleteAll();
+//		feedbackRepository.deleteAll();
+//		finalReportRepository.deleteAll();
+//		initialReportRepository.deleteAll();
+//		opponentRepository.deleteAll();
+//		projectDescriptionRepository.deleteAll();
+//		projectPlanRepository.deleteAll();
+//		readerRepository.deleteAll();
+//		studentRepository.deleteAll();
+//		submissionRepository.deleteAll();
+//		supervisorRepository.deleteAll();
+//		repository.deleteAll();
+//
+//		return "All repositories cleared";
+//	}
 
 }
