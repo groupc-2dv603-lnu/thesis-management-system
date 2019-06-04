@@ -11,13 +11,14 @@ class Reader extends Component {
       reports: [],
       selectedReports: [],
       initialReport: null,
-      finalReport: null
+      finalReport: null,
+      sentInitial: false,
+      sentFinal: false
     };
   }
 
   componentDidMount() {
     getFromAPI("/reader/initialReports").then(result => {
-      console.log(result);
       this.setState({
         reports: result.entity._embedded.objectNodes
       });
@@ -41,9 +42,6 @@ class Reader extends Component {
       this.setState({
         user: user.entity
       });
-    });
-    getFromAPI("/reader/readerInfo").then(info => {
-      console.log(info, "uhigu");
     });
   }
 
@@ -77,7 +75,6 @@ class Reader extends Component {
 
   sendBiddedReports() {
     this.state.selectedReports.map(report => {
-      console.log(report);
       putToAPI(`/reader/requestBidding?initialReportId=${report}`);
     });
   }
@@ -88,6 +85,10 @@ class Reader extends Component {
         document.getElementById("initialreport").value
       }`
     );
+    this.setState({
+      sentInitial: true
+    });
+    document.getElementById("initialreport").value = "";
   }
 
   sendFinalReport() {
@@ -96,6 +97,10 @@ class Reader extends Component {
         document.getElementById("finalreport").value
       }`
     );
+    this.setState({
+      sentFinal: true
+    });
+    document.getElementById("finalreport").value = "";
   }
 
   render() {
@@ -175,7 +180,12 @@ class Reader extends Component {
         {!!this.state.initialReport && (
           <div>
             <p>
-            <a href={this.state.initialReport.fileUrl} style={{ display: "block" }}>Initial report: Download</a>
+              <a
+                href={this.state.initialReport.fileUrl}
+                style={{ display: "block" }}
+              >
+                Initial report: Download
+              </a>
             </p>
             <p>
               {`${this.state.initialReport.filename}, ${
@@ -188,10 +198,16 @@ class Reader extends Component {
             </div>
           </div>
         )}
+        {this.state.sentInitial && <p style={styles.green}>Sent</p>}
         {!!this.state.finalReport && (
           <div>
             <p>
-            <a href={this.state.finalReport.fileUrl} style={{ display: "block" }}>Final report: Download</a>
+              <a
+                href={this.state.finalReport.fileUrl}
+                style={{ display: "block" }}
+              >
+                Final report: Download
+              </a>
             </p>
             <p>
               {`${this.state.finalReport.filename}, ${
@@ -204,6 +220,7 @@ class Reader extends Component {
             </div>
           </div>
         )}
+        {this.state.sentFinal && <p style={styles.green}>Sent</p>}
       </div>
     );
   }
@@ -220,6 +237,9 @@ const styles = {
     border: "1px solid black",
     margin: "0px",
     padding: "5px"
+  },
+  green: {
+    color: "green"
   }
 };
 export default Reader;
