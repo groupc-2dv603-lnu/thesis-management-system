@@ -14,7 +14,6 @@ class ReportPopupBody extends Component {
       assignedOpponents: this.props.assignedOpponents,
       showMessage: false,
       message: "",
-      reportId: this.props.report.id
     };
     this.getBidders = this.getBidders.bind(this);
     this.getReaders = this.getReaders.bind(this);
@@ -70,16 +69,18 @@ class ReportPopupBody extends Component {
           availableOpponents: opponents,
           assignedOpponents: this.state.assignedOpponents
         });
+        console.log('assignedOpponent', this.state.assignedOpponents)
       }
     }
     let opponents = this.state.availableOpponents.filter(
       opponent => opponent.userId !== user.userId
     );
-    this.state.assignedOpponents.push(user);
+    this.state.assignedOpponents.push(user.userId);
     this.setState({
       availableOpponents: opponents,
       assignedOpponents: this.state.assignedOpponents
     });
+    console.log('STATE', this.state)
   }
 
   removeOpponent(user) {
@@ -88,9 +89,10 @@ class ReportPopupBody extends Component {
     );
     this.state.availableOpponents.push(user);
     this.setState({
-      assignedOpponents: opponents,
+      assignedOpponents: [],
       availableOpponents: this.state.availableOpponents
     });
+    console.log('Assigned opps', this.state.assignedOpponents)
   }
 
   getReaders(readers) {
@@ -131,6 +133,7 @@ class ReportPopupBody extends Component {
         </div>
       );
     });
+
   }
 
   getAvailableOpponents(opponents) {
@@ -154,9 +157,11 @@ class ReportPopupBody extends Component {
   }
 
   getAssignedOpponents(opponents) {
+    console.log('OPPONENTS', opponents)
     if (opponents.length === 0) {
       return <div style={Style.reportBoxRow}>No assigned opponents</div>;
     }
+
     let i = 0;
     return opponents.map(opponent => {
       return (
@@ -180,24 +185,12 @@ class ReportPopupBody extends Component {
     );
     let initialReport = Object.assign({}, this.props.report);
     delete initialReport.name;
-
     
-    const assignedOpponentId = this.state.assignedOpponents[0].userId
-    const request = await corFunc.updateOpponent(assignedOpponentId, this.state.reportId)
+    console.log('subop state', this.state.assignedOpponents)
+    this.props.report.assignedOpponents = this.state.assignedOpponents
+    console.log('PROPSOPP', this.props.report.assignedOpponents )
+    const request = await corFunc.updateOpponent(this.state.assignedOpponents[0], this.props.report.id, this.props.report)
 
-   /*
-    const request = await corFunc.updateSubmission(
-      dbSubmissionTypes.initialReport,
-      initialReport
-    );
-    if (request.status === 200) {
-      this.toggleMessage("Updated successfully");
-      this.resetMessage()
-    } else {
-      this.toggleMessage("Something went wrong");
-      this.resetMessage()
-    }
-    */
   }
 
   submitAssignedReader() {
@@ -205,8 +198,9 @@ class ReportPopupBody extends Component {
     this.props.report.assignedReaders = this.removeNames(
       this.state.assignedReaders
     );
-    const userId = this.state.assignedReaders[0].userId
-    const request = corFunc.updateReader(userId, this.state.reportId)
+
+    console.log('READERID', this.state.assignedReaders[0], this.props.report.id, this.props.report)
+    const request = corFunc.updateReader(this.state.assignedReaders[0].userId, this.props.report.id, this.props.report)
     }
     
 

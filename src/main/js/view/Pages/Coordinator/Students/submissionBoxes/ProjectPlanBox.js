@@ -17,7 +17,9 @@ class ProjectPlanBox extends Component {
       projectPlan: this.props.projectPlan,
       submission: this.props.submission,
       showMessage: false,
-      message: ""
+      message: "",
+      deadlineChanged: false, // bugfix
+      gradeChanged: false
     };
     this.getMessage = this.getMessage.bind(this);
   }
@@ -57,22 +59,31 @@ class ProjectPlanBox extends Component {
     }:00`;
 
     this.state.projectPlan.deadLine = deadline;
-    this.setState({ projectPlan: this.state.projectPlan });
+    this.setState({
+      projectPlan: this.state.projectPlan,
+      deadlineChanged: true
+    });
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
     this.state.projectPlan.grade = event.target.value;
-    this.setState({ projectPlan: this.state.projectPlan });
+    this.setState({ projectPlan: this.state.projectPlan, gradeChanged: true });
   }
 
   async handleSubmit() {
-    const validDeadline = corFunc.validDeadline(
-      this.state.projectPlan.deadLine
-    );
-    if (validDeadline !== true) {
-      this.toggleMessage("Deadline is not valid");
+    if (!this.state.deadlineChanged && !this.state.gradeChanged) {
+      this.toggleMessage("Nothing to submit");
       return;
+    }
+    if (this.state.deadlineChanged === true) {
+      const validDeadline = corFunc.validDeadline(
+        this.state.projectPlan.deadLine
+      );
+      if (validDeadline !== true) {
+        this.toggleMessage("Deadline is not valid");
+        return;
+      }
     }
     const request = await corFunc.updateSubmission(
       dbSubmissionTypes.projectPlan,
