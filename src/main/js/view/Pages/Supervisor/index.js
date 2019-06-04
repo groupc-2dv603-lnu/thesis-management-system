@@ -256,7 +256,7 @@ class SupervisedStudent extends Component {
                     }
 
                     {/* Student has an Initial Report available for review, deadline has passed, and at least one reader and one opponent has been assigned */}
-                    {this.state.initialReport.submissionId && currentDate > irDeadline && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
+                    {this.state.initialReport.submissionId && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0 // && currentDate > irDeadline
                         ?
                         <div className="link underscored" onClick={() => this.setInitialReportPopup(true)}>
                             Initial Report
@@ -289,13 +289,13 @@ class SupervisedStudent extends Component {
 
                     <br />
 
-                    {/* There is an initial report uploaded, deadline for it has passed, and at least one reader and one opponent has been assigned */}
+                    {/* The initial report has been assessed  */}
                     {this.state.initialReport.supervisorId  // Supervisor has written assessment
                         ? <i className="fa fa-check" title="You have given an answer on this report" />
                         : this.state.initialReport.submissionId
-                            ? currentDate < irDeadline // deadline has not passed
-                                ? <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before the deadline has passed" />
-                                : this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0 // report has been assigned an opponent and at least one reader
+                            // ? currentDate < irDeadline // deadline has not passed
+                            //     ? <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before the deadline has passed" />
+                                ? this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0 // report has been assigned an opponent and at least one reader
                                     ? <i className="fa fa-exclamation" style={{ color: "red" }} title="You have NOT given an answer on this report" />
                                     : <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before an opponent and at least one reader has been assigned to the report" />
                             : <i className="fas fa-times" style={{ color: "#bbb" }} title="No report has been uploaded yet" />
