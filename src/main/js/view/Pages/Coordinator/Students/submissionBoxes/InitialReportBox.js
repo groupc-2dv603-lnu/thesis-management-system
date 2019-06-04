@@ -20,7 +20,9 @@ class InitialReportBox extends Component {
       showMessage: false,
       message: "",
       feedbacks: this.props.feedbacks,
-      showFeedback: false
+      showFeedback: false,
+      deadlineChanged: false, // bugfix
+
     };
     this.getMessage = this.getMessage.bind(this);
   }
@@ -66,16 +68,19 @@ class InitialReportBox extends Component {
     }:00`;
 
     this.state.initialReport.deadLine = deadline;
-    this.setState({ initialReport: this.state.initialReport });
+    this.setState({ 
+      initialReport: this.state.initialReport,
+      deadlineChanged: true
+    });
     this.toggleDeadlineChange();
   }
 
-  setGrade(event) {
-    this.state.initialReport.grade = event.target.value;
-    this.setState({ initialReport: this.state.initialReport });
-  }
-
   async handleSubmit() {
+    if(!this.state.deadlineChanged) {
+      this.toggleMessage('Nothing to submit')
+      return
+    }
+    if (this.state.deadlineChanged === true) {
     const validDeadline = corFunc.validDeadline(
       this.state.initialReport.deadLine
     );
@@ -83,6 +88,8 @@ class InitialReportBox extends Component {
       this.toggleMessage("Deadline is not valid");
       return;
     }
+  }
+
     const request = await corFunc.updateSubmission(
       dbSubmissionTypes.initialReport,
       this.state.initialReport

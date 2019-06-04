@@ -17,7 +17,9 @@ class ProjectDescriptionBox extends Component {
       projectDescription: this.props.projectDescription,
       submission: this.props.submission,
       showMessage: false,
-      message: ""
+      message: "",
+      deadlineChanged: false, // bugfix
+      gradeChanged: false
     };
   }
 
@@ -55,22 +57,34 @@ class ProjectDescriptionBox extends Component {
       this.state.newDeadlineTime
     }:00`;
     this.state.projectDescription.deadLine = deadline;
-    this.setState({ projectDescription: this.state.projectDescription });
+    this.setState({
+      projectDescription: this.state.projectDescription,
+      deadlineChanged: true
+    });
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
     this.state.projectDescription.grade = event.target.value;
-    this.setState({ projectDescription: this.state.projectDescription });
+    this.setState({
+      projectDescription: this.state.projectDescription,
+      gradeChanged: true
+    });
   }
 
   async handleSubmit() {
-    const validDeadline = corFunc.validDeadline(
-      this.state.projectDescription.deadLine
-    );
-    if (validDeadline !== true) {
-      this.toggleMessage("Deadline is not valid");
+    if (!this.state.deadlineChanged && !this.state.gradeChanged) {
+      this.toggleMessage("Nothing to submit");
       return;
+    }
+    if (this.state.deadlineChanged === true) {
+      const validDeadline = corFunc.validDeadline(
+        this.state.projectDescription.deadLine
+      );
+      if (validDeadline !== true) {
+        this.toggleMessage("Deadline is not valid");
+        return;
+      }
     }
     const request = await corFunc.updateSubmission(
       dbSubmissionTypes.projectDescription,
