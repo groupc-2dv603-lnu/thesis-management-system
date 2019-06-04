@@ -1,7 +1,6 @@
 "use strict";
 
 import React, { Component } from "react";
-import RolesCheckbox from "./rolesCheckbox";
 import { fieldsHaveInput, passwordsMatch } from "./functions";
 import { postToAPI } from "../../functions";
 
@@ -42,12 +41,14 @@ class CreateUser extends Component {
     this.setState({ roles: roles });
   }
 
-  handleClick() {
+  handleClick(e) {
+      e.preventDefault();           //Avoid page from refreshing
     const { name, password, confirmPassword, email, roles } = this.state;
     if (!fieldsHaveInput(name, password, confirmPassword, email, roles)) {
-      alert("Error: one or more fields are blank");
+      alert("Error: One or more fields are blank");
+      return;
     }
-    else if (passwordsMatch(password, confirmPassword)){
+    if (!passwordsMatch(password, confirmPassword)){
       alert("Passwords are not identical");
     } else {
 
@@ -56,8 +57,14 @@ class CreateUser extends Component {
         password: this.state.password,
         emailAdress: this.state.email,
         roles: this.state.roles
-      });
-      alert("User successfully created");
+      }).then(response => {
+          if (response.valueOf().status.code >= 200 && response.valueOf().status.code < 300){
+              alert("User successfully created");
+          }
+          else {
+              console.log(response)
+          }
+        });
     }
   }
 
