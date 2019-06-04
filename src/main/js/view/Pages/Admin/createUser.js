@@ -1,8 +1,7 @@
 "use strict";
 
 import React, { Component } from "react";
-import RolesCheckbox from "./rolesCheckbox";
-import { consolePrint } from "./functions";
+import { fieldsHaveInput, passwordsMatch } from "./functions";
 import { postToAPI } from "../../functions";
 
 class CreateUser extends Component {
@@ -41,24 +40,31 @@ class CreateUser extends Component {
 
     this.setState({ roles: roles });
   }
-  /*
-    TODO: make handleClick do something useful instead
-     */
-  handleClick() {
-    const { password, confirmPassword, roles } = this.state;
-    if (password !== confirmPassword) {
-      alert("Passwords dont match");
+
+  handleClick(e) {
+      e.preventDefault();           //Avoid page from refreshing
+    const { name, password, confirmPassword, email, roles } = this.state;
+    if (!fieldsHaveInput(name, password, confirmPassword, email, roles)) {
+      alert("Error: One or more fields are blank");
       return;
     }
-    if (roles.length === 0) {
-      alert("You must choose at least 1 role for the user");
+    if (!passwordsMatch(password, confirmPassword)){
+      alert("Passwords are not identical");
     } else {
+
       postToAPI("/admin/createUser", {
         name: this.state.name,
         password: this.state.password,
         emailAdress: this.state.email,
         roles: this.state.roles
-      });
+      }).then(response => {
+          if (response.valueOf().status.code >= 200 && response.valueOf().status.code < 300){
+              alert("User successfully created");
+          }
+          else {
+              console.log(response)
+          }
+        });
     }
   }
 

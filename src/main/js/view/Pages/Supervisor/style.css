@@ -1,7 +1,5 @@
 .innerPopup table {
     width: 100%;
-    border-spacing: 1px;
-    /* background-color: black; */
     padding: 5px;
 }
 
@@ -12,6 +10,11 @@ table tr:nth-child(2n) {
 th, tr, td {
     padding: 10px 15px;
     vertical-align: top;
+    border-spacing: 0;
+}
+
+th {
+    border: 1px solid black;
 }
 
 .supervisorBox {
@@ -27,9 +30,6 @@ table.studentList {
     max-height: 500px;
     width: 100%;
     overflow: scroll;
-    /* border: 1px solid black; */
-    /* padding: 20px;
-    line-height: 25px; */
 }
 
 .studentList th {
