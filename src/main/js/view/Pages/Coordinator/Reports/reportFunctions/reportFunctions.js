@@ -5,7 +5,6 @@ export const getInitialReports = async () => {
     const response = await generalFunctions.getFromAPI(
       `/coordinator/getAllReports`
     );
-    console.log("RESPONSE", response);
     const uploadedReports = response.entity.filter(
       report => report.submissionId !== ""
     );
@@ -17,7 +16,6 @@ export const getInitialReports = async () => {
     uploadedReports.sort((a, b) =>
       a.name > b.name ? 1 : b.name > a.name ? -1 : 0
     );
-    console.log(uploadedReports);
     return uploadedReports;
   } catch (e) {
     console.log(e);
