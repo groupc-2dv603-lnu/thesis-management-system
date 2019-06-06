@@ -5,6 +5,7 @@ import * as PopupStyle from "../../Styles/PopupStyles";
 import * as corFunc from "../../coordinatorFunctions";
 import * as generalFunctions from "../../../../functions";
 import { dbSubmissionTypes } from "../../../../enums";
+import {projectPlanApprovedStatus} from "../../../../enums";
 
 class ProjectPlanBox extends Component {
   constructor(props) {
@@ -17,9 +18,12 @@ class ProjectPlanBox extends Component {
       projectPlan: this.props.projectPlan,
       submission: this.props.submission,
       showMessage: false,
-      message: ""
+      message: "",
+      deadlineChanged: false, // bugfix
+      gradeChanged: false
     };
     this.getMessage = this.getMessage.bind(this);
+    this.planApproved = this.planApproved.bind(this)
   }
 
   toggleMessage(message) {
@@ -57,22 +61,31 @@ class ProjectPlanBox extends Component {
     }:00`;
 
     this.state.projectPlan.deadLine = deadline;
-    this.setState({ projectPlan: this.state.projectPlan });
+    this.setState({
+      projectPlan: this.state.projectPlan,
+      deadlineChanged: true
+    });
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
     this.state.projectPlan.grade = event.target.value;
-    this.setState({ projectPlan: this.state.projectPlan });
+    this.setState({ projectPlan: this.state.projectPlan, gradeChanged: true });
   }
 
   async handleSubmit() {
-    const validDeadline = corFunc.validDeadline(
-      this.state.projectPlan.deadLine
-    );
-    if (validDeadline !== true) {
-      this.toggleMessage("Deadline is not valid");
+    if (!this.state.deadlineChanged && !this.state.gradeChanged) {
+      this.toggleMessage("Nothing to submit");
       return;
+    }
+    if (this.state.deadlineChanged === true) {
+      const validDeadline = corFunc.validDeadline(
+        this.state.projectPlan.deadLine
+      );
+      if (validDeadline !== true) {
+        this.toggleMessage("Deadline is not valid");
+        return;
+      }
     }
     const request = await corFunc.updateSubmission(
       dbSubmissionTypes.projectPlan,
@@ -82,6 +95,16 @@ class ProjectPlanBox extends Component {
       this.toggleMessage("Submission updated successfully");
     } else {
       this.toggleMessage("Update failed");
+    }
+  }
+
+  planApproved () {
+    if (this.state.projectPlan.approved === projectPlanApprovedStatus.approved) {
+      return 'Plan is approved by a supervisor'
+    } else if (this.state.projectPlan.approved === projectPlanApprovedStatus.pending) {
+      return 'Student is waiting for supervisors approval'
+    } else {
+      return 'Project plan is not approved by a supervisor'
     }
   }
 
@@ -184,9 +207,7 @@ class ProjectPlanBox extends Component {
             <div style={Style.submissionRow}>
               <span style={Style.submissionLeftColumn}>Approved</span>
               <span style={Style.submissionRightColumn}>
-                {this.state.projectPlan.approved === true
-                  ? `Plan is approved by a supervisor`
-                  : `Plan is not approved by a supervisor`}
+                {this.planApproved()}
               </span>
             </div>
             {/* ----- SUBMIT ----- */}

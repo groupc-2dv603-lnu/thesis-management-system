@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Submission } from './submission'
 import * as func from './functions'
 import * as enums from './../../enums';
-import { getUser, formatDate } from './../../functions';
+import { getUser, formatDate, loader } from './../../functions';
 import moment from "moment";
 import './style.css';
 
@@ -22,14 +22,14 @@ export default class Supervisor extends Component {
 
     componentDidMount() {
         let loadedData = 0;
-        
-        this.getAvailabilityStatus().then(() => this.checkLoadedState(++ loadedData));
-        this.getAppliedStudents().then(() => this.checkLoadedState(++ loadedData));
-        this.getAssignedStudents().then(() => this.checkLoadedState(++ loadedData));
+
+        this.getAvailabilityStatus().then(() => this.checkLoadedState(++loadedData));
+        this.getAppliedStudents().then(() => this.checkLoadedState(++loadedData));
+        this.getAssignedStudents().then(() => this.checkLoadedState(++loadedData));
     }
 
     checkLoadedState(counter) {
-        if(counter == 3) {
+        if (counter == 3) {
             this.setState({ isLoaded: true })
         }
     }
@@ -50,7 +50,7 @@ export default class Supervisor extends Component {
             }
         });
     }
-    
+
     getAssignedStudents() {
         return func.getAssignedStudents().then(response => {
             if (response.entity._embedded) {
@@ -80,16 +80,20 @@ export default class Supervisor extends Component {
 
         return (
             <div>
-                {this.state.availableAsSupervisor
-                    ?
-                    <div>Your status is set as available. You can receive new supervisor requests from students</div>
-                    :
-                    <div>Your status is set to unavailable. You will not receive any new supervisor requests from students</div>
+                {this.state.isLoaded
+                    ? this.state.availableAsSupervisor
+                        ? <div>Your status is set to <span style={{ color: "#5a5" }}>available</span>. You can receive new supervisor requests from students</div>
+                        : <div>Your status is set to <span style={{ color: "red" }}>unavailable</span>. You will not receive any new supervisor requests from students</div>
+                    : loader
                 }
 
-                <button onClick={() => this.toggleAvailability()}>Change availability status</button>
-                <br />
-                <br />
+                {this.state.isLoaded &&
+                    <div>
+                        <button onClick={() => this.toggleAvailability()}>Change availability status</button>
+                        <br />
+                        <br />
+                    </div>
+                }
 
                 {/* List of student requests */}
                 {this.state.appliedStudents.length > 0
@@ -104,6 +108,7 @@ export default class Supervisor extends Component {
 
                 {/* List of assigned student */}
                 <h2>Students you supervise</h2>
+
                 <table className="studentList" cellSpacing="0">
                     <tbody>
                         <tr>
@@ -124,10 +129,17 @@ export default class Supervisor extends Component {
                             ?
                             <tr>
                                 <td colSpan="4">
-                                    Loading <i className="fa fa-spinner fa-spin" />
+                                    {loader}
                                 </td>
                             </tr>
-                            : assignedStudents
+                            : this.state.assignedStudents.length
+                                ? assignedStudents
+                                :
+                                <tr>
+                                    <td colSpan="4" className="center">
+                                        None
+                                    </td>
+                                </tr>
                         }
                     </tbody>
                 </table>
@@ -256,7 +268,7 @@ class SupervisedStudent extends Component {
                     }
 
                     {/* Student has an Initial Report available for review, deadline has passed, and at least one reader and one opponent has been assigned */}
-                    {this.state.initialReport.submissionId && currentDate > irDeadline && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0
+                    {this.state.initialReport.submissionId && this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0 // && currentDate > irDeadline
                         ?
                         <div className="link underscored" onClick={() => this.setInitialReportPopup(true)}>
                             Initial Report
@@ -289,15 +301,15 @@ class SupervisedStudent extends Component {
 
                     <br />
 
-                    {/* There is an initial report uploaded, deadline for it has passed, and at least one reader and one opponent has been assigned */}
+                    {/* The initial report has been assessed  */}
                     {this.state.initialReport.supervisorId  // Supervisor has written assessment
                         ? <i className="fa fa-check" title="You have given an answer on this report" />
                         : this.state.initialReport.submissionId
-                            ? currentDate < irDeadline // deadline has not passed
-                                ? <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before the deadline has passed" />
-                                : this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0 // report has been assigned an opponent and at least one reader
-                                    ? <i className="fa fa-exclamation" style={{ color: "red" }} title="You have NOT given an answer on this report" />
-                                    : <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before an opponent and at least one reader has been assigned to the report" />
+                            // ? currentDate < irDeadline // deadline has not passed
+                            //     ? <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before the deadline has passed" />
+                            ? this.state.initialReport.assignedReaders.length > 0 && this.state.initialReport.assignedOpponents.length > 0 // report has been assigned an opponent and at least one reader
+                                ? <i className="fa fa-exclamation" style={{ color: "red" }} title="You have NOT given an answer on this report" />
+                                : <i className="fas fa-lock" title="A report has been submitted, but you cannot write an assessment before an opponent and at least one reader has been assigned to the report" />
                             : <i className="fas fa-times" style={{ color: "#bbb" }} title="No report has been uploaded yet" />
                     }
 

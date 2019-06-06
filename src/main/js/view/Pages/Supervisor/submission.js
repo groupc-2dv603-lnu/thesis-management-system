@@ -103,9 +103,7 @@ export class Submission extends Component {
                             <div>
                                 <fieldset disabled={this.state.actionInProgress}>
                                     Write Assessment
-                                    <textarea className="feedbackBox" id="feedbackBox">
-
-                                    </textarea>
+                                    <textarea className="feedbackBox" id="feedbackBox" />
                                     <br />
                                     <button type="submit" onClick={() => this.sendAssessment()}>
                                         Submit 

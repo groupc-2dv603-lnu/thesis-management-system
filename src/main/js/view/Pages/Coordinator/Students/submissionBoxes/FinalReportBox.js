@@ -21,10 +21,11 @@ class FinalReportBox extends Component {
       message: "",
       feedbacks: this.props.feedbacks,
       showFeedback: false,
-      comment: ""
+      comment: "",
+      deadlineChanged: false, // bugfix
+      gradeChanged: false
     };
     this.getMessage = this.getMessage.bind(this);
-    console.log("FRSTATE", this.state);
   }
 
   toggleMessage(message) {
@@ -68,13 +69,19 @@ class FinalReportBox extends Component {
     }:00`;
 
     this.state.finalReport.deadLine = deadline;
-    this.setState({ finalReport: this.state.finalReport });
+    this.setState({
+      finalReport: this.state.finalReport,
+      deadlineChanged: true
+    });
     this.toggleDeadlineChange();
   }
 
   setGrade(event) {
     this.state.finalReport.grade = event.target.value;
-    this.setState({ finalReport: this.state.finalReport });
+    this.setState({ 
+      finalReport: this.state.finalReport,
+      gradeChanged: true
+     });
   }
 
   handleFeedbackChange(event) {
@@ -82,6 +89,11 @@ class FinalReportBox extends Component {
   }
 
   async handleSubmit() {
+    if (!this.state.gradeChanged && !this.state.deadlineChanged && this.state.comment === ""){
+      this.toggleMessage('Nothing to submit')
+      return
+    }
+    if (this.state.deadlineChanged === true) {
     const validDeadline = corFunc.validDeadline(
       this.state.finalReport.deadLine
     );
@@ -89,18 +101,19 @@ class FinalReportBox extends Component {
       this.toggleMessage("Deadline is not valid");
       return;
     }
-    if (this.state.comment === "") {
-      this.toggleMessage("Please provide feedback");
-      return;
-    }
+  }
+    if (this.state.comment !== "") {
+      const feedbackRequest = await corFunc.postCoordinatorFeedback(
+        this.state.comment,
+        this.state.finalReport.id
+      );
+    } 
+
     const submissionRequest = await corFunc.updateSubmission(
       dbSubmissionTypes.finalReport,
       this.state.finalReport
     );
-    const feedbackRequest = await corFunc.postCoordinatorFeedback(
-      this.state.comment,
-      this.state.finalReport.id
-    );
+
 
     if (submissionRequest.status === 200) {
       this.toggleMessage("Submission updated successfully");
